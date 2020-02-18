@@ -1,0 +1,6 @@
+framework module SportsTalk_iOS_SDK {
+  umbrella header "SportsTalk_iOS_SDK-umbrella.h"
+
+  export *
+  module * { export * }
+}

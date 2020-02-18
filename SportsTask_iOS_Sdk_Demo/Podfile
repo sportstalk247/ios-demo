@@ -1,0 +1,10 @@
+# platform :ios, '12.0'
+
+target 'SportsTask_iOS_Sdk_Demo' do
+
+  use_frameworks!
+
+  pod 'SportsTalk_iOS_SDK', :git=> 'https://gitlab.com/sportstalk247/sdk-ios-swift.git', :branch=> 'podspec'
+
+
+end
