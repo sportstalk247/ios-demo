@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "C7DFFF06-4E23-4773-97BD-11F1301A3AF6"
+   type = "0"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E58DD9C3-943B-43A9-BC1F-16804CE3CDE1"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ServicesAMS.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "usersServices(_:completionHandler:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "E58DD9C3-943B-43A9-BC1F-16804CE3CDE1 - c40c7df3f3418737"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "SportsTalk_iOS_SDK.ServicesAMS.usersServices(_: SportsTalk_iOS_SDK.UsersServices.GetUserDetails, completionHandler: (Swift.Dictionary&lt;Swift.AnyHashable, Any&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "SportsTalk_iOS_SDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/krishna41/Documents/Github/SportsTaskiOSSdkDemo/SportsTask_iOS_Sdk_Demo/Pods/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ServicesAMS.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "79"
+                  endingLineNumber = "79"
+                  offsetFromSymbolStart = "187">
+               </Location>
+               <Location
+                  uuid = "E58DD9C3-943B-43A9-BC1F-16804CE3CDE1 - e32624f70bff269"
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Dictionary&lt;Swift.AnyHashable, Any&gt;) -&gt; () in SportsTalk_iOS_SDK.ServicesAMS.usersServices(_: SportsTalk_iOS_SDK.UsersServices.GetUserDetails, completionHandler: (Swift.Dictionary&lt;Swift.AnyHashable, Any&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "SportsTalk_iOS_SDK"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/krishna41/Documents/Github/SportsTaskiOSSdkDemo/SportsTask_iOS_Sdk_Demo/Pods/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ServicesAMS.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80"
+                  offsetFromSymbolStart = "41">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "77BF76B7-04E4-4E52-BD56-760C1CF196EE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/Services.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "131"
+            endingLineNumber = "131"
+            landmarkName = "startPollingTimer()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "03C745B8-23BE-43BC-BFEA-6C52216A565A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/Services.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "130"
+            endingLineNumber = "130"
+            landmarkName = "startPollingTimer()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F7EF16FE-ED07-4E36-92CC-6AB72F95ECB4"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/Services.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "startPolling()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3C35FD84-3ED0-4AFD-A225-10D8F5D905E1"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/Services.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
+            landmarkName = "startTalk()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

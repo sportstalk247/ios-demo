@@ -2,9 +2,11 @@ import UIKit
 
 class UserListingViewController: BaseViewController
 {
-    var tableView: UITableViewBase!
+    private var tableViewCellHeight = CGFloat(70)
     
+    private var tableView: UITableViewBase!
     private var presenter: UserListingViewPresenter!
+    var loader = MBProgressHUD()
     
     override func viewDidLoad()
     {
@@ -40,6 +42,9 @@ class UserListingViewController: BaseViewController
             $0.dataSource = self
             view.addSubview($0)
         }
+        
+        self.loader = MBProgressHUD(view: self.view)
+        self.view.addSubview(self.loader)
     }
     
     func setupConstraints()
@@ -69,17 +74,38 @@ extension UserListingViewController: UITableViewDelegate, UITableViewDataSource
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
-        return 70
+        return tableViewCellHeight
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
+        selectedUser = presenter.users[indexPath.item]
+
+        let chatLogController = ChatLogViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        self.navigationController?.pushViewController(chatLogController, animated: true)
+        
         tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
 extension UserListingViewController: UserListingView
 {
+    func startLoader()
+    {
+        dispatchMain
+        {
+            self.loader.show(animated: true)
+        }
+    }
+    
+    func stopLoader()
+    {
+        dispatchMain
+        {
+            self.loader.hide(animated: true)
+        }
+    }
+    
     func refresh()
     {
         dispatchMain
@@ -96,8 +122,9 @@ extension UserListingViewController
         static let configuration = CellConfiguration<UserCell>()
 
         // Constants
-        private let cornerRadius = CGFloat(5)
-        private let spacing = CGFloat(8)
+        private let labelLeftSpace = CGFloat(15)
+        private let imageSize = CGFloat(50)
+        private let imageCornerRadius = CGFloat(25)
 
         // Controls
         private var userImage: UIImageViewBase!
@@ -127,11 +154,11 @@ extension UserListingViewController
 
         private func setupConstraints()
         {
-            _ = userImage?.anchorConstraints(left: contentView.layoutMarginsGuide.leftAnchor, leftConstant: 0)
+            _ = userImage?.anchorConstraints(left: contentView.layoutMarginsGuide.leftAnchor)
             _ = userImage.alignCenterConstraints(centerY: contentView.layoutMarginsGuide.centerYAnchor)
-            _ = userImage?.sizeConstraints(height: 50, width: 50)
+            _ = userImage?.sizeConstraints(height: imageSize, width: imageSize)
             
-            _ = userNameLabel.anchorConstraints(left: userImage.rightAnchor, leftConstant: 15, top: userImage.topAnchor, right: contentView.layoutMarginsGuide.rightAnchor, rightConstant: 0, bottom: userImage.bottomAnchor)
+            _ = userNameLabel.anchorConstraints(left: userImage.rightAnchor, leftConstant: labelLeftSpace, top: userImage.topAnchor, right: contentView.layoutMarginsGuide.rightAnchor, bottom: userImage.bottomAnchor)
         }
 
         private func setupControls()
@@ -140,7 +167,7 @@ extension UserListingViewController
             userImage.setup
             {
                 $0.backgroundColor = .black
-                $0.layer.cornerRadius = 25
+                $0.layer.cornerRadius = imageCornerRadius
 
                 contentView.addSubview($0)
             }

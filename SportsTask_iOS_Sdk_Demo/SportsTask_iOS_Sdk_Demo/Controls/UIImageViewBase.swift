@@ -1,9 +1,26 @@
-//
-//  UIImageViewBase.swift
-//  SportsTask_iOS_Sdk_Demo
-//
-//  Created by krishna41 on 18/02/20.
-//  Copyright © 2020 krishna41. All rights reserved.
-//
+import UIKit
 
-import Foundation
+class UIImageViewBase: UIImageView
+{
+    override func awakeFromNib()
+    {
+        setup()
+    }
+
+    override func prepareForInterfaceBuilder()
+    {
+        setup()
+    }
+
+    func setup()
+    {
+        layer.masksToBounds = true
+        translatesAutoresizingMaskIntoConstraints = false
+    }
+
+    func setup(with: (UIImageViewBase) -> Void)
+    {
+        setup()
+        with(self)
+    }
+}

@@ -21,7 +21,7 @@ open class Services
     internal lazy var _endpoint = _url
     internal var _currentRoom: [AnyHashable: Any]?
     private var _user = User(userId: "", handle: "")
-    var pollingUpdates: [AnyHashable: Any]?
+    public var pollingUpdates: [AnyHashable: Any]?
     
     private var _polling = false
     {
@@ -95,7 +95,7 @@ open class Services
 
     public init() { }
     
-    func stopTalk()
+    public func stopTalk()
     {
         if _polling
         {
@@ -103,7 +103,7 @@ open class Services
         }
     }
     
-    func startTalk()
+    public func startTalk()
     {
         if _polling
         {
@@ -115,7 +115,9 @@ open class Services
     
     func startPolling()
     {
-        interval = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(startPollingTimer), userInfo: nil, repeats: false)
+        DispatchQueue.main.async {
+            self.interval = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.startPollingTimer), userInfo: nil, repeats: true)
+        }
     }
     
     func stopPolling()

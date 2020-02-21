@@ -25,6 +25,17 @@ class ChatMesageCell: UICollectionViewCell {
         return tv
     }()
     
+    let dataImageView: UIImageView = {
+        let iv = UIImageView()
+        
+        iv.layer.cornerRadius = 5
+        iv.isHidden = true
+        iv.layer.masksToBounds = true
+        iv.translatesAutoresizingMaskIntoConstraints = false
+        
+        return iv
+    }()
+    
     let bubbleView: UIView = {
        let view = UIView()
         view.backgroundColor = ChatMesageCell.blueColor
@@ -45,6 +56,7 @@ class ChatMesageCell: UICollectionViewCell {
         addSubview(profileImageVIew)
         addSubview(bubbleView)
         addSubview(textView)
+        addSubview(dataImageView)
         
         profileImageVIew.leftAnchor.constraint(equalTo: leftAnchor, constant: 8).isActive = true
         profileImageVIew.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
@@ -66,6 +78,13 @@ class ChatMesageCell: UICollectionViewCell {
         textView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor).isActive = true
 //        textView.widthAnchor.constraint(equalToConstant: 200).isActive = true
         textView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+        
+                dataImageView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: 8).isActive = true
+                dataImageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+                dataImageView.rightAnchor.constraint(equalTo: bubbleView.rightAnchor).isActive = true
+        //        textView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+                dataImageView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+
     }
     
     required init?(coder: NSCoder) {

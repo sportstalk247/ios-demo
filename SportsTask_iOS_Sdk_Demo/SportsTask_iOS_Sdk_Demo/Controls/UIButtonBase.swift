@@ -14,9 +14,6 @@ class UIButtonBase: UIButton
 
     func setup()
     {
-        // Create an inset for the button.
-        contentEdgeInsets = UIEdgeInsets(top: DimensionUtils.buttonInset, left: DimensionUtils.buttonInset, bottom: DimensionUtils.buttonInset, right: DimensionUtils.buttonInset)
-
         translatesAutoresizingMaskIntoConstraints = false
     }
 

@@ -1,9 +1,9 @@
-//
-//  UIColorUtil.swift
-//  SportsTask_iOS_Sdk_Demo
-//
-//  Created by krishna41 on 18/02/20.
-//  Copyright © 2020 krishna41. All rights reserved.
-//
+import UIKit
 
-import Foundation
+extension UIColor
+{
+    convenience init(r:CGFloat, g:CGFloat, b:CGFloat)
+    {
+        self.init(red: r/255, green: g/255, blue: b/255, alpha: 1)
+    }
+}
