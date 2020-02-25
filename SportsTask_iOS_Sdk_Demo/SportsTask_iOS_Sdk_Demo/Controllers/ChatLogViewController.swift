@@ -150,6 +150,25 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
 
         cell?.textView.text = message.body
         cell?.bubbleWidthAnchor?.constant = extimatedFrameForText(text: message.body ?? "").width + 32
+        cell?.delegate = self
+        cell?.indexpath = indexPath
+        
+        // Check Message Like
+        
+        let likeCount = presenter.likeCount(message: message)
+                
+        if likeCount > 0
+        {
+//            cell?.likeButton.setTitle("@@@\(likeCount)", for: .normal)
+            cell?.likeLabel.text = "\(likeCount)"
+            cell?.likeButton.tintColor = .green
+        }
+        else
+        {
+            cell?.likeLabel.text = "0"
+            cell?.likeButton.tintColor = .gray
+            cell?.likeButton.setTitle("", for: .normal)
+        }
         
         if message.user?.userid == selectedUser?.userid
         {
@@ -158,7 +177,12 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
             cell?.profileImageVIew.image = nil
             cell?.bubbleViewRightAnchor?.isActive = true
             cell?.bubbleViewLeftAnchor?.isActive = false
-
+            
+            cell?.likeButtonforLeftContainer?.isActive = false
+            cell?.likeButtonforRightContainer?.isActive = true
+  
+            cell?.likeLabelforLeftContainer?.isActive = false
+            cell?.likeLabelforRightContainer?.isActive = true
         }
         else
         {
@@ -168,12 +192,20 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
             
             cell?.bubbleViewRightAnchor?.isActive = false
             cell?.bubbleViewLeftAnchor?.isActive = true
+            
+            cell?.likeButtonforLeftContainer?.isActive = true
+            cell?.likeButtonforRightContainer?.isActive = false
+
+            cell?.likeLabelforLeftContainer?.isActive = true
+            cell?.likeLabelforRightContainer?.isActive = false
+
         }
         
         if message.body == "advertisement" || message.body == "GOAL"
         {
-            let imageUrl = "https\((message.custompayload?.components(separatedBy: "https")[1])?.components(separatedBy: ".jpg").first ?? "")"
-            let imageUrlString = "\(imageUrl).jpg"
+            let imageUrlString = "https:\(parseQueryString(message.custompayload)?["img"] ?? "")"
+
+            cell?.textView.text = ""
             cell?.dataImageView.loadImageUsingCacheWithUrlString(urlString: imageUrlString)
             cell?.dataImageView.isHidden = false
             cell?.bubbleView.isHidden = true
@@ -189,6 +221,25 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
         return cell ?? UICollectionViewCell()
     }
     
+    func parseQueryString(_ query: String?) -> [AnyHashable : Any]? {
+        var dict: [AnyHashable : Any] = [:]
+        let pairs = query?.components(separatedBy: ",")
+        
+        for pair in pairs ?? [] {
+            let comp = pair.replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range: nil)
+            let comp1 = comp.replacingOccurrences(of: "\\", with: "", options: NSString.CompareOptions.literal, range: nil)
+            let comp2 = comp1.replacingOccurrences(of: "}", with: "", options: NSString.CompareOptions.literal, range: nil)
+            let comp3 = comp2.replacingOccurrences(of: "{", with: "", options: NSString.CompareOptions.literal, range: nil)
+            let elements = comp3.components(separatedBy: ":")
+            let key = elements[0].removingPercentEncoding ?? ""
+            let val = elements.last?.removingPercentEncoding
+            
+            dict[key] = val
+        }
+        
+        return dict
+    }
+    
     func extimatedFrameForText(text: String) -> CGRect {
         let size = CGSize(width: 200, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
@@ -198,6 +249,7 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
     }
         
     var containerViewBottomAnchor:NSLayoutConstraint?
+    var sendButton = UIButton(type: .system)
     
     fileprivate func setupInputComponents()
     {
@@ -213,7 +265,7 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
         containerViewBottomAnchor?.isActive = true
         containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        let sendButton = UIButton(type: .system)
+        sendButton = UIButton(type: .system)
         sendButton.setTitle("Send", for: .normal)
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
@@ -249,7 +301,15 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
     {
         if inputTextFields.text != ""
         {
-            presenter.sendMessage(message: inputTextFields.text ?? "")
+            sendButton.isUserInteractionEnabled = false
+//            presenter.sendMessage(message: inputTextFields.text ?? "")
+            presenter.sendMessage(message: inputTextFields.text ?? "") {
+                self.dispatchMain
+                {
+                    self.sendButton.isUserInteractionEnabled = true
+                    self.inputTextFields.text = ""
+                }
+            }
         }
     }
     
@@ -268,15 +328,34 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
 
         return true
     }
+    
+    var _isCollectionViewLoading = false
 }
 
 extension ChatLogViewController: ChatLogView
 {
+    var isCollectionViewLoading: Bool
+    {
+        get
+        {
+            return _isCollectionViewLoading
+        }
+        set
+        {
+            _isCollectionViewLoading = newValue
+        }
+    }
+    
     func refresh(_ firstTimeMakeUserToBottom: Bool = false)
     {
         dispatchMain
         {
-            self.collectionView.reloadData()
+//            self._isCollectionViewLoading = true
+//            self.collectionView.performBatchUpdates({
+                self.collectionView.reloadData()
+//            }) { (finish) in
+//                self._isCollectionViewLoading = false
+//            }
             
             if firstTimeMakeUserToBottom
             {
@@ -298,6 +377,43 @@ extension ChatLogViewController: ChatLogView
         dispatchMain
         {
             self.loader.hide(animated: true)
+        }
+    }
+    
+    func insertRowsAtIndexes(indexpaths: [IndexPath])
+    {
+        dispatchMain
+        {
+            self.collectionView.performBatchUpdates({
+                self.collectionView.insertItems(at: indexpaths)
+            }) { (status) in }
+        }
+    }
+}
+
+extension ChatLogViewController: ChatMesageCellView
+{
+    func likeMessage(indexPath: IndexPath, cell: UICollectionViewCell)
+    {
+        if let cell = cell as? ChatMesageCell
+        {
+            cell.likeButton.isUserInteractionEnabled = false
+            
+            presenter.likeButtonPress(index: indexPath.item)
+            {
+                self.dispatchMain
+                {
+                    cell.likeButton.isUserInteractionEnabled = true
+                }
+            }
+        }
+    }
+    
+    func refreshRowAt(indexpath: IndexPath)
+    {
+        dispatchMain
+        {
+            self.collectionView.reloadItems(at: [indexpath])
         }
     }
 }

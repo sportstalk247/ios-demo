@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		800AA24C23FD028B00BB6C85 /* BaseCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800AA24B23FD028B00BB6C85 /* BaseCollectionViewController.swift */; };
 		800AA25123FD422900BB6C85 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 800AA25023FD422800BB6C85 /* MBProgressHUD.m */; };
+		800AA25323FE8BC800BB6C85 /* Reaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 800AA25223FE8BC800BB6C85 /* Reaction.swift */; };
 		80CFFD2923FCF2B10041452A /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CFFD2823FCF2B10041452A /* Message.swift */; };
 		80CFFD2C23FCF4E90041452A /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CFFD2B23FCF4E90041452A /* Constants.swift */; };
 		80CFFD2E23FCF5260041452A /* ChatLogViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CFFD2D23FCF5260041452A /* ChatLogViewPresenter.swift */; };
@@ -47,6 +48,7 @@
 		800AA24E23FD422700BB6C85 /* SportsTask_iOS_Sdk_Demo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SportsTask_iOS_Sdk_Demo-Bridging-Header.h"; sourceTree = "<group>"; };
 		800AA24F23FD422800BB6C85 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		800AA25023FD422800BB6C85 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		800AA25223FE8BC800BB6C85 /* Reaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reaction.swift; sourceTree = "<group>"; };
 		80CFFD2823FCF2B10041452A /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		80CFFD2B23FCF4E90041452A /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		80CFFD2D23FCF5260041452A /* ChatLogViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLogViewPresenter.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				80CFFD2823FCF2B10041452A /* Message.swift */,
 				80CFFD2F23FCF6B50041452A /* Room.swift */,
 				80DFE82323FC105000CA98F3 /* ImageCache.swift */,
+				800AA25223FE8BC800BB6C85 /* Reaction.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 				80CFFD3023FCF6B50041452A /* Room.swift in Sources */,
 				80DFE81823FBD10B00CA98F3 /* UIStackViewBase.swift in Sources */,
 				80DFE81F23FBF32600CA98F3 /* BaseViewController.swift in Sources */,
+				800AA25323FE8BC800BB6C85 /* Reaction.swift in Sources */,
 				800AA24C23FD028B00BB6C85 /* BaseCollectionViewController.swift in Sources */,
 				80DFE7EE23FBBA3300CA98F3 /* AppDelegate.swift in Sources */,
 				80DFE81423FBD10B00CA98F3 /* UISwitchBase.swift in Sources */,

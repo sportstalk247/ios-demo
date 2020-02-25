@@ -12,8 +12,8 @@ class Message: NSObject
     var customtype: String?
     var customid: String?
     var custompayload: String?
-    var replyto: String?
-    var reactions: [String]?
+    var replyto: Message?
+    var reactions: [Reaction]?
     var moderation: String?
     var active: String?
     var reports: [String]?
@@ -71,14 +71,19 @@ class Message: NSObject
             self.custompayload = custompayload
         }
         
-        if let replyto = response["replyto"] as? String
+        if let replyto = response["replyto"] as? [String: Any]
         {
-            self.replyto = replyto
+            self.replyto = Message().convertIntoModel(response: replyto)
         }
         
-        if let reactions = response["reactions"] as? [String]
+        if let reactions = response["reactions"] as? [[String: Any]]
         {
-            self.reactions = reactions
+            self.reactions = [Reaction]()
+            
+            for reaction in reactions
+            {
+                self.reactions?.append(Reaction.convertIntoModel(response: reaction))
+            }
         }
         
         if let moderation = response["moderation"] as? String

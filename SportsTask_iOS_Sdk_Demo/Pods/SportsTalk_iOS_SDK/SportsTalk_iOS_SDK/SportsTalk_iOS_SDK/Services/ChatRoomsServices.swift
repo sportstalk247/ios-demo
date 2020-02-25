@@ -490,7 +490,7 @@ public class ChatRoomsServices
         public var roomNewestEventId: String?
         public var userid: String?
         public var reaction: String?
-        public var reacted: Bool?
+        public var reacted: String?
         
         override public func from(dictionary: [AnyHashable: Any]) -> ReactToAMessageLike
         {

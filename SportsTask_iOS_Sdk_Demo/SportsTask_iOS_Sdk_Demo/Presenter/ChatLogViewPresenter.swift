@@ -6,6 +6,11 @@ protocol ChatLogView
     func refresh(_ firstTimeMakeUserToBottom: Bool)
     func startLoader()
     func stopLoader()
+    func insertRowsAtIndexes(indexpaths: [IndexPath])
+    
+    func refreshRowAt(indexpath: IndexPath)
+    
+    var isCollectionViewLoading: Bool { set get }
 }
 
 class ChatLogViewPresenter
@@ -17,6 +22,8 @@ class ChatLogViewPresenter
     var joinedRoom: Room?
     var messages = [Message]()
     var reactions = [Message]()
+    var lastEventId = ""
+    
     private var internalTimer: Timer?
     private var pollingStarted = false
     {
@@ -27,7 +34,7 @@ class ChatLogViewPresenter
                 DispatchQueue.main.async
                 {
                     guard self.internalTimer == nil else { return }
-                    self.internalTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.checkUpdates), userInfo: nil, repeats: true)
+                    self.internalTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.checkUpdates), userInfo: nil, repeats: true)
                 }
             }
             else
@@ -41,7 +48,8 @@ class ChatLogViewPresenter
     
     @objc func checkUpdates()
     {
-        self.getUpdates(show: false)
+        getUpdates(second: true)
+//        self.getUpdatesMore()
     }
     
     func gettingDismissed()
@@ -79,19 +87,19 @@ class ChatLogViewPresenter
                 {
                     self.joinedRoom = Room().convertIntoModel(response: roomResponse)
                     
-                    self.getUpdates(firstTime: true)
+                    self.getUpdates()
                     self.pollingStarted = true
                 }
             }
         }
     }
     
-    func getUpdates(show: Bool = true, firstTime: Bool = false)
+    func getUpdates(second:Bool = false)
     {
         let request = ChatRoomsServices.GetUpdates()
         request.roomId = roomId
                 
-        if show
+        if !second
         {
             view.startLoader()
         }
@@ -99,20 +107,65 @@ class ChatLogViewPresenter
         services.ams.chatRoomsServices(request) { (response) in
             if let responseMessages = response["data"] as? [[String: Any]]
             {
-                self.messages.removeAll()
-                
-                if show
-                {
-                    self.view.stopLoader()
+                DispatchQueue.main.async
+                    {
+                        self.messages = [Message]()
+                        self.reactions = [Message]()
+                        self.view.stopLoader()
+                        
+                        for responseMessage in responseMessages
+                        {
+                            let message = Message().convertIntoModel(response: responseMessage)
+                            
+                            self.lastEventId = message.id ?? ""
+                            
+                            if message.eventtype == "speech"
+                            {
+                                self.messages.append(message)
+                            }
+                            else if message.eventtype == "reaction"
+                            {
+                                self.reactions.append(message)
+                            }
+                        }
+                        
+                        if second
+                        {
+                            self.view.refresh(false)
+                        }
+                        else
+                        {
+                            self.view.refresh(true)
+                        }
                 }
+            }
+        }
+    }
+    
+    func getUpdatesMore()
+    {
+        let request = ChatRoomsServices.GetUpdatesMore()
+        request.roomIdOrLabel = roomId
+        request.eventid = self.lastEventId
+        
+        services.ams.chatRoomsServices(request) { (response) in
+            if let responseMessages = response["data"] as? [[String: Any]]
+            {
+                var indexPaths = [IndexPath]()
+                var countToStartWith = self.messages.count
                 
                 for responseMessage in responseMessages
                 {
                     let message = Message().convertIntoModel(response: responseMessage)
                     
+                    self.lastEventId = message.id ?? ""
+                    
                     if message.eventtype == "speech"
                     {
                         self.messages.append(message)
+                        
+                        indexPaths.append(IndexPath(item: countToStartWith, section: 0))
+                        countToStartWith = countToStartWith + 1
                     }
                     else if message.eventtype == "reaction"
                     {
@@ -120,12 +173,17 @@ class ChatLogViewPresenter
                     }
                 }
                 
-                self.view.refresh(firstTime)
+                if indexPaths.count > 0
+                {
+                    self.view.insertRowsAtIndexes(indexpaths: indexPaths)
+                }
             }
         }
     }
     
-    func sendMessage(message: String)
+    public typealias completion = () -> Void
+
+    func sendMessage(message: String, completionHandler: @escaping completion)
     {
         let request = ChatRoomsServices.ExecuteChatCommand()
         request.roomId = roomId
@@ -133,10 +191,41 @@ class ChatLogViewPresenter
         request.userid = selectedUser?.userid
 
         view.startLoader()
-        services.ams.chatRoomsServices(request) { _ in
+        services.ams.chatRoomsServices(request) { response in
             self.view.stopLoader()
             self.getUpdates()
+            completionHandler()
         }
+    }
+    
+    func likeButtonPress(index: Int, completionHandler: @escaping completion)
+    {
+        let request = ChatRoomsServices.ReactToAMessageLike()
+        request.roomId = roomId
+        request.roomNewestEventId = messages[index].id
+        request.userid = selectedUser?.userid
+        request.reaction = "like"
+        request.reacted = "true"
+        
+        services.ams.chatRoomsServices(request) { (response) in
+            self.getUpdates(second: true)
+            completionHandler()
+        }
+    }
+    
+    func likeCount(message:Message) -> Int
+    {
+        var count = 0
+        
+        for reaction in (message.reactions ?? [Reaction]())
+        {
+            if reaction.type == "like"
+            {
+                count = count + (reaction.count ?? 0)
+            }
+        }
+        
+        return count
     }
 }
 
