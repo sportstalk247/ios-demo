@@ -1,0 +1,22 @@
+PODS:
+  - SportsTalk_iOS_SDK (0.0.1)
+
+DEPENDENCIES:
+  - SportsTalk_iOS_SDK (from `https://gitlab.com/sportstalk247/sdk-ios-swift.git`, branch `podspec`)
+
+EXTERNAL SOURCES:
+  SportsTalk_iOS_SDK:
+    :branch: podspec
+    :git: https://gitlab.com/sportstalk247/sdk-ios-swift.git
+
+CHECKOUT OPTIONS:
+  SportsTalk_iOS_SDK:
+    :commit: b93a8bea85e48db4f503bc2bdc9ad8471665f6ef
+    :git: https://gitlab.com/sportstalk247/sdk-ios-swift.git
+
+SPEC CHECKSUMS:
+  SportsTalk_iOS_SDK: 85c7a883b8458b0eca53f927ab6d648b238fdeb1
+
+PODFILE CHECKSUM: 9298a88b864282e8b082526d3ad25110a3861759
+
+COCOAPODS: 1.7.5
