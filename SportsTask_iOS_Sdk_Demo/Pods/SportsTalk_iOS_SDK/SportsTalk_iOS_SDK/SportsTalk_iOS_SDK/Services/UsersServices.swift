@@ -47,6 +47,34 @@ public class UsersServices
         }
     }
     
+    public class DeleteUser: ParametersBase<DeleteUser.Fields,DeleteUser>
+    {
+        public enum Fields
+        {
+            case userid
+        }
+        public var userid: String?
+        
+        override func from(dictionary: [AnyHashable : Any]) -> UsersServices.DeleteUser
+        {
+            set(dictionary: dictionary)
+            let ret = DeleteUser()
+            
+            ret.userid = value(forKey: .userid)
+            
+            return ret
+        }
+        
+        public func toDictionary() -> [AnyHashable : Any]
+        {
+            toDictionary = [AnyHashable: Any]()
+            addRequired(key: .userid, value: userid)
+            
+            return toDictionary
+        }
+        
+    }
+    
     public class GetUserDetails: ParametersBase<GetUserDetails.Fields, GetUserDetails>
     {
         public enum Fields
@@ -142,6 +170,73 @@ public class UsersServices
         }
     }
     
+    public class BanUser: ParametersBase<BanUser.Fields, BanUser>
+    {
+        public enum Fields
+        {
+            case userid
+            case banned
+        }
+
+        public var userid: String?
+        
+        override public func from(dictionary: [AnyHashable: Any]) -> BanUser
+        {
+            set(dictionary: dictionary)
+            let ret = BanUser()
+
+            ret.userid = value(forKey: .userid)
+         
+            return ret
+        }
+
+        public func toDictionary() -> [AnyHashable: Any]
+        {
+            toDictionary = [AnyHashable: Any]()
+
+            add(key: .userid, value: userid)
+            add(key: .banned, value: true)
+            
+            addRequired(key: .userid, value: userid)
+            
+            return toDictionary
+        }
+    }
+    
+    public class RestoreUser: ParametersBase<RestoreUser.Fields, RestoreUser>
+    {
+        public enum Fields
+        {
+            case userid
+            case banned
+        }
+
+        public var userid: String?
+    
+        override public func from(dictionary: [AnyHashable: Any]) -> RestoreUser
+        {
+            set(dictionary: dictionary)
+            let ret = RestoreUser()
+
+            ret.userid = value(forKey: .userid)
+         
+            return ret
+        }
+
+        public func toDictionary() -> [AnyHashable: Any]
+        {
+            toDictionary = [AnyHashable: Any]()
+
+            add(key: .userid, value: userid)
+            add(key: .banned, value: false)
+            
+            addRequired(key: .userid, value: userid)
+            
+            return toDictionary
+        }
+    }
+    
+    
     public class ListMessagesByUser: ParametersBase<ListMessagesByUser.Fields, ListMessagesByUser>
     {
         public enum Fields
@@ -195,7 +290,7 @@ public class UsersServices
         public var limit:String?
         public var name:String?
         public var handle:String?
-        public var userId:String?
+        public var userid:String?
 
         override public func from(dictionary: [AnyHashable: Any]) -> SearchUsersByHandle
         {
@@ -206,7 +301,7 @@ public class UsersServices
             ret.limit = value(forKey: .limit)
             ret.name = value(forKey: .name)
             ret.handle = value(forKey: .handle)
-            ret.userId = value(forKey: .userid)
+            ret.userid = value(forKey: .userid)
 
             return ret
         }
@@ -218,9 +313,8 @@ public class UsersServices
             add(key: .cursor, value: cursor)
             add(key: .limit, value: limit)
             add(key: .name, value: name)
+            add(key: .userid, value: userid)
             addRequired(key: .handle, value: handle)
-            add(key: .userid, value: userId)
-            
             return toDictionary
         }
     }

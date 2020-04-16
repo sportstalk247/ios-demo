@@ -4,8 +4,8 @@ import SportsTalk_iOS_SDK
 protocol UserListingView
 {
     func refresh()
-    func startLoader()
-    func stopLoader()
+//    func startLoader()
+//    func stopLoader()
 }
 
 class UserListingViewPresenter
@@ -31,7 +31,7 @@ class UserListingViewPresenter
         if index == userIds.count
         {
             view.refresh()
-            view.stopLoader()
+            CommonUttilities.shared.hideLoader()
             
             return
         }
@@ -39,7 +39,7 @@ class UserListingViewPresenter
         let request = UsersServices.GetUserDetails()
         request.userid = userIds[index]
         
-        view.startLoader()
+        CommonUttilities.shared.showLoader()
         
         services.ams.usersServices(request) { (response) in
             if let response = response["data"] as? [String: Any]

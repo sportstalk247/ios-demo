@@ -3,8 +3,7 @@ import UIKit
 class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout
 {
     let cellId = "cellId"
-    var loader = MBProgressHUD()
-
+   
     private var presenter: ChatLogViewPresenter!
         
     lazy var inputTextFields: UITextField = {
@@ -293,8 +292,6 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
         seperatorLineView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
         seperatorLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
-        self.loader = MBProgressHUD(view: self.view)
-        self.view.addSubview(self.loader)
     }
     
     @objc func handleSend()
@@ -302,7 +299,6 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
         if inputTextFields.text != ""
         {
             sendButton.isUserInteractionEnabled = false
-//            presenter.sendMessage(message: inputTextFields.text ?? "")
             presenter.sendMessage(message: inputTextFields.text ?? "") {
                 self.dispatchMain
                 {
@@ -348,38 +344,15 @@ extension ChatLogViewController: ChatLogView
     
     func refresh(_ firstTimeMakeUserToBottom: Bool = false)
     {
-        dispatchMain
-        {
-//            self._isCollectionViewLoading = true
-//            self.collectionView.performBatchUpdates({
+        dispatchMain{
                 self.collectionView.reloadData()
-//            }) { (finish) in
-//                self._isCollectionViewLoading = false
-//            }
-            
             if firstTimeMakeUserToBottom
             {
                 self.moveCollectionvieToEnd()
             }
         }
     }
-    
-    func startLoader()
-    {
-        dispatchMain
-        {
-            self.loader.show(animated: true)
-        }
-    }
-    
-    func stopLoader()
-    {
-        dispatchMain
-        {
-            self.loader.hide(animated: true)
-        }
-    }
-    
+
     func insertRowsAtIndexes(indexpaths: [IndexPath])
     {
         dispatchMain

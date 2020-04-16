@@ -222,10 +222,12 @@ public class ModerationServices
         {
             case chatRoomId
             case chatMessageId
+            case approve
         }
         
         public var chatRoomId: String?
         public var chatMessageId: String?
+        public var approve: Bool?  = true
         
         override public func from(dictionary: [AnyHashable: Any]) -> ApproveMessage
         {
@@ -234,14 +236,14 @@ public class ModerationServices
             
             ret.chatRoomId = value(forKey: .chatRoomId)
             ret.chatMessageId = value(forKey: .chatMessageId)
-            
+            ret.approve = value(forKey: .approve)
             return ret
         }
         
         public func toDictionary() -> [AnyHashable: Any]
         {
             toDictionary = [AnyHashable: Any]()
-            
+            add(key: .approve, value: approve)
             addRequired(key: .chatRoomId, value: chatRoomId)
             addRequired(key: .chatMessageId, value: chatMessageId)
             

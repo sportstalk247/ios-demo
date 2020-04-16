@@ -5,26 +5,11 @@ class BaseViewController: UIViewController
 {
     private let appDelegate = UIApplication.shared.delegate as! AppDelegate
     lazy var services = appDelegate.services
-    
+
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
         view.backgroundColor = .white
-        
-//        setupLoader()
-    }
-    
-    func setupLoader()
-    {
-        dispatchMain
-        {
-//            self.loader = MBProgressHUD(view: self.view)
-//            self.view.addSubview(self.loader)
-//            self.view.bringSubviewToFront(self.loader)
-//            self.loader.show(animated: true)
-//            self.loader.isHidden = true
-        }
     }
     
     func close()
@@ -79,21 +64,5 @@ class BaseViewController: UIViewController
             self.present(alert, animated: true, completion: nil)
         }
     }
-    
-//    func startLoader()
-//    {
-//        dispatchMain
-//        {
-//            self.loader.isHidden = false
-//        }
-//    }
-//    
-//    func stopLoader()
-//    {
-//        dispatchMain
-//        {
-//            self.loader.isHidden = true
-//        }
-//    }
 }
 

@@ -39,6 +39,18 @@
 		80DFE82923FC1B9700CA98F3 /* ChatLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80DFE82823FC1B9700CA98F3 /* ChatLogViewController.swift */; };
 		80DFE82B23FC1BE200CA98F3 /* ChatMesageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80DFE82A23FC1BE200CA98F3 /* ChatMesageCell.swift */; };
 		80DFE82E23FC1CB000CA98F3 /* UIColorUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80DFE82D23FC1CB000CA98F3 /* UIColorUtil.swift */; };
+		8405736A2446BC3D0059E208 /* CommentConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840573692446BC3D0059E208 /* CommentConversation.swift */; };
+		842C7C9A24471CE300D7CF40 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 842C7C9924471CE300D7CF40 /* Extensions.swift */; };
+		844117352445C9D2002A5A19 /* DecisionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844117342445C9D2002A5A19 /* DecisionViewController.swift */; };
+		844117372445CD2A002A5A19 /* CommentConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844117362445CD2A002A5A19 /* CommentConversationsViewController.swift */; };
+		844117392445CF93002A5A19 /* CommentConversationsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844117382445CF93002A5A19 /* CommentConversationsViewPresenter.swift */; };
+		8441173B2445DDA3002A5A19 /* CommentConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8441173A2445DDA3002A5A19 /* CommentConversationCell.swift */; };
+		8444C98C2446D9E9005A9AB5 /* CommentsViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8444C98B2446D9E9005A9AB5 /* CommentsViewPresenter.swift */; };
+		8444C98E2446E220005A9AB5 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8444C98D2446E220005A9AB5 /* Comment.swift */; };
+		8444C9902446E34B005A9AB5 /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8444C98F2446E34B005A9AB5 /* Report.swift */; };
+		8444C9922446EF29005A9AB5 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8444C9912446EF29005A9AB5 /* CommentCell.swift */; };
+		844C83332446D3C90092E72E /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C83322446D3C90092E72E /* CommentsViewController.swift */; };
+		84F38846244861BE002D8E78 /* CommonUttilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F38845244861BE002D8E78 /* CommonUttilities.swift */; };
 		941ED212ABAED9CA7B09CEEE /* Pods_SportsTask_iOS_Sdk_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7063EC0CEA4C1035554182 /* Pods_SportsTask_iOS_Sdk_Demo.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +92,18 @@
 		80DFE82823FC1B9700CA98F3 /* ChatLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogViewController.swift; sourceTree = "<group>"; };
 		80DFE82A23FC1BE200CA98F3 /* ChatMesageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMesageCell.swift; sourceTree = "<group>"; };
 		80DFE82D23FC1CB000CA98F3 /* UIColorUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorUtil.swift; sourceTree = "<group>"; };
+		840573692446BC3D0059E208 /* CommentConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentConversation.swift; sourceTree = "<group>"; };
+		842C7C9924471CE300D7CF40 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		844117342445C9D2002A5A19 /* DecisionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecisionViewController.swift; sourceTree = "<group>"; };
+		844117362445CD2A002A5A19 /* CommentConversationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentConversationsViewController.swift; sourceTree = "<group>"; };
+		844117382445CF93002A5A19 /* CommentConversationsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentConversationsViewPresenter.swift; sourceTree = "<group>"; };
+		8441173A2445DDA3002A5A19 /* CommentConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentConversationCell.swift; sourceTree = "<group>"; };
+		8444C98B2446D9E9005A9AB5 /* CommentsViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewPresenter.swift; sourceTree = "<group>"; };
+		8444C98D2446E220005A9AB5 /* Comment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
+		8444C98F2446E34B005A9AB5 /* Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Report.swift; sourceTree = "<group>"; };
+		8444C9912446EF29005A9AB5 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
+		844C83322446D3C90092E72E /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
+		84F38845244861BE002D8E78 /* CommonUttilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonUttilities.swift; sourceTree = "<group>"; };
 		DA7063EC0CEA4C1035554182 /* Pods_SportsTask_iOS_Sdk_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SportsTask_iOS_Sdk_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB4956C6A7852E4BFDA748D2 /* Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig"; path = "Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -127,6 +151,8 @@
 			isa = PBXGroup;
 			children = (
 				80CFFD2B23FCF4E90041452A /* Constants.swift */,
+				842C7C9924471CE300D7CF40 /* Extensions.swift */,
+				84F38845244861BE002D8E78 /* CommonUttilities.swift */,
 			);
 			path = "Supporting files";
 			sourceTree = "<group>";
@@ -135,6 +161,8 @@
 			isa = PBXGroup;
 			children = (
 				80DFE82A23FC1BE200CA98F3 /* ChatMesageCell.swift */,
+				8441173A2445DDA3002A5A19 /* CommentConversationCell.swift */,
+				8444C9912446EF29005A9AB5 /* CommentCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -204,6 +232,9 @@
 				80CFFD2F23FCF6B50041452A /* Room.swift */,
 				80DFE82323FC105000CA98F3 /* ImageCache.swift */,
 				800AA25223FE8BC800BB6C85 /* Reaction.swift */,
+				840573692446BC3D0059E208 /* CommentConversation.swift */,
+				8444C98D2446E220005A9AB5 /* Comment.swift */,
+				8444C98F2446E34B005A9AB5 /* Report.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -215,6 +246,9 @@
 				800AA24B23FD028B00BB6C85 /* BaseCollectionViewController.swift */,
 				80DFE80123FBC99800CA98F3 /* UserListingViewController.swift */,
 				80DFE82823FC1B9700CA98F3 /* ChatLogViewController.swift */,
+				844117342445C9D2002A5A19 /* DecisionViewController.swift */,
+				844117362445CD2A002A5A19 /* CommentConversationsViewController.swift */,
+				844C83322446D3C90092E72E /* CommentsViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -224,6 +258,8 @@
 			children = (
 				80DFE80423FBD04300CA98F3 /* UserListingViewPresenter.swift */,
 				80CFFD2D23FCF5260041452A /* ChatLogViewPresenter.swift */,
+				844117382445CF93002A5A19 /* CommentConversationsViewPresenter.swift */,
+				8444C98B2446D9E9005A9AB5 /* CommentsViewPresenter.swift */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -256,7 +292,7 @@
 				80DFE7E623FBBA3300CA98F3 /* Sources */,
 				80DFE7E723FBBA3300CA98F3 /* Frameworks */,
 				80DFE7E823FBBA3300CA98F3 /* Resources */,
-				F73E95375BA70556CB7730A5 /* [CP] Embed Pods Frameworks */,
+				013B630709D827E273F6D72C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -315,6 +351,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		013B630709D827E273F6D72C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		14E7EA2B478E9E9F89B6BD51 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -337,23 +390,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F73E95375BA70556CB7730A5 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -361,35 +397,47 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8405736A2446BC3D0059E208 /* CommentConversation.swift in Sources */,
 				80DFE82923FC1B9700CA98F3 /* ChatLogViewController.swift in Sources */,
 				80CFFD2E23FCF5260041452A /* ChatLogViewPresenter.swift in Sources */,
 				80DFE81B23FBD10B00CA98F3 /* UITableViewCellBase.swift in Sources */,
 				80DFE81123FBD10B00CA98F3 /* UIActivityIndicatorViewBase.swift in Sources */,
 				80DFE81A23FBD10B00CA98F3 /* UIButtonBase.swift in Sources */,
 				80DFE81223FBD10B00CA98F3 /* UIViewExtensions.swift in Sources */,
+				84F38846244861BE002D8E78 /* CommonUttilities.swift in Sources */,
 				80CFFD3023FCF6B50041452A /* Room.swift in Sources */,
 				80DFE81823FBD10B00CA98F3 /* UIStackViewBase.swift in Sources */,
+				8444C9902446E34B005A9AB5 /* Report.swift in Sources */,
 				80DFE81F23FBF32600CA98F3 /* BaseViewController.swift in Sources */,
 				800AA25323FE8BC800BB6C85 /* Reaction.swift in Sources */,
+				844117352445C9D2002A5A19 /* DecisionViewController.swift in Sources */,
 				800AA24C23FD028B00BB6C85 /* BaseCollectionViewController.swift in Sources */,
 				80DFE7EE23FBBA3300CA98F3 /* AppDelegate.swift in Sources */,
 				80DFE81423FBD10B00CA98F3 /* UISwitchBase.swift in Sources */,
 				80DFE80223FBC99800CA98F3 /* UserListingViewController.swift in Sources */,
+				8441173B2445DDA3002A5A19 /* CommentConversationCell.swift in Sources */,
+				844117392445CF93002A5A19 /* CommentConversationsViewPresenter.swift in Sources */,
 				80DFE82423FC105000CA98F3 /* ImageCache.swift in Sources */,
 				80DFE81623FBD10B00CA98F3 /* UIViewBase.swift in Sources */,
+				8444C98E2446E220005A9AB5 /* Comment.swift in Sources */,
 				80DFE81323FBD10B00CA98F3 /* UILabelBase.swift in Sources */,
 				80DFE81723FBD10B00CA98F3 /* UITableViewBase.swift in Sources */,
 				80DFE81923FBD10B00CA98F3 /* UITextFieldBase.swift in Sources */,
+				844C83332446D3C90092E72E /* CommentsViewController.swift in Sources */,
+				8444C9922446EF29005A9AB5 /* CommentCell.swift in Sources */,
 				80DFE80523FBD04300CA98F3 /* UserListingViewPresenter.swift in Sources */,
 				80DFE81523FBD10B00CA98F3 /* UITextViewBase.swift in Sources */,
 				80CFFD2923FCF2B10041452A /* Message.swift in Sources */,
+				844117372445CD2A002A5A19 /* CommentConversationsViewController.swift in Sources */,
 				80DFE82B23FC1BE200CA98F3 /* ChatMesageCell.swift in Sources */,
 				80DFE7F023FBBA3300CA98F3 /* SceneDelegate.swift in Sources */,
 				80DFE81D23FBDFFA00CA98F3 /* UIImageViewBase.swift in Sources */,
 				80DFE82223FC08C800CA98F3 /* User.swift in Sources */,
+				842C7C9A24471CE300D7CF40 /* Extensions.swift in Sources */,
 				80DFE82E23FC1CB000CA98F3 /* UIColorUtil.swift in Sources */,
 				80CFFD2C23FCF4E90041452A /* Constants.swift in Sources */,
 				800AA25123FD422900BB6C85 /* MBProgressHUD.m in Sources */,
+				8444C98C2446D9E9005A9AB5 /* CommentsViewPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
