@@ -6,7 +6,6 @@ class UserListingViewController: BaseViewController
     
     private var tableView: UITableViewBase!
     private var presenter: UserListingViewPresenter!
-    var loader = MBProgressHUD()
     
     override func viewDidLoad()
     {
@@ -42,14 +41,11 @@ class UserListingViewController: BaseViewController
             $0.dataSource = self
             view.addSubview($0)
         }
-        
-        self.loader = MBProgressHUD(view: self.view)
-        self.view.addSubview(self.loader)
     }
     
     func setupConstraints()
     {
-        _ = tableView.safeAnchorConstraints(left: view.safeAreaLayoutGuide.leftAnchor, top: view.safeAreaLayoutGuide.topAnchor, right: view.safeAreaLayoutGuide.rightAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor)
+        tableView.safeAnchorConstraints(left: view.safeAreaLayoutGuide.leftAnchor, top: view.safeAreaLayoutGuide.topAnchor, right: view.safeAreaLayoutGuide.rightAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor)
     }
 }
 
@@ -88,24 +84,7 @@ extension UserListingViewController: UITableViewDelegate, UITableViewDataSource
     }
 }
 
-extension UserListingViewController: UserListingView
-{
-    func startLoader()
-    {
-        dispatchMain
-        {
-            self.loader.show(animated: true)
-        }
-    }
-    
-    func stopLoader()
-    {
-        dispatchMain
-        {
-            self.loader.hide(animated: true)
-        }
-    }
-    
+extension UserListingViewController: UserListingView{
     func refresh()
     {
         dispatchMain
@@ -146,19 +125,21 @@ extension UserListingViewController
             self.presenter = presenter
             
             let user = presenter.users[indexPath.row]
-            let imageurl = user.getUrlString() 
-            
-            self.userImage.loadImageUsingCacheWithUrlString(urlString: imageurl)
+            if let picture = user.pictureurl, !picture.isEmpty{
+                self.userImage.loadImageUsingCacheWithUrlString(urlString: picture)
+            }else{
+                let imageurl = user.getUrlString()
+                self.userImage.loadImageUsingCacheWithUrlString(urlString: imageurl)
+            }
             self.userNameLabel.text = user.handle
         }
 
         private func setupConstraints()
         {
-            _ = userImage?.anchorConstraints(left: contentView.layoutMarginsGuide.leftAnchor)
-            _ = userImage.alignCenterConstraints(centerY: contentView.layoutMarginsGuide.centerYAnchor)
-            _ = userImage?.sizeConstraints(height: imageSize, width: imageSize)
-            
-            _ = userNameLabel.anchorConstraints(left: userImage.rightAnchor, leftConstant: labelLeftSpace, top: userImage.topAnchor, right: contentView.layoutMarginsGuide.rightAnchor, bottom: userImage.bottomAnchor)
+            userImage?.anchorConstraints(left: contentView.layoutMarginsGuide.leftAnchor)
+            userImage.alignCenterConstraints(centerY: contentView.layoutMarginsGuide.centerYAnchor)
+            userImage?.sizeConstraints(height: imageSize, width: imageSize)
+            userNameLabel.anchorConstraints(left: userImage.rightAnchor, leftConstant: labelLeftSpace, top: userImage.topAnchor, right: contentView.layoutMarginsGuide.rightAnchor, bottom: userImage.bottomAnchor)
         }
 
         private func setupControls()

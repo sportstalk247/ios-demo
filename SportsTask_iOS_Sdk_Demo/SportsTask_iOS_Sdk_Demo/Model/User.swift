@@ -56,20 +56,8 @@ class User: NSObject
         return self
     }
     
-    func getUrlString() -> String
-    {
-        switch self.handle
-        {
-        case "Aldo4":
-            return "https://res.cloudinary.com/sportstalk247/image/upload/w_50,c_fill,ar_1:1,g_auto,r_max,b_rgb:262c35/v1576069052/download_t7mxzj.jpg"
-        case "Sarah":
-            return "https://res.cloudinary.com/sportstalk247/image/upload/w_50,c_fill,ar_1:1,g_auto,r_max,b_rgb:262c35/v1576068877/sarah_fdwvm7.jpg"
-            
-        case "AnthonieL":
-            return "https://res.cloudinary.com/sportstalk247/image/upload/w_50,c_fill,ar_1:1,g_auto,r_max,b_rgb:262c35/v1576068910/tony_gkg2sv.jpg"
-        default:
-            return ""
-        }
+    func getUrlString() -> String{
+       return pictureurl ?? ""
     }
 }
 

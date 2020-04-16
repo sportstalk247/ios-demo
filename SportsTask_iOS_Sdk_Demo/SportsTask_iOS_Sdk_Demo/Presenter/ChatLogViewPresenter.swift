@@ -4,8 +4,6 @@ import SportsTalk_iOS_SDK
 protocol ChatLogView
 {
     func refresh(_ firstTimeMakeUserToBottom: Bool)
-    func startLoader()
-    func stopLoader()
     func insertRowsAtIndexes(indexpaths: [IndexPath])
     
     func refreshRowAt(indexpath: IndexPath)
@@ -76,12 +74,12 @@ class ChatLogViewPresenter
         request.roomid = roomId
         request.userid = user.userid
         
-        view.startLoader()
+        CommonUttilities.shared.showLoader()
         
         services.ams.chatRoomsServices(request) { (response) in
             if let response = response["data"] as? [String: Any]
             {
-                self.view.stopLoader()
+                CommonUttilities.shared.hideLoader()
                 
                 if let roomResponse = response["room"] as? [String: Any]
                 {
@@ -101,7 +99,7 @@ class ChatLogViewPresenter
                 
         if !second
         {
-            view.startLoader()
+            CommonUttilities.shared.showLoader()
         }
         
         services.ams.chatRoomsServices(request) { (response) in
@@ -111,7 +109,7 @@ class ChatLogViewPresenter
                     {
                         self.messages = [Message]()
                         self.reactions = [Message]()
-                        self.view.stopLoader()
+                        CommonUttilities.shared.hideLoader()
                         
                         for responseMessage in responseMessages
                         {
@@ -190,9 +188,9 @@ class ChatLogViewPresenter
         request.command = message
         request.userid = selectedUser?.userid
 
-        view.startLoader()
+        CommonUttilities.shared.showLoader()
         services.ams.chatRoomsServices(request) { response in
-            self.view.stopLoader()
+            CommonUttilities.shared.hideLoader()
             self.getUpdates()
             completionHandler()
         }

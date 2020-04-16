@@ -2,6 +2,158 @@ import Foundation
 
 public class ChatRoomsServices
 {
+    
+    public class CreateRoomPostmoderated: ParametersBase<CreateRoomPostmoderated.Fields, CreateRoomPostmoderated>
+       {
+           public enum Fields
+           {
+               case slug
+               case userid
+               case name
+               case description
+               case moderation
+               case enableactions
+               case enableenterandexit
+               case roomisopen
+               case maxreports
+           }
+
+           public var slug: String?
+           public var userid: String?
+           public var name: String?
+           public var description: String?
+           public var enableactions: Bool?
+           public var enableenterandexit: Bool?
+           public var roomisopen: Bool?
+           public var maxreports: Int? = 3
+
+           override public func from(dictionary: [AnyHashable: Any]) -> CreateRoomPostmoderated
+           {
+                set(dictionary: dictionary)
+                let ret = CreateRoomPostmoderated()
+                
+                ret.slug = value(forKey: .slug)
+                ret.userid = value(forKey: .userid)
+                ret.name = value(forKey: .name)
+                ret.description = value(forKey: .description)
+                ret.enableactions = value(forKey: .enableactions)
+                ret.enableenterandexit = value(forKey: .enableenterandexit)
+                ret.roomisopen = value(forKey: .roomisopen)
+                ret.maxreports = value(forKey: .maxreports)
+
+               return ret
+           }
+
+           public func toDictionary() -> [AnyHashable: Any]
+           {
+                toDictionary = [AnyHashable: Any]()
+                
+                addRequired(key: .name, value: name)
+                
+                add(key: .slug, value: slug)
+                add(key: .userid, value: userid)
+                add(key: .name, value: name)
+                add(key: .description, value: description)
+                add(key: .moderation, value: "post")
+                add(key: .enableactions, value: enableactions)
+                add(key: .enableenterandexit, value: enableenterandexit)
+                add(key: .roomisopen, value: roomisopen)
+                add(key: .maxreports, value: maxreports)
+
+               return toDictionary
+           }
+    }
+    
+
+    public class CreateRoomPremoderated: ParametersBase<CreateRoomPremoderated.Fields, CreateRoomPremoderated>
+       {
+           public enum Fields
+           {
+               case slug
+               case userid
+               case name
+               case description
+               case moderation
+               case enableactions
+               case enableenterandexit
+               case roomisopen
+           }
+
+           public var slug: String?
+           public var userid: String?
+           public var name: String?
+           public var description: String?
+           public var enableactions: Bool?
+           public var enableenterandexit: Bool?
+           public var roomisopen: Bool?
+         
+           override public func from(dictionary: [AnyHashable: Any]) -> CreateRoomPremoderated
+           {
+                set(dictionary: dictionary)
+                let ret = CreateRoomPremoderated()
+                
+                ret.slug = value(forKey: .slug)
+                ret.userid = value(forKey: .userid)
+                ret.name = value(forKey: .name)
+                ret.description = value(forKey: .description)
+                ret.enableactions = value(forKey: .enableactions)
+                ret.enableenterandexit = value(forKey: .enableenterandexit)
+                ret.roomisopen = value(forKey: .roomisopen)
+
+               return ret
+           }
+
+           public func toDictionary() -> [AnyHashable: Any]
+           {
+                toDictionary = [AnyHashable: Any]()
+                
+                addRequired(key: .name, value: name)
+                
+                add(key: .slug, value: slug)
+                add(key: .userid, value: userid)
+                add(key: .name, value: name)
+                add(key: .description, value: description)
+                add(key: .moderation, value: "pre")
+                add(key: .enableactions, value: enableactions)
+                add(key: .enableenterandexit, value: enableenterandexit)
+                add(key: .roomisopen, value: roomisopen)
+
+               return toDictionary
+           }
+    }
+    
+    public class DeleteRoom: ParametersBase<DeleteRoom.Fields, DeleteRoom>
+       {
+           public enum Fields
+           {
+               case roomid
+           }
+
+           public var roomid: String?
+
+           override public func from(dictionary: [AnyHashable: Any]) -> DeleteRoom
+           {
+               set(dictionary: dictionary)
+               let ret = DeleteRoom()
+
+               ret.roomid = value(forKey: .roomid)
+    
+               return ret
+           }
+
+           public func toDictionary() -> [AnyHashable: Any]
+           {
+               toDictionary = [AnyHashable: Any]()
+
+               add(key: .roomid, value: roomid)
+               
+            addRequired(key: .roomid, value: roomid)
+            
+               return toDictionary
+           }
+       }
+    
+    
     public class CreateRoom: ParametersBase<CreateRoom.Fields, CreateRoom>
     {
         public enum Fields
@@ -133,7 +285,7 @@ public class ChatRoomsServices
             
             return ret
         }
-
+    
         public func toDictionary() -> [AnyHashable: Any]
         {
             toDictionary = [AnyHashable: Any]()
@@ -261,7 +413,7 @@ public class ChatRoomsServices
             let ret = JoinRoomAnonymousUser()
 
             ret.roomid = value(forKey: .roomid)
-
+            
             return ret
         }
 
@@ -490,7 +642,7 @@ public class ChatRoomsServices
         public var roomNewestEventId: String?
         public var userid: String?
         public var reaction: String?
-        public var reacted: String?
+        public var reacted: String? = "true"
         
         override public func from(dictionary: [AnyHashable: Any]) -> ReactToAMessageLike
         {

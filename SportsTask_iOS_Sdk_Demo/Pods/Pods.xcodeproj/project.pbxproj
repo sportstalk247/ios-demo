@@ -3,25 +3,26 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D82821CB8D2A1E64A1CEE31730E7A32 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C7F8717C03B6E1A1B482074C09C1C5 /* Services.swift */; };
+		13D0B8D7869B062BF8FF651F7F785DA2 /* CommentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCBE1ED47CC19E8B8EABC023A023E700 /* CommentsService.swift */; };
 		1ECC77A1C9EE0D5DA898941463468628 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
-		4CBEA6CEDA74FEEB1E61610C10E4BD3B /* ParametersBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F066F67912F7FC20D11FFC9CA637A32 /* ParametersBase.swift */; };
-		51E8A52F5FFC6F3C262A98D7B25B9142 /* SportsTalk_iOS_SDK-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5E48B876CE2BC8CCDF05CC20F7C46572 /* SportsTalk_iOS_SDK-dummy.m */; };
-		63E7757DB68DC3F9CE3D4D55AFA1FC2E /* SportsTalk_iOS_SDK-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7B8031EC2D5837BBF0020530FD03C270 /* SportsTalk_iOS_SDK-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		783EB82F6C5ABA471560E8CDE37C1D73 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFD5F36C46A4FF91FB7C65A30F8B72EB /* AppConstants.swift */; };
-		9794F9EAEEA5E8CA9A185B709CC598FD /* UsersServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B059612E1958428C54210FE7FBC5AB /* UsersServices.swift */; };
-		9DA1594CB9CE368B49C7FC2E29E93A4E /* ChatRoomsServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB5CC7B880D8698661275F666A21EF3 /* ChatRoomsServices.swift */; };
-		A61FC08CDB2707D328B1030C77BC6A71 /* ServicesBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0335966A68A93631BDDEB53254C7F0E8 /* ServicesBase.swift */; };
-		C2FDAB167F6C1875580BC4BDE35CD172 /* WebhooksServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4378E20170F3DB044DBE903C43D8FCDF /* WebhooksServices.swift */; };
+		236FA2EC07FABE13B71E910A110AE58B /* ServicesAMS.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70B66C16EED48E698DEE8A6085F3503 /* ServicesAMS.swift */; };
+		2C2F2036E03803E5B43128F784443312 /* ModerationServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC0AB7E9A81930F0B1A1FA2A22A9AF5 /* ModerationServices.swift */; };
+		3C3DFC464B703A2A452779DBCCFFFFAA /* ParametersBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A605DD961F90FAE35D3C2A193403AEA /* ParametersBase.swift */; };
+		479175FDCEEF9D7DC5BD461376636AF8 /* SportsTalk_iOS_SDK-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = A68C683F3A7BBA8AEFFE9F0350DD0169 /* SportsTalk_iOS_SDK-dummy.m */; };
+		6254B6C465174268657CC4173A0C1C36 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F690C988C55F63C17425E1CCEF20931 /* Services.swift */; };
+		832BE8A6512301169667B7F25D794430 /* SportsTalk_iOS_SDK-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E13A15D4EADC2A830DE050670EB0C24E /* SportsTalk_iOS_SDK-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9C71C0FF8DF66EE75A09C95F58FEB1EB /* UsersServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF7FED61084D53C7867F59E920F4B0B8 /* UsersServices.swift */; };
+		A3EE82924ECA831A3DE7C7AE7C5E8C2C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
+		B716CD55F0E28B0B9A32D444282AA5DF /* ChatRoomsServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFCEFA1951C1C808B9E0D89DBB1E4454 /* ChatRoomsServices.swift */; };
+		C19463E9849BEC98FB754944818762D1 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53AC4F06B6B79B17213BB14ED38641EB /* AppConstants.swift */; };
 		C596384DC5BC3454093081BB72EF8F08 /* Pods-SportsTask_iOS_Sdk_Demo-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0CE8FDAAE48240A527390D501BB0E6F4 /* Pods-SportsTask_iOS_Sdk_Demo-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D024B297998EB6B94F2A8F0A72F3F4C5 /* ServicesAMS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1861F1530335BDCD9E1ED211090A2854 /* ServicesAMS.swift */; };
-		D3D0F1B39AA6CDC7C14DE8B9459102DD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */; };
+		C60D5156CA6C26D1DFD0419A63675A07 /* ServicesBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040503488EE4E96623000EFCFC9DFE5C /* ServicesBase.swift */; };
+		D4DB794AEC8D9547BF02235E83E5E736 /* WebhooksServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62F8010A4464B074DDF03D03996E9A82 /* WebhooksServices.swift */; };
 		EEC9B846E48533AA3D1D63C7C71648C4 /* Pods-SportsTask_iOS_Sdk_Demo-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 45ACEB88097BEA2E9FFC3AE9C839EB91 /* Pods-SportsTask_iOS_Sdk_Demo-dummy.m */; };
-		F039DF751E8F41713453ACE5212EB492 /* ModerationServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A1866547562A0F1D2DCC20BBD7C2389 /* ModerationServices.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,34 +36,36 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0335966A68A93631BDDEB53254C7F0E8 /* ServicesBase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServicesBase.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ServicesBase.swift; sourceTree = "<group>"; };
+		040503488EE4E96623000EFCFC9DFE5C /* ServicesBase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServicesBase.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ServicesBase.swift; sourceTree = "<group>"; };
+		0A605DD961F90FAE35D3C2A193403AEA /* ParametersBase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ParametersBase.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ParametersBase.swift; sourceTree = "<group>"; };
 		0CE8FDAAE48240A527390D501BB0E6F4 /* Pods-SportsTask_iOS_Sdk_Demo-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-SportsTask_iOS_Sdk_Demo-umbrella.h"; sourceTree = "<group>"; };
 		1705C60406E2E057C08B0081727C24D2 /* Pods-SportsTask_iOS_Sdk_Demo-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SportsTask_iOS_Sdk_Demo-Info.plist"; sourceTree = "<group>"; };
-		1861F1530335BDCD9E1ED211090A2854 /* ServicesAMS.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServicesAMS.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ServicesAMS.swift; sourceTree = "<group>"; };
 		1E899ADA41204E37655C98258F1B600E /* Pods-SportsTask_iOS_Sdk_Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SportsTask_iOS_Sdk_Demo.debug.xcconfig"; sourceTree = "<group>"; };
 		278A531009EB0CBC3FAD8981D9FC61A9 /* Pods-SportsTask_iOS_Sdk_Demo-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-SportsTask_iOS_Sdk_Demo-acknowledgements.plist"; sourceTree = "<group>"; };
-		2F066F67912F7FC20D11FFC9CA637A32 /* ParametersBase.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ParametersBase.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ParametersBase.swift; sourceTree = "<group>"; };
-		31F666BBC55BEB33930E7EF398CF40F9 /* SportsTalk_iOS_SDK.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SportsTalk_iOS_SDK.xcconfig; sourceTree = "<group>"; };
+		2F690C988C55F63C17425E1CCEF20931 /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/Services.swift; sourceTree = "<group>"; };
 		3212113385A8FBBDB272BD23C409FF61 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS12.2.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		39A29737A22CEBA54704F3BBA753CCA9 /* SportsTalk_iOS_SDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SportsTalk_iOS_SDK-prefix.pch"; sourceTree = "<group>"; };
 		3A740BA4C423C0431DED45B7BC2FE507 /* Pods_SportsTask_iOS_Sdk_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_SportsTask_iOS_Sdk_Demo.framework; path = "Pods-SportsTask_iOS_Sdk_Demo.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
-		4378E20170F3DB044DBE903C43D8FCDF /* WebhooksServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebhooksServices.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/WebhooksServices.swift; sourceTree = "<group>"; };
 		45ACEB88097BEA2E9FFC3AE9C839EB91 /* Pods-SportsTask_iOS_Sdk_Demo-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-SportsTask_iOS_Sdk_Demo-dummy.m"; sourceTree = "<group>"; };
+		4CC0AB7E9A81930F0B1A1FA2A22A9AF5 /* ModerationServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ModerationServices.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/ModerationServices.swift; sourceTree = "<group>"; };
 		4FF1CC31C9141F687CEB884AEEF15DE4 /* Pods-SportsTask_iOS_Sdk_Demo-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-SportsTask_iOS_Sdk_Demo-frameworks.sh"; sourceTree = "<group>"; };
-		53B2DD040BEE5103727C1048325FEC03 /* SportsTalk_iOS_SDK-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "SportsTalk_iOS_SDK-Info.plist"; sourceTree = "<group>"; };
-		5E48B876CE2BC8CCDF05CC20F7C46572 /* SportsTalk_iOS_SDK-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SportsTalk_iOS_SDK-dummy.m"; sourceTree = "<group>"; };
-		7B8031EC2D5837BBF0020530FD03C270 /* SportsTalk_iOS_SDK-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SportsTalk_iOS_SDK-umbrella.h"; sourceTree = "<group>"; };
-		7BB5CC7B880D8698661275F666A21EF3 /* ChatRoomsServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ChatRoomsServices.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/ChatRoomsServices.swift; sourceTree = "<group>"; };
-		8A1866547562A0F1D2DCC20BBD7C2389 /* ModerationServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ModerationServices.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/ModerationServices.swift; sourceTree = "<group>"; };
+		53AC4F06B6B79B17213BB14ED38641EB /* AppConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppConstants.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Constants/AppConstants.swift; sourceTree = "<group>"; };
+		62F8010A4464B074DDF03D03996E9A82 /* WebhooksServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebhooksServices.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/WebhooksServices.swift; sourceTree = "<group>"; };
+		66732ADF67AEA6949CE893F1EE7F1348 /* SportsTalk_iOS_SDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SportsTalk_iOS_SDK.release.xcconfig; sourceTree = "<group>"; };
+		6A45FA238889EB90C0F88059E628E444 /* SportsTalk_iOS_SDK.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SportsTalk_iOS_SDK.modulemap; sourceTree = "<group>"; };
+		780181ED0D27E8BA4821913C78D0A181 /* SportsTalk_iOS_SDK-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SportsTalk_iOS_SDK-prefix.pch"; sourceTree = "<group>"; };
+		93121E483AF5E0F3A8F15470947918F0 /* SportsTalk_iOS_SDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SportsTalk_iOS_SDK.debug.xcconfig; sourceTree = "<group>"; };
 		94CBF90DB95A42387AFE5338E7273541 /* Pods-SportsTask_iOS_Sdk_Demo.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-SportsTask_iOS_Sdk_Demo.modulemap"; sourceTree = "<group>"; };
 		95178E38803633B4388D4BACF62A3F63 /* Pods-SportsTask_iOS_Sdk_Demo-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-SportsTask_iOS_Sdk_Demo-acknowledgements.markdown"; sourceTree = "<group>"; };
-		98B059612E1958428C54210FE7FBC5AB /* UsersServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UsersServices.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/UsersServices.swift; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A764AEDBD7A050B0E3EA9FC3A3B1B99D /* SportsTalk_iOS_SDK.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SportsTalk_iOS_SDK.modulemap; sourceTree = "<group>"; };
+		A68C683F3A7BBA8AEFFE9F0350DD0169 /* SportsTalk_iOS_SDK-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SportsTalk_iOS_SDK-dummy.m"; sourceTree = "<group>"; };
+		B70B66C16EED48E698DEE8A6085F3503 /* ServicesAMS.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ServicesAMS.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/ServicesAMS.swift; sourceTree = "<group>"; };
+		BCBE1ED47CC19E8B8EABC023A023E700 /* CommentsService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CommentsService.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/CommentsService.swift; sourceTree = "<group>"; };
 		BECEEFAA7814E21AE9D07CEF4F8830CB /* SportsTalk_iOS_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SportsTalk_iOS_SDK.framework; path = SportsTalk_iOS_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1C7F8717C03B6E1A1B482074C09C1C5 /* Services.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Services.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/BaseServices/Services.swift; sourceTree = "<group>"; };
 		D7151AEDACCED127A6897FE1CC13FDFF /* Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig"; sourceTree = "<group>"; };
-		DFD5F36C46A4FF91FB7C65A30F8B72EB /* AppConstants.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppConstants.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Constants/AppConstants.swift; sourceTree = "<group>"; };
+		E13A15D4EADC2A830DE050670EB0C24E /* SportsTalk_iOS_SDK-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SportsTalk_iOS_SDK-umbrella.h"; sourceTree = "<group>"; };
+		EF7FED61084D53C7867F59E920F4B0B8 /* UsersServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UsersServices.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/UsersServices.swift; sourceTree = "<group>"; };
+		EFCEFA1951C1C808B9E0D89DBB1E4454 /* ChatRoomsServices.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ChatRoomsServices.swift; path = SportsTalk_iOS_SDK/SportsTalk_iOS_SDK/Services/ChatRoomsServices.swift; sourceTree = "<group>"; };
+		F8C2506E2D819FCDEC357BF78AB4609B /* SportsTalk_iOS_SDK-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "SportsTalk_iOS_SDK-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,37 +77,46 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8006F07AE00951D287A72C9D7139EE02 /* Frameworks */ = {
+		F38DF6355D263D1C31C011D888EB2AAB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D3D0F1B39AA6CDC7C14DE8B9459102DD /* Foundation.framework in Frameworks */,
+				A3EE82924ECA831A3DE7C7AE7C5E8C2C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2CB36E9C8BB2D0BFD10867FF43F3D2F3 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				A764AEDBD7A050B0E3EA9FC3A3B1B99D /* SportsTalk_iOS_SDK.modulemap */,
-				31F666BBC55BEB33930E7EF398CF40F9 /* SportsTalk_iOS_SDK.xcconfig */,
-				5E48B876CE2BC8CCDF05CC20F7C46572 /* SportsTalk_iOS_SDK-dummy.m */,
-				53B2DD040BEE5103727C1048325FEC03 /* SportsTalk_iOS_SDK-Info.plist */,
-				39A29737A22CEBA54704F3BBA753CCA9 /* SportsTalk_iOS_SDK-prefix.pch */,
-				7B8031EC2D5837BBF0020530FD03C270 /* SportsTalk_iOS_SDK-umbrella.h */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/SportsTalk_iOS_SDK";
-			sourceTree = "<group>";
-		};
 		3B9500C414655F42E510F5721F404147 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
 				8FFD0A7AD53FE434D62F8B8CC9AC89C3 /* Pods-SportsTask_iOS_Sdk_Demo */,
 			);
 			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		500DE5347D1057EDC1C762CF84AFA1F8 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				6A45FA238889EB90C0F88059E628E444 /* SportsTalk_iOS_SDK.modulemap */,
+				A68C683F3A7BBA8AEFFE9F0350DD0169 /* SportsTalk_iOS_SDK-dummy.m */,
+				F8C2506E2D819FCDEC357BF78AB4609B /* SportsTalk_iOS_SDK-Info.plist */,
+				780181ED0D27E8BA4821913C78D0A181 /* SportsTalk_iOS_SDK-prefix.pch */,
+				E13A15D4EADC2A830DE050670EB0C24E /* SportsTalk_iOS_SDK-umbrella.h */,
+				93121E483AF5E0F3A8F15470947918F0 /* SportsTalk_iOS_SDK.debug.xcconfig */,
+				66732ADF67AEA6949CE893F1EE7F1348 /* SportsTalk_iOS_SDK.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/SportsTalk_iOS_SDK";
+			sourceTree = "<group>";
+		};
+		5542889DF2A281FFBAE925D306FFFB05 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DC442A1AEFBB33122AE4B0D2207B27E9 /* SportsTalk_iOS_SDK */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		6CA0053829BA770C4E6714A8BD6BD196 /* Products */ = {
@@ -114,24 +126,6 @@
 				BECEEFAA7814E21AE9D07CEF4F8830CB /* SportsTalk_iOS_SDK.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		7CE0C9BF439A1CD0596F2C21151A7EFA /* SportsTalk_iOS_SDK */ = {
-			isa = PBXGroup;
-			children = (
-				DFD5F36C46A4FF91FB7C65A30F8B72EB /* AppConstants.swift */,
-				7BB5CC7B880D8698661275F666A21EF3 /* ChatRoomsServices.swift */,
-				8A1866547562A0F1D2DCC20BBD7C2389 /* ModerationServices.swift */,
-				2F066F67912F7FC20D11FFC9CA637A32 /* ParametersBase.swift */,
-				C1C7F8717C03B6E1A1B482074C09C1C5 /* Services.swift */,
-				1861F1530335BDCD9E1ED211090A2854 /* ServicesAMS.swift */,
-				0335966A68A93631BDDEB53254C7F0E8 /* ServicesBase.swift */,
-				98B059612E1958428C54210FE7FBC5AB /* UsersServices.swift */,
-				4378E20170F3DB044DBE903C43D8FCDF /* WebhooksServices.swift */,
-				2CB36E9C8BB2D0BFD10867FF43F3D2F3 /* Support Files */,
-			);
-			name = SportsTalk_iOS_SDK;
-			path = SportsTalk_iOS_SDK;
 			sourceTree = "<group>";
 		};
 		8FFD0A7AD53FE434D62F8B8CC9AC89C3 /* Pods-SportsTask_iOS_Sdk_Demo */ = {
@@ -159,20 +153,12 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		CC8030FC66D531D9C8B2F720699D3F41 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				7CE0C9BF439A1CD0596F2C21151A7EFA /* SportsTalk_iOS_SDK */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
 		CF1408CF629C7361332E53B88F7BD30C = {
 			isa = PBXGroup;
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
-				CC8030FC66D531D9C8B2F720699D3F41 /* Pods */,
+				5542889DF2A281FFBAE925D306FFFB05 /* Pods */,
 				6CA0053829BA770C4E6714A8BD6BD196 /* Products */,
 				3B9500C414655F42E510F5721F404147 /* Targets Support Files */,
 			);
@@ -186,9 +172,36 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		DC442A1AEFBB33122AE4B0D2207B27E9 /* SportsTalk_iOS_SDK */ = {
+			isa = PBXGroup;
+			children = (
+				53AC4F06B6B79B17213BB14ED38641EB /* AppConstants.swift */,
+				EFCEFA1951C1C808B9E0D89DBB1E4454 /* ChatRoomsServices.swift */,
+				BCBE1ED47CC19E8B8EABC023A023E700 /* CommentsService.swift */,
+				4CC0AB7E9A81930F0B1A1FA2A22A9AF5 /* ModerationServices.swift */,
+				0A605DD961F90FAE35D3C2A193403AEA /* ParametersBase.swift */,
+				2F690C988C55F63C17425E1CCEF20931 /* Services.swift */,
+				B70B66C16EED48E698DEE8A6085F3503 /* ServicesAMS.swift */,
+				040503488EE4E96623000EFCFC9DFE5C /* ServicesBase.swift */,
+				EF7FED61084D53C7867F59E920F4B0B8 /* UsersServices.swift */,
+				62F8010A4464B074DDF03D03996E9A82 /* WebhooksServices.swift */,
+				500DE5347D1057EDC1C762CF84AFA1F8 /* Support Files */,
+			);
+			name = SportsTalk_iOS_SDK;
+			path = SportsTalk_iOS_SDK;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		3C4B9522472944F9D381D3F21982D8DD /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				832BE8A6512301169667B7F25D794430 /* SportsTalk_iOS_SDK-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7C1DEDD0C3B979291DDFDDA9D3D5B3A2 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -197,25 +210,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C50AC4A2011D9884ABAB7C5952277D6B /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				63E7757DB68DC3F9CE3D4D55AFA1FC2E /* SportsTalk_iOS_SDK-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		4813B397431F1D371882DBC7D3B3CB64 /* SportsTalk_iOS_SDK */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C2A8A9E6066858E1406E7111D4DA69A7 /* Build configuration list for PBXNativeTarget "SportsTalk_iOS_SDK" */;
+			buildConfigurationList = 57F02AB71B0A21D4BA282A2900DEB295 /* Build configuration list for PBXNativeTarget "SportsTalk_iOS_SDK" */;
 			buildPhases = (
-				C50AC4A2011D9884ABAB7C5952277D6B /* Headers */,
-				9221CC1B39FBD3CD5FBCEB3583D64F7E /* Sources */,
-				8006F07AE00951D287A72C9D7139EE02 /* Frameworks */,
-				8DE94E15977B88616CF65534F4B3E47A /* Resources */,
+				3C4B9522472944F9D381D3F21982D8DD /* Headers */,
+				34755ACFF57F6F62BC6234C794708A46 /* Sources */,
+				F38DF6355D263D1C31C011D888EB2AAB /* Frameworks */,
+				81E70A5E53D409C4D530A10055A4ED56 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -255,11 +260,12 @@
 				LastUpgradeCheck = 1100;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
 			productRefGroup = 6CA0053829BA770C4E6714A8BD6BD196 /* Products */;
@@ -280,7 +286,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8DE94E15977B88616CF65534F4B3E47A /* Resources */ = {
+		81E70A5E53D409C4D530A10055A4ED56 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -298,20 +304,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9221CC1B39FBD3CD5FBCEB3583D64F7E /* Sources */ = {
+		34755ACFF57F6F62BC6234C794708A46 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				783EB82F6C5ABA471560E8CDE37C1D73 /* AppConstants.swift in Sources */,
-				9DA1594CB9CE368B49C7FC2E29E93A4E /* ChatRoomsServices.swift in Sources */,
-				F039DF751E8F41713453ACE5212EB492 /* ModerationServices.swift in Sources */,
-				4CBEA6CEDA74FEEB1E61610C10E4BD3B /* ParametersBase.swift in Sources */,
-				0D82821CB8D2A1E64A1CEE31730E7A32 /* Services.swift in Sources */,
-				D024B297998EB6B94F2A8F0A72F3F4C5 /* ServicesAMS.swift in Sources */,
-				A61FC08CDB2707D328B1030C77BC6A71 /* ServicesBase.swift in Sources */,
-				51E8A52F5FFC6F3C262A98D7B25B9142 /* SportsTalk_iOS_SDK-dummy.m in Sources */,
-				9794F9EAEEA5E8CA9A185B709CC598FD /* UsersServices.swift in Sources */,
-				C2FDAB167F6C1875580BC4BDE35CD172 /* WebhooksServices.swift in Sources */,
+				C19463E9849BEC98FB754944818762D1 /* AppConstants.swift in Sources */,
+				B716CD55F0E28B0B9A32D444282AA5DF /* ChatRoomsServices.swift in Sources */,
+				13D0B8D7869B062BF8FF651F7F785DA2 /* CommentsService.swift in Sources */,
+				2C2F2036E03803E5B43128F784443312 /* ModerationServices.swift in Sources */,
+				3C3DFC464B703A2A452779DBCCFFFFAA /* ParametersBase.swift in Sources */,
+				6254B6C465174268657CC4173A0C1C36 /* Services.swift in Sources */,
+				236FA2EC07FABE13B71E910A110AE58B /* ServicesAMS.swift in Sources */,
+				C60D5156CA6C26D1DFD0419A63675A07 /* ServicesBase.swift in Sources */,
+				479175FDCEEF9D7DC5BD461376636AF8 /* SportsTalk_iOS_SDK-dummy.m in Sources */,
+				9C71C0FF8DF66EE75A09C95F58FEB1EB /* UsersServices.swift in Sources */,
+				D4DB794AEC8D9547BF02235E83E5E736 /* WebhooksServices.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +334,43 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		009388F201F5A5B95E06715423E40A9E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 66732ADF67AEA6949CE893F1EE7F1348 /* SportsTalk_iOS_SDK.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK.modulemap";
+				PRODUCT_MODULE_NAME = SportsTalk_iOS_SDK;
+				PRODUCT_NAME = SportsTalk_iOS_SDK;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		6835F1AB2CD0A3327B247D8371C1F7D4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D7151AEDACCED127A6897FE1CC13FDFF /* Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig */;
@@ -365,6 +409,42 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
+		};
+		91C53FD95B37D4415271B04E35EA44EA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 93121E483AF5E0F3A8F15470947918F0 /* SportsTalk_iOS_SDK.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MODULEMAP_FILE = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK.modulemap";
+				PRODUCT_MODULE_NAME = SportsTalk_iOS_SDK;
+				PRODUCT_NAME = SportsTalk_iOS_SDK;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
 		};
 		939F1A8F6BCEB7F9F64D9EEE50CAE014 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -468,79 +548,6 @@
 			};
 			name = Debug;
 		};
-		D32C0A8BA1B5BD831431331D1D8026D8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 31F666BBC55BEB33930E7EF398CF40F9 /* SportsTalk_iOS_SDK.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK.modulemap";
-				PRODUCT_MODULE_NAME = SportsTalk_iOS_SDK;
-				PRODUCT_NAME = SportsTalk_iOS_SDK;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		DBEB2748FD49F1235A5D896BB3288372 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 31F666BBC55BEB33930E7EF398CF40F9 /* SportsTalk_iOS_SDK.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GCC_PREFIX_HEADER = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MODULEMAP_FILE = "Target Support Files/SportsTalk_iOS_SDK/SportsTalk_iOS_SDK.modulemap";
-				PRODUCT_MODULE_NAME = SportsTalk_iOS_SDK;
-				PRODUCT_NAME = SportsTalk_iOS_SDK;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 		ECB437504DF805BD96CAABF97400B526 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -613,11 +620,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C2A8A9E6066858E1406E7111D4DA69A7 /* Build configuration list for PBXNativeTarget "SportsTalk_iOS_SDK" */ = {
+		57F02AB71B0A21D4BA282A2900DEB295 /* Build configuration list for PBXNativeTarget "SportsTalk_iOS_SDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				DBEB2748FD49F1235A5D896BB3288372 /* Debug */,
-				D32C0A8BA1B5BD831431331D1D8026D8 /* Release */,
+				91C53FD95B37D4415271B04E35EA44EA /* Debug */,
+				009388F201F5A5B95E06715423E40A9E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

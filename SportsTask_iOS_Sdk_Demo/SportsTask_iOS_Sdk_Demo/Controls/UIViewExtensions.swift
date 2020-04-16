@@ -14,6 +14,7 @@ enum ConstraintType
 
 extension UIView
 {
+    @discardableResult
     func alignCenterConstraints(
             centerX: NSLayoutXAxisAnchor? = nil, centerXConstant: CGFloat = 0,
             centerY: NSLayoutYAxisAnchor? = nil, centerYConstant: CGFloat = 0) -> Dictionary<ConstraintType, NSLayoutConstraint>
@@ -38,7 +39,7 @@ extension UIView
 
         return ret
     }
-
+    @discardableResult
     func anchorConstraints(
             left: NSLayoutXAxisAnchor? = nil, leftConstant: CGFloat = 0,
             top: NSLayoutYAxisAnchor? = nil, topConstant: CGFloat = 0,
@@ -75,7 +76,7 @@ extension UIView
 
         return ret
     }
-
+    @discardableResult
     func anchorConstraintsWithSystemSpacing(
             left: NSLayoutXAxisAnchor? = nil, leftMultiplier: CGFloat = 1.0,
             top: NSLayoutYAxisAnchor? = nil, topMultiplier: CGFloat = 1.0,
@@ -113,6 +114,7 @@ extension UIView
         return ret
     }
 
+    @discardableResult
     func safeAnchorConstraints(
             left: NSLayoutXAxisAnchor? = nil, leftConstant: CGFloat = 0,
             top: NSLayoutYAxisAnchor? = nil, topConstant: CGFloat = 0,
@@ -149,12 +151,12 @@ extension UIView
 
         return ret
     }
-
+    @discardableResult
     func sizeConstraints(size: CGSize? = nil) -> Dictionary<ConstraintType, NSLayoutConstraint>
     {
         return sizeConstraints(height: size?.height, width: size?.width)
     }
-
+    @discardableResult
     func sizeConstraints(height: CGFloat? = nil, width: CGFloat? = nil) -> Dictionary<ConstraintType, NSLayoutConstraint>
     {
         var ret = Dictionary<ConstraintType, NSLayoutConstraint>()
