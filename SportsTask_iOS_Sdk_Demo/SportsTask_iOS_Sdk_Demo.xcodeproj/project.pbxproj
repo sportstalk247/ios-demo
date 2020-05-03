@@ -50,6 +50,7 @@
 		8444C9902446E34B005A9AB5 /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8444C98F2446E34B005A9AB5 /* Report.swift */; };
 		8444C9922446EF29005A9AB5 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8444C9912446EF29005A9AB5 /* CommentCell.swift */; };
 		844C83332446D3C90092E72E /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C83322446D3C90092E72E /* CommentsViewController.swift */; };
+		84B822D9245D7BCD000758CE /* DecisionViewPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B822D8245D7BCD000758CE /* DecisionViewPresenter.swift */; };
 		84F38846244861BE002D8E78 /* CommonUttilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F38845244861BE002D8E78 /* CommonUttilities.swift */; };
 		941ED212ABAED9CA7B09CEEE /* Pods_SportsTask_iOS_Sdk_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DA7063EC0CEA4C1035554182 /* Pods_SportsTask_iOS_Sdk_Demo.framework */; };
 /* End PBXBuildFile section */
@@ -103,6 +104,7 @@
 		8444C98F2446E34B005A9AB5 /* Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Report.swift; sourceTree = "<group>"; };
 		8444C9912446EF29005A9AB5 /* CommentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
 		844C83322446D3C90092E72E /* CommentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
+		84B822D8245D7BCD000758CE /* DecisionViewPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecisionViewPresenter.swift; sourceTree = "<group>"; };
 		84F38845244861BE002D8E78 /* CommonUttilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonUttilities.swift; sourceTree = "<group>"; };
 		DA7063EC0CEA4C1035554182 /* Pods_SportsTask_iOS_Sdk_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SportsTask_iOS_Sdk_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FB4956C6A7852E4BFDA748D2 /* Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig"; path = "Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo.release.xcconfig"; sourceTree = "<group>"; };
@@ -260,6 +262,7 @@
 				80CFFD2D23FCF5260041452A /* ChatLogViewPresenter.swift */,
 				844117382445CF93002A5A19 /* CommentConversationsViewPresenter.swift */,
 				8444C98B2446D9E9005A9AB5 /* CommentsViewPresenter.swift */,
+				84B822D8245D7BCD000758CE /* DecisionViewPresenter.swift */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -292,7 +295,7 @@
 				80DFE7E623FBBA3300CA98F3 /* Sources */,
 				80DFE7E723FBBA3300CA98F3 /* Frameworks */,
 				80DFE7E823FBBA3300CA98F3 /* Resources */,
-				013B630709D827E273F6D72C /* [CP] Embed Pods Frameworks */,
+				3AFC31CBA98C1FC36874BC23 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -351,23 +354,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		013B630709D827E273F6D72C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		14E7EA2B478E9E9F89B6BD51 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -388,6 +374,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3AFC31CBA98C1FC36874BC23 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SportsTask_iOS_Sdk_Demo/Pods-SportsTask_iOS_Sdk_Demo-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -420,6 +423,7 @@
 				80DFE82423FC105000CA98F3 /* ImageCache.swift in Sources */,
 				80DFE81623FBD10B00CA98F3 /* UIViewBase.swift in Sources */,
 				8444C98E2446E220005A9AB5 /* Comment.swift in Sources */,
+				84B822D9245D7BCD000758CE /* DecisionViewPresenter.swift in Sources */,
 				80DFE81323FBD10B00CA98F3 /* UILabelBase.swift in Sources */,
 				80DFE81723FBD10B00CA98F3 /* UITableViewBase.swift in Sources */,
 				80DFE81923FBD10B00CA98F3 /* UITextFieldBase.swift in Sources */,

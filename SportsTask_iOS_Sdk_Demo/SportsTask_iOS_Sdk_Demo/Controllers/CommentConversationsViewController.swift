@@ -24,9 +24,9 @@ class CommentConversationsViewController: BaseViewController{
     func setupConstraints(){
        let constraints = [
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
@@ -39,7 +39,7 @@ class CommentConversationsViewController: BaseViewController{
         layout.minimumLineSpacing = 0
         let v = UICollectionView(frame: .zero, collectionViewLayout: layout)
         v.translatesAutoresizingMaskIntoConstraints = false
-        v.backgroundColor = .white
+        v.backgroundColor = .clear
         v.alwaysBounceVertical = true
         v.register(CommentConversationCell.self, forCellWithReuseIdentifier: "CommentConversationCell")
         v.refreshControl = self.refreshControl
@@ -54,8 +54,7 @@ class CommentConversationsViewController: BaseViewController{
     }
     
     @objc private func didPullToRefresh(_ sender: Any) {
-        presenter.loadData()
-        refreshControl.endRefreshing()
+        presenter.loadData(isRefreshing: true)
     }
 }
 extension CommentConversationsViewController: CommentConversationsView{
@@ -72,6 +71,7 @@ extension CommentConversationsViewController: CommentConversationsView{
             self.adapter = CommentConversationsAdapter(presenter: self.presenter)
             self.collectionView.delegate = self.adapter
             self.collectionView.dataSource = self.adapter
+            self.refreshControl.endRefreshing()
         }
         
     }

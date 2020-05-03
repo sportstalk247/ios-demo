@@ -4,8 +4,6 @@ import SportsTalk_iOS_SDK
 protocol UserListingView
 {
     func refresh()
-//    func startLoader()
-//    func stopLoader()
 }
 
 class UserListingViewPresenter
