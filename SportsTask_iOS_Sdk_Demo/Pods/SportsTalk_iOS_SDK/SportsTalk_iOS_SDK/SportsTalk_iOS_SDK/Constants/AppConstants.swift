@@ -5,7 +5,6 @@ let contentTypeTitle = "Content-Type"
 let tokenTitle = "x-api-token"
 
 let acceptHeaderValue = "application/json"
-//let contentTypeValue = "application/x-www-form-urlencoded"
 let contentTypeValue = "application/json"
 
 let messageTitle = "Message"

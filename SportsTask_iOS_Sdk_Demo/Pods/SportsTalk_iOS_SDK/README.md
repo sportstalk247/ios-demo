@@ -7,7 +7,7 @@ The set of SDKs and source (iOS, Android, and JS) is here: [https://gitlab.com/s
 
 
 ```bash
-pod 'SportsTalk_iOS_SDK', :git=> 'https://gitlab.com/sportstalk247/sdk-ios-swift.git', :branch=> 'podspec'
+pod 'SportsTalk_iOS_SDK', :git=> 'https://gitlab.com/sportstalk247/sdk-ios-swift.git'
 ```
 You will need to register with SportsTalk and get an API Key in order to use sportstalk functions.
 

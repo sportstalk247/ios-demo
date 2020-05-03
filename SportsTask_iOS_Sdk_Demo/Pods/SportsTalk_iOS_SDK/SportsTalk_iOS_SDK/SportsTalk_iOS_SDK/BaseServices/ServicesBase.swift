@@ -14,9 +14,14 @@ open class ServicesBase
 {
     public var authToken: String?
     public var url: URL?
-    public var services: Services?
+    public var services: Services
     public var user: Services.User?
     public var appId: String?
+    public var debug: Bool = false
+    
+    init(services: Services) {
+        self.services = services
+    }
     
     func makeRequest(_ serviceName: String?, useDefaultUrl:Bool = true, withData data: [AnyHashable: Any]?, requestType: RequestType, appendData:Bool = true, completionHandler: @escaping CompletionHandler)
     {
@@ -47,7 +52,9 @@ open class ServicesBase
                     {
                         if let data = data
                         {
-                            print("Response(\(serviceName ?? "non service")): \(data.string ?? "")")
+                            if self.debug{
+                                print("Response(\(serviceName ?? "non service")): \(data.string ?? "")")
+                            }
                             if let jsonData = try JSONSerialization.jsonObject(with: data, options: [.allowFragments]) as? [String: Any]
                             {
                                 completionHandler(jsonData)
@@ -79,8 +86,7 @@ open class ServicesBase
         var parameters = [String:Any]()
         for (key, value) in (data ?? [AnyHashable: Any]())
         {
-            parameters[key as! String] = value
-            
+           parameters[key as! String] = value
         }
         
         // Generate url.
@@ -101,7 +107,6 @@ open class ServicesBase
         
         if (requestType == .POST && appendData) || requestType == .PUT
         {
-            //                    request.httpBody = postData
             let httpData = try? JSONSerialization.data(withJSONObject: parameters, options: [])
             request.httpBody = httpData
             
@@ -113,7 +118,13 @@ open class ServicesBase
 
             for (key, value) in (data ?? [AnyHashable : Any]())
             {
-                let item = URLQueryItem(name: "\(key)", value: "\(value)")
+                let item: URLQueryItem
+                if let v = value as? Bool{
+                    item = URLQueryItem(name: "\(key)", value: "\(v ? "true" : "false")")
+                }else{
+                 item = URLQueryItem(name: "\(key)", value: "\(value)")
+                }
+                
                 components.queryItems?.append(item)
             }
 
@@ -122,14 +133,14 @@ open class ServicesBase
                 request.url = componentUrl
             }
         }
-        
         request.addValue(acceptHeaderValue, forHTTPHeaderField: acceptHeaderTitle)
         request.addValue(contentTypeValue, forHTTPHeaderField: contentTypeTitle)
         request.addValue(self.authToken ?? emptyString, forHTTPHeaderField: tokenTitle)
-        request.log()
+        if self.debug{
+            request.log()
+        }
         return request
     }
-// po request.url = URL(string: "https://api.sportstalk247.com/api/v3/5dcb569438a2830dc0a28e22/user/users/userid_georgew")
 }
 
 /// This is basically for debugging purpose. this helps in converting data to string.. making this file private so that this doesn't affect outside of the SDK.

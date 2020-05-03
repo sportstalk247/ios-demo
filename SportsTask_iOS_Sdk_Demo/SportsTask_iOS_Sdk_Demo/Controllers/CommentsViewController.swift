@@ -16,6 +16,8 @@ class CommentsViewController: BaseViewController{
         view.backgroundColor = .white
         setupViews()
         presenter = CommentsViewPresenter(services: services, view: self)
+        collectionView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        collectionView.keyboardDismissMode = .interactive
     }
     
     func setupViews(){
@@ -30,9 +32,9 @@ class CommentsViewController: BaseViewController{
         
         let constraints = [
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
         ]
         NSLayoutConstraint.activate(constraints)
         
@@ -40,23 +42,31 @@ class CommentsViewController: BaseViewController{
         setupKeyboardObserver()
     }
     
+    override var canBecomeFirstResponder: Bool{
+        return true
+    }
+    
+    override var inputAccessoryView: UIView?{
+        return UIView()
+    }
+    
+    
     @objc private func didPullToRefresh(_ sender: Any) {
-           presenter.loadData()
-           refreshControl.endRefreshing()
-       }
+        presenter.loadData(isRefreshing: true)
+    }
     
     func setupKeyboardObserver() {
         NotificationCenter.default.addObserver(
-        self,
-        selector: #selector(handleKeyboardWillShow),
-        name: UIResponder.keyboardWillShowNotification,
-        object: nil)
+            self,
+            selector: #selector(handleKeyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
         
         NotificationCenter.default.addObserver(
-        self,
-        selector: #selector(handleKeyboardWillhide),
-        name: UIResponder.keyboardWillHideNotification,
-        object: nil)
+            self,
+            selector: #selector(handleKeyboardWillhide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -71,8 +81,8 @@ class CommentsViewController: BaseViewController{
             
             UIView.animate(withDuration: animationDuration.doubleValue)
             {
-                self.view.layoutIfNeeded()
-                self.moveCollectionvieToEnd()
+                 self.view.superview?.layoutIfNeeded()
+//                self.moveCollectionvieToEnd()
             }
         }
     }
@@ -83,23 +93,23 @@ class CommentsViewController: BaseViewController{
             containerViewBottomAnchor?.constant = (containerViewBottomAnchor?.constant ?? 0) + keyboardSize.height
             UIView.animate(withDuration: animationDuration.doubleValue)
             {
-                self.view.layoutIfNeeded()
-                self.moveCollectionvieToEnd()
+                self.view.superview?.layoutIfNeeded()
+//                self.moveCollectionvieToEnd()
             }
         }
     }
     
-     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-           coordinator.animate(alongsideTransition: { (context) in
-               self.collectionView.collectionViewLayout.invalidateLayout()
-           })
-           super.viewWillTransition(to: size, with: coordinator)
-       }
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { (context) in
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        })
+        super.viewWillTransition(to: size, with: coordinator)
+    }
     
     func setupNavBarAWithUser(user:User?) {
         guard let user = user else { return }
         self.navigationItem.title = user.handle
-
+        
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)
         titleView.backgroundColor = .red
@@ -123,7 +133,7 @@ class CommentsViewController: BaseViewController{
         nameLabel.text = user.handle
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         titleView.addSubview(nameLabel)
-
+        
         nameLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 10).isActive = true
         nameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         nameLabel.rightAnchor.constraint(equalTo: titleView.rightAnchor).isActive = true
@@ -143,25 +153,29 @@ class CommentsViewController: BaseViewController{
         return v
     }()
     
-    lazy var inputTextFields: UITextField = {
-        let v = UITextField()
-        v.placeholder = "Enter message..."
-        v.translatesAutoresizingMaskIntoConstraints = false
-        v.delegate = self
-        return v
+    lazy var inputTextFields: UITextView = {
+        let inputTextFields = UITextView()
+        inputTextFields.text = placeholderText
+        inputTextFields.textColor = UIColor.lightGray
+        inputTextFields.font = UIFont.systemFont(ofSize: 16)
+        inputTextFields.translatesAutoresizingMaskIntoConstraints = false
+        inputTextFields.delegate = self
+        
+        return inputTextFields
     }()
+    
+    let containerView = UIView()
     
     var containerViewBottomAnchor:NSLayoutConstraint?
     var sendButton = UIButton(type: .system)
     
     fileprivate func setupInputComponents()
     {
-        let containerView = UIView()
         containerView.backgroundColor = .white
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
         self.view.addSubview(containerView)
-
+        
         containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         containerView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -182,10 +196,10 @@ class CommentsViewController: BaseViewController{
         containerView.addSubview(inputTextFields)
         
         inputTextFields.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8).isActive = true
-        inputTextFields.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         inputTextFields.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-        inputTextFields.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-
+        inputTextFields.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 8).isActive = true
+        inputTextFields.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
+        
         let seperatorLineView = UIView()
         seperatorLineView.backgroundColor = UIColor(r: 220, g: 220, b: 220)
         seperatorLineView.translatesAutoresizingMaskIntoConstraints = false
@@ -199,9 +213,14 @@ class CommentsViewController: BaseViewController{
     }
     
     @objc func handleSend(_ sender: UIButton){
-        if !inputTextFields.text!.isEmpty, sendButton.isEnabled{
+        print("Called")
+        if !inputTextFields.text.trim.isEmpty && inputTextFields.textColor != UIColor.lightGray{
             sendButton.isEnabled = false
-            presenter.sendComment(text: inputTextFields.text!)
+            presenter.sendComment(text: inputTextFields.text.trim)
+        }
+        
+        if inputTextFields.text.trim.isEmpty{
+            clearInput()
         }
     }
     func moveCollectionvieToEnd(){
@@ -220,7 +239,7 @@ extension CommentsViewController: UITextFieldDelegate{
     }
 }
 extension CommentsViewController: CommentsView{
- 
+    
     func updateRow(index: Int, isNew: Bool) {
         dispatchMain {
             if isNew{
@@ -238,19 +257,58 @@ extension CommentsViewController: CommentsView{
             self.adapter = CommentsViewControllerAdapter(presenter: self.presenter)
             self.collectionView.delegate = self.adapter
             self.collectionView.dataSource = self.adapter
-            
+            self.refreshControl.endRefreshing()
         }
     }
     
-    func messageSent(){
+    func messageSent(success: Bool){
         dispatchMain {
             self.sendButton.isEnabled = true
-            self.inputTextFields.text = nil
+            if success{
+                self.clearInput()
+            }
+        }
+    }
+    func clearInput(){
+        self.view.endEditing(true)
+        self.inputTextFields.text = nil
+        self.textViewDidChange(self.inputTextFields)
+        self.textViewDidEndEditing(self.inputTextFields)
+    }
+}
+extension CommentsViewController: UITextViewDelegate{
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = placeholderText
+            textView.textColor = UIColor.lightGray
         }
         
     }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        let size = CGSize(width: textView.frame.width, height: .infinity)
+        let estimatedSize = textView.sizeThatFits(size)
+        containerView.constraints.forEach({
+            if $0.firstAttribute == .height{
+                if estimatedSize.height < 50 {
+                    $0.constant = 50
+                }else if estimatedSize.height > 80{
+                    $0.constant = 80
+                }else{
+                    $0.constant = estimatedSize.height
+                }
+            }
+        })
+    }
 }
-
 extension CommentsViewController{
     class CommentsViewControllerAdapter: NSObject, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
         
@@ -286,11 +344,29 @@ extension CommentsViewController{
             return CGSize(width: collectionView.frame.width, height: height)
         }
         
-        func estimatedFrameForText(text: String, width: CGFloat) -> CGRect {
-               let size = CGSize(width: width, height: 1000)
-               let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-               let font = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]
-               return NSString(string: text).boundingRect(with: size, options: options, attributes: font, context: nil)
+        private func sizeWithLayoutManager(text: String, font: UIFont, maxSize: CGSize) -> CGSize {
+            let textContainer = NSTextContainer(size: maxSize)
+            let layoutManager = NSLayoutManager()
+            let attributedStering = replicateAttributedStringSetByUITextView(text: text, font: font, color: UIColor.black)
+            let textStorage = NSTextStorage(attributedString: attributedStering)
+            textContainer.lineFragmentPadding = 10
+            layoutManager.addTextContainer(textContainer)
+            textStorage.addLayoutManager(layoutManager)
+            return layoutManager.usedRect(for: textContainer).size
+        }
+        
+        private func replicateAttributedStringSetByUITextView(text: String, font: UIFont, color: UIColor) -> NSTextStorage {
+            let attributes: [NSAttributedString.Key : Any] = [
+                .font: font,
+                .foregroundColor: color,
+            ]
+            let textStorage = NSTextStorage(string: text, attributes: attributes)
+            return textStorage
+        }
+        
+        func estimatedFrameForText(text: String, width: CGFloat) -> CGSize {
+            
+            return sizeWithLayoutManager(text: text, font: UIFont.systemFont(ofSize: 16), maxSize: CGSize(width: width, height: CGFloat.greatestFiniteMagnitude))
         }
     }
 }

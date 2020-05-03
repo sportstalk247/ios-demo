@@ -2,7 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="FwT-tO-RaU">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -56,17 +56,11 @@
                                         <rect key="frame" x="33" y="0.0" width="53" height="42"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="Chat"/>
-                                        <connections>
-                                            <segue destination="BYZ-38-t0r" kind="show" id="lbh-3d-oEt"/>
-                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m5r-9X-nbv">
                                         <rect key="frame" x="0.0" y="62" width="119" height="42"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                         <state key="normal" title="Comments"/>
-                                        <connections>
-                                            <segue destination="YDh-At-hLd" kind="show" id="viL-kL-kaG"/>
-                                        </connections>
                                     </button>
                                 </subviews>
                             </stackView>
@@ -87,6 +81,12 @@
                         <viewLayoutGuide key="safeArea" id="HbP-Mh-t6y"/>
                     </view>
                     <navigationItem key="navigationItem" title="SPORTSTALK 24X7 API" id="mFJ-Vm-aOO"/>
+                    <connections>
+                        <outlet property="chatButton" destination="xgk-27-LRr" id="t7l-uE-q3F"/>
+                        <outlet property="commentsButton" destination="m5r-9X-nbv" id="cZV-z3-Pse"/>
+                        <outlet property="stackViewYAnchor" destination="2B5-Ou-kxI" id="c0x-wl-YEE"/>
+                        <outlet property="titleHeight" destination="kBQ-9g-1TM" id="atw-gF-bhV"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NXd-70-zf9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

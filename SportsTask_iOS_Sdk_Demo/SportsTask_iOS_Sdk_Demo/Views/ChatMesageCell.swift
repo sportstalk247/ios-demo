@@ -11,7 +11,7 @@ class ChatMesageCell: UICollectionViewCell {
     var delegate: ChatMesageCellView?
     var indexpath: IndexPath?
     
-    let profileImageVIew:UIImageView = {
+    let profileImageVIew: UIImageView = {
        let iv = UIImageView()
         iv.layer.cornerRadius = 16
         iv.layer.masksToBounds = true
@@ -27,6 +27,7 @@ class ChatMesageCell: UICollectionViewCell {
         tv.font = UIFont.systemFont(ofSize: 16)
         tv.backgroundColor = .clear
         tv.textColor = .white
+        tv.isScrollEnabled = false
         tv.isUserInteractionEnabled = false
         
         return tv
@@ -124,6 +125,7 @@ class ChatMesageCell: UICollectionViewCell {
 
         likeButtonforLeftContainer = likeButton.leftAnchor.constraint(equalTo: bubbleView.rightAnchor)
         likeButtonforLeftContainer?.isActive = true
+        
         likeButtonforRightContainer = likeButton.leftAnchor.constraint(equalTo: bubbleView.leftAnchor, constant: -30)
         likeButtonforRightContainer?.isActive = false
         
@@ -137,7 +139,6 @@ class ChatMesageCell: UICollectionViewCell {
         likeLabelforRightContainer = likeLabel.leftAnchor.constraint(equalTo: likeButton.leftAnchor, constant: -likeButtonwidthAnchor.constant)
         likeLabelforRightContainer?.isActive = false
 
-//        likeLabel.bottomAnchor.constraint(equalTo: likeButton.bottomAnchor).isActive = true
         likeLabel.centerYAnchor.constraint(equalTo: likeButton.centerYAnchor).isActive = true
         likeLabel.widthAnchor.constraint(equalToConstant: 15).isActive = true
         likeLabel.heightAnchor.constraint(equalToConstant: 15).isActive = true

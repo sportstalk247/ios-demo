@@ -1,32 +1,61 @@
 import UIKit
 
-class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout
+class ChatLogViewController: BaseViewController, UITextFieldDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 {
     let cellId = "cellId"
    
     private var presenter: ChatLogViewPresenter!
         
-    lazy var inputTextFields: UITextField = {
-        let inputTextFields = UITextField()
-        inputTextFields.placeholder = "Enter message..."
+    lazy var inputTextFields: UITextView = {
+        let inputTextFields = UITextView()
+        inputTextFields.text = placeholderText
+        inputTextFields.textColor = UIColor.lightGray
+        inputTextFields.font = UIFont.systemFont(ofSize: 16)
         inputTextFields.translatesAutoresizingMaskIntoConstraints = false
         inputTextFields.delegate = self
 
         return inputTextFields
     }()
     
+    let containerView = UIView()
+    
+    lazy var collectionView: UICollectionView = {
+           let layout = UICollectionViewFlowLayout()
+           layout.scrollDirection = .vertical
+           layout.minimumLineSpacing = 10
+           layout.minimumInteritemSpacing = 10
+           let v = UICollectionView(frame: .zero, collectionViewLayout: layout)
+           v.translatesAutoresizingMaskIntoConstraints = false
+           v.backgroundColor = UIColor(r: 249, g: 249, b: 249)
+           return v
+       }()
+    
     override func viewDidLoad() {
         setup()
+        view.backgroundColor = .white
+        view.addSubview(collectionView)
         
+        let constraints = [
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+
         collectionView.backgroundColor = .white
+        collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.alwaysBounceVertical = true
+        (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).sectionInsetReference = .fromSafeArea
         collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 50, right: 0)
         collectionView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         collectionView.register(ChatMesageCell.self, forCellWithReuseIdentifier: cellId)
-        
+        collectionView.keyboardDismissMode = .interactive
         setupInputComponents()
         setupKeyboardObserver()
-        
+        collectionView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         setupNavBarAWithUser(user: selectedUser)
     }
     
@@ -56,6 +85,14 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
         NotificationCenter.default.removeObserver(self)
     }
     
+    override var canBecomeFirstResponder: Bool{
+        return true
+    }
+    
+    override var inputAccessoryView: UIView?{
+        return UIView()
+    }
+    
     @objc func handleKeyboardWillShow(notification:Notification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let animationDuration = (notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey]) as? NSNumber {
             
@@ -63,7 +100,7 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
             
             UIView.animate(withDuration: animationDuration.doubleValue)
             {
-                self.view.layoutIfNeeded()
+                self.view.superview?.layoutIfNeeded()
                 self.moveCollectionvieToEnd()
             }
         }
@@ -75,15 +112,17 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
             containerViewBottomAnchor?.constant = (containerViewBottomAnchor?.constant ?? 0) + keyboardSize.height
             UIView.animate(withDuration: animationDuration.doubleValue)
             {
-                self.view.layoutIfNeeded()
+                self.view.superview?.layoutIfNeeded()
                 self.moveCollectionvieToEnd()
             }
         }
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
-    {
-        collectionView.collectionViewLayout.invalidateLayout()
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { (context) in
+            self.collectionView.collectionViewLayout.invalidateLayout()
+        })
+        super.viewWillTransition(to: size, with: coordinator)
     }
     
     func setupNavBarAWithUser(user:User?) {
@@ -122,7 +161,7 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
         navigationItem.titleView = titleView
     }
     
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return presenter.messages.count
     }
     
@@ -140,25 +179,24 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
               height = 150
         }
         
-        return .init(width: self.view.frame.width, height: height)
+        return .init(width: collectionView.frame.width, height: height)
     }
     
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    
+    
+     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as? ChatMesageCell
         let message = presenter.messages[indexPath.row]
 
         cell?.textView.text = message.body
-        cell?.bubbleWidthAnchor?.constant = extimatedFrameForText(text: message.body ?? "").width + 32
+        cell?.bubbleWidthAnchor?.constant = extimatedFrameForText(text: message.body ?? "").width + 22
         cell?.delegate = self
         cell?.indexpath = indexPath
-        
-        // Check Message Like
-        
+
         let likeCount = presenter.likeCount(message: message)
-                
+        print("Index: \(indexPath.item)\nLikecount \(likeCount)")
         if likeCount > 0
         {
-//            cell?.likeButton.setTitle("@@@\(likeCount)", for: .normal)
             cell?.likeLabel.text = "\(likeCount)"
             cell?.likeButton.tintColor = .green
         }
@@ -174,8 +212,8 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
             cell?.bubbleView.backgroundColor = ChatMesageCell.blueColor
             cell?.textView.textColor = .white
             cell?.profileImageVIew.image = nil
-            cell?.bubbleViewRightAnchor?.isActive = true
             cell?.bubbleViewLeftAnchor?.isActive = false
+            cell?.bubbleViewRightAnchor?.isActive = true
             
             cell?.likeButtonforLeftContainer?.isActive = false
             cell?.likeButtonforRightContainer?.isActive = true
@@ -192,11 +230,12 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
             cell?.bubbleViewRightAnchor?.isActive = false
             cell?.bubbleViewLeftAnchor?.isActive = true
             
-            cell?.likeButtonforLeftContainer?.isActive = true
             cell?.likeButtonforRightContainer?.isActive = false
-
-            cell?.likeLabelforLeftContainer?.isActive = true
+            cell?.likeButtonforLeftContainer?.isActive = true
+            
             cell?.likeLabelforRightContainer?.isActive = false
+            cell?.likeLabelforLeftContainer?.isActive = true
+            
 
         }
         
@@ -239,12 +278,28 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
         return dict
     }
     
-    func extimatedFrameForText(text: String) -> CGRect {
-        let size = CGSize(width: 200, height: 1000)
-        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        let font = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)]
-        
-        return NSString(string: text).boundingRect(with: size, options: options, attributes: font, context: nil)
+    private func sizeWithLayoutManager(text: String, font: UIFont, maxSize: CGSize) -> CGSize {
+        let textContainer = NSTextContainer(size: maxSize)
+        let layoutManager = NSLayoutManager()
+        let attributedStering = replicateAttributedStringSetByUITextView(text: text, font: font, color: UIColor.black)
+        let textStorage = NSTextStorage(attributedString: attributedStering)
+        textContainer.lineFragmentPadding = 0
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+        return layoutManager.usedRect(for: textContainer).size
+    }
+    
+    private func replicateAttributedStringSetByUITextView(text: String, font: UIFont, color: UIColor) -> NSTextStorage {
+        let attributes: [NSAttributedString.Key : Any] = [
+            .font: font,
+            .foregroundColor: color,
+        ]
+        let textStorage = NSTextStorage(string: text, attributes: attributes)
+        return textStorage
+    }
+    
+    func extimatedFrameForText(text: String) -> CGSize {
+        return sizeWithLayoutManager(text: text, font: UIFont.systemFont(ofSize: 16), maxSize: CGSize(width: 200, height: CGFloat.greatestFiniteMagnitude))
     }
         
     var containerViewBottomAnchor:NSLayoutConstraint?
@@ -252,7 +307,7 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
     
     fileprivate func setupInputComponents()
     {
-        let containerView = UIView()
+
         containerView.backgroundColor = .white
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -278,9 +333,9 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
         containerView.addSubview(inputTextFields)
         
         inputTextFields.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8).isActive = true
-        inputTextFields.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
         inputTextFields.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-        inputTextFields.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        inputTextFields.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 8).isActive = true
+        inputTextFields.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
 
         let seperatorLineView = UIView()
         seperatorLineView.backgroundColor = UIColor(r: 220, g: 220, b: 220)
@@ -296,17 +351,26 @@ class ChatLogViewController: BaseCollectionViewController, UITextFieldDelegate, 
     
     @objc func handleSend()
     {
-        if inputTextFields.text != ""
+        if inputTextFields.text != "" && inputTextFields.textColor != UIColor.lightGray
         {
-            sendButton.isUserInteractionEnabled = false
-            presenter.sendMessage(message: inputTextFields.text ?? "") {
+            sendButton.isEnabled = false
+            presenter.sendMessage(message: inputTextFields.text.trim) {
                 self.dispatchMain
                 {
-                    self.sendButton.isUserInteractionEnabled = true
-                    self.inputTextFields.text = ""
+                    self.sendButton.isEnabled = true
+                    self.clearInput()
                 }
             }
+        }else{
+            self.clearInput()
         }
+    }
+    
+    func clearInput(){
+        self.inputTextFields.text = nil
+        self.textViewDidChange(self.inputTextFields)
+        self.textViewDidEndEditing(self.inputTextFields)
+        self.view.endEditing(true)
     }
     
     func moveCollectionvieToEnd()
@@ -345,7 +409,7 @@ extension ChatLogViewController: ChatLogView
     func refresh(_ firstTimeMakeUserToBottom: Bool = false)
     {
         dispatchMain{
-                self.collectionView.reloadData()
+            self.collectionView.reloadData()
             if firstTimeMakeUserToBottom
             {
                 self.moveCollectionvieToEnd()
@@ -361,6 +425,9 @@ extension ChatLogViewController: ChatLogView
                 self.collectionView.insertItems(at: indexpaths)
             }) { (status) in }
         }
+    }
+    func dismiss() {
+        super.close()
     }
 }
 
@@ -388,5 +455,37 @@ extension ChatLogViewController: ChatMesageCellView
         {
             self.collectionView.reloadItems(at: [indexpath])
         }
+    }
+}
+extension ChatLogViewController: UITextViewDelegate{
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = placeholderText
+            textView.textColor = UIColor.lightGray
+        }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        let size = CGSize(width: textView.frame.width, height: .infinity)
+        let estimatedSize = textView.sizeThatFits(size)
+        containerView.constraints.forEach({
+            if $0.firstAttribute == .height{
+                if estimatedSize.height < 50 {
+                    $0.constant = 50
+                }else if estimatedSize.height > 80{
+                    $0.constant = 80
+                }else{
+                    $0.constant = estimatedSize.height
+                }
+            }
+        })
     }
 }

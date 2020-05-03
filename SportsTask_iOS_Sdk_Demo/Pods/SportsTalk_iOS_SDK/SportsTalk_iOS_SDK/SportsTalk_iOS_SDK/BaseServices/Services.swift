@@ -1,5 +1,7 @@
 import Foundation
-
+public protocol RoomUpdates {
+    func roomData(string: String)
+}
 open class Services
 {
     let baseUrl = URL(string: "https://api.sportstalk247.com/api/v3")
@@ -14,8 +16,9 @@ open class Services
     
     private var _authToken: String?
     private lazy var _url: URL? = baseUrl
-    private var _ams = ServicesAMS()
+    private lazy var _ams = ServicesAMS(services: self)
     private var _appId: String? = ""
+    private var _debug: Bool = false
     
     internal var knownRooms: [[AnyHashable: Any]]?
     internal var _updatesApi: String?
@@ -24,7 +27,8 @@ open class Services
     internal lazy var _endpoint = URL(string: (_url?.absoluteString ?? "") + ((_appId ?? "").isEmpty ? "" : "/\(_appId ?? "")"))
     internal var _currentRoom: [AnyHashable: Any]?
     private var _user = User(userId: "", handle: "")
-    public var pollingUpdates: [AnyHashable: Any]?
+    public var pollingUpdates: (([AnyHashable:Any]?) -> Void)?
+    public var roomDelegate: RoomUpdates?
     
     private var _polling = false
     {
@@ -91,6 +95,16 @@ open class Services
             self.ams.appId = newValue
         }
     }
+    
+    open var debug: Bool{
+        get{
+            return _debug
+        }
+        set{
+            _debug = newValue
+            self.ams.debug = newValue
+        }
+    }
 
     open var url: URL?
     {
@@ -138,12 +152,13 @@ open class Services
     func stopPolling()
     {
         interval?.invalidate()
+        ams.clearTimeStamp()
     }
     
     @objc func startPollingTimer()
     {
         ams.getUpdates { (response) in
-            self.pollingUpdates = response
+            self.pollingUpdates?(response)
         }
     }
 }

@@ -7,6 +7,8 @@ class UserListingViewController: BaseViewController
     private var tableView: UITableViewBase!
     private var presenter: UserListingViewPresenter!
     
+    var isDestinationConversation = false
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -77,8 +79,14 @@ extension UserListingViewController: UITableViewDelegate, UITableViewDataSource
     {
         selectedUser = presenter.users[indexPath.item]
 
-        let chatLogController = ChatLogViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        self.navigationController?.pushViewController(chatLogController, animated: true)
+        if isDestinationConversation{
+            let vc = CommentConversationsViewController()
+            self.navigationController?.pushViewController(vc, animated: true)
+        }else{
+            let chatLogController = ChatLogViewController()
+            self.navigationController?.pushViewController(chatLogController, animated: true)
+        }
+        
         
         tableView.deselectRow(at: indexPath, animated: true)
     }

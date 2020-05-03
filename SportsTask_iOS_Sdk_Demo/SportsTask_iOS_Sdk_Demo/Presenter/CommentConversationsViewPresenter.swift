@@ -15,14 +15,16 @@ class CommentConversationsViewPresenter{
         loadData()
     }
     
-    func loadData(){
+    func loadData(isRefreshing: Bool = false){
         let request = CommentsService.ListConversations()
-        CommonUttilities.shared.showLoader()
-        services.ams.commentsServies(request) {response in
+        if !isRefreshing{
+            CommonUttilities.shared.showLoader()
+        }
+        services.ams.commentsServices(request) {response in
             if let data = response["data"] as? [String : Any], let array = data["conversations"] as? NSArray{
                 self.parseData(array: array)
-                CommonUttilities.shared.hideLoader()
             }
+            CommonUttilities.shared.hideLoader()
         }
     }
     func parseData(array: NSArray){

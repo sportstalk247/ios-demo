@@ -1,17 +1,9 @@
-//
-//  CommentsViewPresenter.swift
-//  SportsTask_iOS_Sdk_Demo
-//
-//  Created by Admin on 15/04/20.
-//  Copyright © 2020 krishna41. All rights reserved.
-//
-
 import Foundation
 import SportsTalk_iOS_SDK
 
 protocol CommentsView{
     func showData()
-    func messageSent()
+    func messageSent(success: Bool)
     func updateRow(index: Int, isNew: Bool)
 }
 
@@ -26,12 +18,15 @@ class CommentsViewPresenter: NSObject {
            loadData()
     }
     
-    func loadData(){
+    func loadData(isRefreshing: Bool = false){
         let request = CommentsService.ListComments()
         request.comment_conversation_id = conversation?.conversationid
         request.includechildren = true
-        CommonUttilities.shared.showLoader()
-        services.ams.commentsServies(request) { (response) in
+        request.includeinactive = true
+        if !isRefreshing{
+            CommonUttilities.shared.showLoader()
+        }
+        services.ams.commentsServices(request) { (response) in
               if let data = response["data"] as? [String : Any], let array = data["comments"] as? NSArray{
                   self.parseData(array: array)
               }
@@ -54,7 +49,7 @@ class CommentsViewPresenter: NSObject {
         
         if let reports = model.reports{
             for report in reports{
-                if report.userid == currentCommentUserId{
+                if report.userid == selectedUser?.userid ?? ""{
                     return true
                 }
             }
@@ -67,7 +62,7 @@ class CommentsViewPresenter: NSObject {
         if let reactions = model.reactions{
             if let reaction = reactions.first(where: {$0.type == "like"}){
                 if let users = reaction.users{
-                    if let _ = users.first(where: {$0.userid == currentCommentUserId}){
+                    if let _ = users.first(where: {$0.userid == selectedUser?.userid ?? ""}){
                         alreadyLiked = true
                     }
                 }
@@ -78,15 +73,18 @@ class CommentsViewPresenter: NSObject {
     
     func sendComment(text: String){
         let request = CommentsService.CreateAndPublishComment()
-        request.comment_conversation_id = conversation?.conversationid ?? ""
+        request.comment_conversation_id = conversation?.conversationid
         request.body = text
-        request.userid = currentCommentUserId
-        services.ams.commentsServies(request) { (response) in
+        request.userid = selectedUser?.userid ?? ""
+        services.ams.commentsServices(request) { (response) in
             if let data = response["data"] as? [String: Any]{
                 let model = Comment.from(dict: data)
-                self.view.messageSent()
+                self.view.messageSent(success: true)
                 self.updateMode(model: model)
-               
+            }else{
+                self.showMessage(message: "There was an error while sending the comment") { (_) in
+                    self.view.messageSent(success: false)
+                }
             }
         }
         
@@ -103,8 +101,8 @@ class CommentsViewPresenter: NSObject {
                     request.comment_conversation_id = model.conversationid
                     request.comment_comment_id = model.id
                     request.reporttype = "abuse"
-                    request.userid = currentCommentUserId
-                    self.services.ams.commentsServies(request) { (response) in
+                    request.userid = selectedUser?.userid ?? ""
+                    self.services.ams.commentsServices(request) { (response) in
                         if let data = response["data"] as? [String:Any]{
                             let model = Comment.from(dict: data)
                             self.updateMode(model: model)
@@ -122,8 +120,8 @@ class CommentsViewPresenter: NSObject {
         request.comment_comment_id = model.id
         request.reacted = alreadyLiked ? false : true
         request.reaction = "like"
-        request.userid = currentCommentUserId
-        services.ams.commentsServies(request) { (response) in
+        request.userid = selectedUser?.userid ?? ""
+        services.ams.commentsServices(request) { (response) in
             if let data = response["data"] as? [String: Any]{
                 let m = Comment.from(dict: data)
                 self.updateMode(model: m)

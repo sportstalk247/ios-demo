@@ -7,11 +7,11 @@ protocol ChatLogView
     func insertRowsAtIndexes(indexpaths: [IndexPath])
     
     func refreshRowAt(indexpath: IndexPath)
-    
+    func dismiss()
     var isCollectionViewLoading: Bool { set get }
 }
 
-class ChatLogViewPresenter
+class ChatLogViewPresenter: NSObject
 {
     private var view: ChatLogView!
     private var services: Services!
@@ -23,35 +23,39 @@ class ChatLogViewPresenter
     var lastEventId = ""
     
     private var internalTimer: Timer?
-    private var pollingStarted = false
-    {
-        didSet
-        {
-            if pollingStarted
-            {
-                DispatchQueue.main.async
-                {
-                    guard self.internalTimer == nil else { return }
-                    self.internalTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.checkUpdates), userInfo: nil, repeats: true)
+    private var pollingStarted = false{
+        didSet{
+            if pollingStarted{
+                
+                DispatchQueue.main.async{
+                    
+                    self.services.startTalk()
+                    self.services.pollingUpdates = {updates in
+                        self.parseMessages(response: updates as? [String: Any] ?? [:], second: true)
+                    }
+                    
+                    /*guard self.internalTimer == nil else { return }
+                    self.internalTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.checkUpdates), userInfo: nil, repeats: true)*/
                 }
-            }
-            else
-            {
-                guard internalTimer != nil else { return }
+            }else{
+                self.services.stopTalk()
+                /*guard internalTimer != nil else { return }
                 internalTimer?.invalidate()
-                internalTimer = nil
+                internalTimer = nil*/
             }
         }
     }
     
-    @objc func checkUpdates()
-    {
-        getUpdates(second: true)
-//        self.getUpdatesMore()
+    deinit {
+        self.services?.stopTalk()
     }
     
-    func gettingDismissed()
-    {
+    @objc func checkUpdates(){
+        //        getUpdates(second: true)
+        self.getUpdatesMore()
+    }
+    
+    func gettingDismissed(){
         pollingStarted = false
     }
     
@@ -59,6 +63,7 @@ class ChatLogViewPresenter
     {
         self.view = view
         self.services = services
+        super.init()
     }
     
     func loadData()
@@ -67,7 +72,7 @@ class ChatLogViewPresenter
         
         self.joinRoomWithUser(user: selectedUser)
     }
-        
+    
     func joinRoomWithUser(user: User)
     {
         let request = ChatRoomsServices.JoinRoomAuthenticatedUser()
@@ -77,66 +82,65 @@ class ChatLogViewPresenter
         CommonUttilities.shared.showLoader()
         
         services.ams.chatRoomsServices(request) { (response) in
+            var roomJoined = false
             if let response = response["data"] as? [String: Any]
             {
-                CommonUttilities.shared.hideLoader()
-                
                 if let roomResponse = response["room"] as? [String: Any]
                 {
+                    roomJoined = true
                     self.joinedRoom = Room().convertIntoModel(response: roomResponse)
-                    
-                    self.getUpdates()
                     self.pollingStarted = true
                 }
             }
+            if !roomJoined{
+                self.showMessage(message: "There was an error joining the room") { (_) in
+                    self.view.dismiss()
+                }
+            }
+            CommonUttilities.shared.hideLoader()
         }
+    }
+    
+    
+    func parseMessages(response: [String: Any], second: Bool){
+        
+        guard let data = response["data"] as? [String: Any],
+            let events = data["events"] as? [[String:Any]] else {return}
+
+        var messages = [Message]()
+        var reactions = [Message]()
+        CommonUttilities.shared.hideLoader()
+        for event in events{
+            
+            let message = Message().convertIntoModel(response: event)
+            print("event type \(message.eventtype ?? "")")
+            self.lastEventId = message.id ?? ""
+            
+            if message.eventtype == "speech"{
+                messages.append(message)
+            }
+            else if message.eventtype == "reaction"{
+                reactions.append(message)
+            }
+        }
+        self.messages.append(contentsOf: messages)
+        self.reactions.append(contentsOf: reactions)
+        self.view.refresh(second ? false : true)
     }
     
     func getUpdates(second:Bool = false)
     {
         let request = ChatRoomsServices.GetUpdates()
         request.roomId = roomId
-                
+        
         if !second
         {
             CommonUttilities.shared.showLoader()
         }
         
         services.ams.chatRoomsServices(request) { (response) in
-            if let responseMessages = response["data"] as? [[String: Any]]
-            {
-                DispatchQueue.main.async
-                    {
-                        self.messages = [Message]()
-                        self.reactions = [Message]()
-                        CommonUttilities.shared.hideLoader()
-                        
-                        for responseMessage in responseMessages
-                        {
-                            let message = Message().convertIntoModel(response: responseMessage)
-                            
-                            self.lastEventId = message.id ?? ""
-                            
-                            if message.eventtype == "speech"
-                            {
-                                self.messages.append(message)
-                            }
-                            else if message.eventtype == "reaction"
-                            {
-                                self.reactions.append(message)
-                            }
-                        }
-                        
-                        if second
-                        {
-                            self.view.refresh(false)
-                        }
-                        else
-                        {
-                            self.view.refresh(true)
-                        }
-                }
-            }
+            self.parseMessages(response: response as? [String:Any] ?? [:], second: second)
+            CommonUttilities.shared.hideLoader()
         }
     }
     
@@ -147,51 +151,22 @@ class ChatLogViewPresenter
         request.eventid = self.lastEventId
         
         services.ams.chatRoomsServices(request) { (response) in
-            if let responseMessages = response["data"] as? [[String: Any]]
-            {
-                var indexPaths = [IndexPath]()
-                var countToStartWith = self.messages.count
-                
-                for responseMessage in responseMessages
-                {
-                    let message = Message().convertIntoModel(response: responseMessage)
-                    
-                    self.lastEventId = message.id ?? ""
-                    
-                    if message.eventtype == "speech"
-                    {
-                        self.messages.append(message)
-                        
-                        indexPaths.append(IndexPath(item: countToStartWith, section: 0))
-                        countToStartWith = countToStartWith + 1
-                    }
-                    else if message.eventtype == "reaction"
-                    {
-                        self.reactions.append(message)
-                    }
-                }
-                
-                if indexPaths.count > 0
-                {
-                    self.view.insertRowsAtIndexes(indexpaths: indexPaths)
-                }
-            }
+            self.parseMessages(response: response as? [String:Any] ?? [:], second: true)
         }
     }
     
     public typealias completion = () -> Void
-
+    
     func sendMessage(message: String, completionHandler: @escaping completion)
     {
         let request = ChatRoomsServices.ExecuteChatCommand()
         request.roomId = roomId
         request.command = message
         request.userid = selectedUser?.userid
-
+        
         CommonUttilities.shared.showLoader()
         services.ams.chatRoomsServices(request) { response in
             CommonUttilities.shared.hideLoader()
-            self.getUpdates()
             completionHandler()
         }
     }
@@ -206,7 +181,6 @@ class ChatLogViewPresenter
         request.reacted = "true"
         
         services.ams.chatRoomsServices(request) { (response) in
-            self.getUpdates(second: true)
             completionHandler()
         }
     }
@@ -220,6 +194,16 @@ class ChatLogViewPresenter
             if reaction.type == "like"
             {
                 count = count + (reaction.count ?? 0)
+            }
+        }
+        
+        if count == 0{
+            for reaction in reactions where reaction.replyto?.id == message.id{
+                for r in reaction.replyto?.reactions ?? []{
+                    if r.type == "like"{
+                        count+=1
+                    }
+                }
             }
         }
         
