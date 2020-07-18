@@ -1,0 +1,8 @@
+${PODS_ROOT}/Target Support Files/Pods-SportsTalkDemo/Pods-SportsTalkDemo-frameworks.sh
+${BUILT_PRODUCTS_DIR}/InputBarAccessoryView/InputBarAccessoryView.framework
+${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework
+${BUILT_PRODUCTS_DIR}/MessageInputBar/MessageInputBar.framework
+${BUILT_PRODUCTS_DIR}/MessageKit/MessageKit.framework
+${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework
+${BUILT_PRODUCTS_DIR}/SportsTalk247/SportsTalk247.framework
+${BUILT_PRODUCTS_DIR}/Toast-Swift/Toast_Swift.framework
