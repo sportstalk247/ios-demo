@@ -1,0 +1,6 @@
+framework module SportsTalk247 {
+  umbrella header "SportsTalk247-umbrella.h"
+
+  export *
+  module * { export * }
+}
