@@ -113,34 +113,50 @@ extension RoomListViewController {
         let room = viewModel.rooms.value[indexPath.row]
         
         cell.configure(room: room)
+        cell.delegate = self
 
         return cell
     }
-
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-        tableView.allowsSelection = false
-        
-        func joinRoom() {
-            let room = viewModel.rooms.value[indexPath.row]
-            
-            guard let roomId = room.id else {
-                return
-            }
-            
-            viewModel.joinRoom(roomId: roomId)
-        }
-        
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+// MARK: RoomCellDelegate
+extension RoomListViewController: RoomCellDelegate {
+    func didTapJoin(cell: RoomCell) {
         if Account.manager.me == nil {
             Account.manager.fetchUser { success in
                 if success {
-                    joinRoom()
+                    guard let roomId = cell.room.id else {
+                        return
+                    }
+                    
+                    self.viewModel.joinRoom(roomId: roomId)
                 } else {
-                    self.performSegue(withIdentifier: Segue.User.showUserProfile, sender: self)
+                    DispatchQueue.main.async {
+                        self.performSegue(withIdentifier: Segue.User.presentUserProfile, sender: self)
+                    }
                 }
             }
         } else {
-            joinRoom()
+            guard let roomId = cell.room.id else {
+                return
+            }
+
+            self.viewModel.joinRoom(roomId: roomId)
+        }
+    }
+}
+
+// MARK: - Navigation
+extension RoomListViewController {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == Segue.User.presentUserProfile {
+            if let destination = segue.destination as? UserProfileTableViewController {
+                destination.viewModel = UserProfileViewModel(actor: nil)
+            }
         }
     }
 }

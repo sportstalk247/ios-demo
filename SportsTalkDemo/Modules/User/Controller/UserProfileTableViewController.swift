@@ -9,6 +9,12 @@
 import UIKit
 import Combine
 import SDWebImage
+import MBProgressHUD
+import Toast_Swift
+
+protocol UserProfileDelegate: class {
+    func didDismiss()
+}
 
 class UserProfileTableViewController: UITableViewController {
     
@@ -21,6 +27,8 @@ class UserProfileTableViewController: UITableViewController {
     @IBOutlet weak var photoField: UITextField!
     @IBOutlet weak var profileField: UITextField!
     @IBOutlet weak var submitButton: UIButton!
+    
+    weak var delegate: UserProfileDelegate?
     
     var viewModel: UserProfileViewModel!
 }
@@ -47,26 +55,33 @@ extension UserProfileTableViewController {
 extension UserProfileTableViewController {
     private func setupView() {
         if let actor = viewModel.actor {
-            if let photoURL = actor.photoURL {
-                self.photoView.sd_setImage(with: photoURL, placeholderImage: UIImage(systemName: "person.fill"), completed: nil)
-            }
+            nameField.text = actor.name
+            viewModel.name = actor.name
             
-            self.nameField.text = actor.displayName
-            viewModel.name = actor.displayName
-            
-            self.handleField.text = actor.handle
+            handleField.text = actor.handle
+            handleField.isEnabled = false
             viewModel.handle = actor.handle
             
-            self.photoField.text = actor.photoURL?.absoluteString
+            photoField.text = actor.photoURL?.absoluteString
             viewModel.photoURL = actor.photoURL
             
-            self.profileField.text = actor.profileURL?.absoluteString
+            profileField.text = actor.profileURL?.absoluteString
             viewModel.profileURL = actor.profileURL
             
-            self.submitButton.setTitle("Delete Account", for: .normal)
+            if let photoURL = actor.photoURL {
+                photoView.sd_setImage(with: photoURL, placeholderImage: UIImage(systemName: "person.fill"), completed: nil)
+            }
+            
+            submitButton.setTitle("Delete Account", for: .normal)
         } else {
-            self.submitButton.setTitle("Submit", for: .normal)
+            handleField.isEnabled = true
+            submitButton.setTitle("Submit", for: .normal)
         }
+        
+        nameField.delegate = self
+        handleField.delegate = self
+        photoField.delegate = self
+        profileField.delegate = self
     }
     
     private func setupReactive() {
@@ -74,16 +89,21 @@ extension UserProfileTableViewController {
             .textPublisher
             .throttle(for: .milliseconds(400), scheduler: RunLoop.main, latest: true)
             .sink { [unowned self] text in
-                let name = self.viewModel.actor?.name
-                if name != text {
+                self.viewModel.name = text
+                
+                guard let actor = self.viewModel.actor else {
+                    self.viewModel.isEditting = true
+                    self.submitButton.setTitle("Submit", for: .normal)
+                    return
+                }
+                
+                if actor.name != text {
                     self.viewModel.isEditting = true
                     self.submitButton.setTitle("Edit Account", for: .normal)
                 } else {
                     self.viewModel.isEditting = false
                     self.submitButton.setTitle("Delete Account", for: .normal)
                 }
-                
-                self.viewModel.name = text
             }
             .store(in: &viewModel.cancellables)
         
@@ -91,16 +111,21 @@ extension UserProfileTableViewController {
             .textPublisher
             .throttle(for: .milliseconds(400), scheduler: RunLoop.main, latest: true)
             .sink { [unowned self] text in
-                let handle = self.viewModel.actor?.handle
-                if handle != text {
+                self.viewModel.handle = text
+                
+                guard let actor = self.viewModel.actor else {
+                    self.viewModel.isEditting = true
+                    self.submitButton.setTitle("Submit", for: .normal)
+                    return
+                }
+                
+                if actor.handle != text {
                     self.viewModel.isEditting = true
                     self.submitButton.setTitle("Edit Account", for: .normal)
                 } else {
                     self.viewModel.isEditting = false
                     self.submitButton.setTitle("Delete Account", for: .normal)
                 }
-                
-                self.viewModel.handle = text
             }
             .store(in: &viewModel.cancellables)
         
@@ -109,15 +134,6 @@ extension UserProfileTableViewController {
             .throttle(for: .milliseconds(400), scheduler: RunLoop.main, latest: true)
             .removeDuplicates()
             .sink { [unowned self] text in
-                let photoURL = self.viewModel.actor?.photoURL
-                if photoURL != URL(string: text ?? "") {
-                    self.viewModel.isEditting = true
-                    self.submitButton.setTitle("Edit Account", for: .normal)
-                } else {
-                    self.viewModel.isEditting = false
-                    self.submitButton.setTitle("Delete Account", for: .normal)
-                }
-
                 guard
                     let text = text,
                     let url = URL(string: text)
@@ -129,6 +145,21 @@ extension UserProfileTableViewController {
                 
                 self.viewModel.photoURL = url
                 self.photoView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "person.fill"), completed: nil)
+
+                
+                guard let actor = self.viewModel.actor else {
+                    self.viewModel.isEditting = true
+                    self.submitButton.setTitle("Submit", for: .normal)
+                    return
+                }
+                
+                if actor.photoURL != URL(string: text) {
+                    self.viewModel.isEditting = true
+                    self.submitButton.setTitle("Edit Account", for: .normal)
+                } else {
+                    self.viewModel.isEditting = false
+                    self.submitButton.setTitle("Delete Account", for: .normal)
+                }
             }
             .store(in: &viewModel.cancellables)
         
@@ -136,25 +167,30 @@ extension UserProfileTableViewController {
             .textPublisher
             .throttle(for: .milliseconds(400), scheduler: RunLoop.main, latest: true)
             .sink { [unowned self] text in
-                let profileURL = self.viewModel.actor?.profileURL
-                if profileURL != URL(string: text ?? "") {
+                guard
+                    let text = text,
+                    let url = URL(string: text)
+                else {
+                    self.viewModel.photoURL = nil
+                    self.photoView.image = UIImage(systemName: "person.fill")
+                    return
+                }
+                                
+                self.viewModel.profileURL = url
+                
+                guard let actor = self.viewModel.actor else {
+                    self.viewModel.isEditting = true
+                    self.submitButton.setTitle("Submit", for: .normal)
+                    return
+                }
+                
+                if actor.profileURL != URL(string: text) {
                     self.viewModel.isEditting = true
                     self.submitButton.setTitle("Edit Account", for: .normal)
                 } else {
                     self.viewModel.isEditting = false
                     self.submitButton.setTitle("Delete Account", for: .normal)
                 }
-                
-                guard
-                    let text = text,
-                    let url = URL(string: text)
-                else {
-                    self.viewModel.profileURL = nil
-                    return
-                }
-                
-                self.viewModel.profileURL = url
-
             }
             .store(in: &viewModel.cancellables)
         
@@ -162,6 +198,34 @@ extension UserProfileTableViewController {
             .submitEnabled
             .assign(to: \.isEnabled, on: submitButton)
             .store(in: &viewModel.cancellables)
+        
+        viewModel
+            .isLoading
+            .receive(on: RunLoop.main)
+            .sink { loading in
+                if loading {
+                    MBProgressHUD.showAdded(to: self.view, animated: true)
+                } else {
+                    MBProgressHUD.hide(for: self.view, animated: true)
+                }
+            }
+            .store(in: &viewModel.cancellables)
+        
+        viewModel
+            .errorMsg
+            .receive(on: RunLoop.main)
+            .sink { message in
+                self.view.makeToast(message, duration: 3.0, position: .center)
+            }
+            .store(in: &viewModel.cancellables)
+    }
+    
+    func safelyDismiss() {
+        DispatchQueue.main.async {
+            self.dismiss(animated: true) {
+                self.delegate?.didDismiss()
+            }
+        }
     }
 }
 
@@ -169,20 +233,30 @@ extension UserProfileTableViewController {
 extension UserProfileTableViewController {
     @IBAction private func submitButtonTapped() {
         if viewModel.actor == nil {
-            viewModel.createUser { success in
-                self.navigationController?.popViewController(animated: true)
+            viewModel.createUser { completed in
+                if completed {
+                     self.safelyDismiss()
+                }
             }
         } else {
-            if viewModel.actor! == Account.manager.me {
-                if viewModel.isEditting {
-                    viewModel.createUser { _ in self.dismiss(animated: true) }
-                } else {
-                    viewModel.deleteUser { _ in self.dismiss(animated: true) }
+            if self.viewModel.isEditting {
+                viewModel.updateUser { completed in
+                    if completed {
+                         self.safelyDismiss()
+                    }
                 }
             } else {
-                self.submitButton.isHidden = true
+                viewModel.deleteUser { completed in
+                    if completed {
+                         self.safelyDismiss()
+                    }
+                }
             }
         }
+    }
+    
+    @IBAction private func cancelButtonTapped() {
+        safelyDismiss()
     }
 }
 
@@ -195,5 +269,20 @@ extension UserProfileTableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 4
+    }
+}
+
+// MARK: UITextField
+extension UserProfileTableViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        switch textField {
+        case nameField:     handleField.becomeFirstResponder()
+        case handleField:   photoField.becomeFirstResponder()
+        case photoField:    profileField.becomeFirstResponder()
+        case profileField:  textField.resignFirstResponder()
+        default:            textField.resignFirstResponder()
+        }
+
+        return true
     }
 }

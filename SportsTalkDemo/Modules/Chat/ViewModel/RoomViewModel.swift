@@ -16,6 +16,8 @@ class RoomViewModel {
     let newEvents = PassthroughSubject<[Event], Never>()
     let isLoading = PassthroughSubject<Bool, Never>()
     let shouldReload = PassthroughSubject<IndexPath, Never>()
+    let participants = PassthroughSubject<[ChatRoomParticipant], Never>()
+    let reactedEvent = PassthroughSubject<Event, Never>()
     let errorMsg = PassthroughSubject<String, Never>()
     
     var activeRoom: ChatRoom
@@ -27,6 +29,21 @@ class RoomViewModel {
 }
 
 extension RoomViewModel {
+    func fetchParticipants() {
+        guard let roomId = activeRoom.id else { return }
+        
+        isLoading.send(true)
+        
+        let request = ChatRequest.ListRoomParticipants()
+        request.roomid = roomId
+        
+        Session.manager.chatClient.listRoomParticipants(request) { (code, message, _, response) in
+            self.isLoading.send(false)
+            guard let response = response else { return }
+            self.participants.send(response.participants)
+        }
+    }
+    
     func exitRoom(completion: @escaping (_ success: Bool) -> Void) {
         guard
             let roomId = activeRoom.id,
@@ -53,17 +70,14 @@ extension RoomViewModel {
                 return
             }
             
-            // Hijack empty string sent by me. Happens when like
+            // Do not display reaction events
             events.removeAll { (event) -> Bool in
-                
-                if event.userid == Account.manager.me?.userId {
-                    if let body = event.body {
-                        return body.isEmpty
-                    } else {
+                if let type = event.eventtype {
+                    if type == .reaction {
+                        self.reactedEvent.send(event)
                         return true
                     }
                 }
-                
                 return false
             }
             
@@ -132,7 +146,6 @@ extension RoomViewModel {
         
         Session.manager.chatClient.reactToEvent(request) { (code, message, _, response) in
             if code == 200 {
-                self.shouldReload.send(indexPath)
             } else {
                 guard let message = message else { return }
                 self.errorMsg.send(message)
@@ -155,7 +168,7 @@ extension RoomViewModel {
         
         Session.manager.chatClient.reportMessage(request) { (code, serverMessage, _, reponse) in
             if code == 200 {
-                self.errorMsg.send("\(message.actor.name)'s message has been reported.")
+                self.errorMsg.send("\(message.actor.handle)'s message has been reported.")
             } else {
                 guard let message = serverMessage else { return }
                 self.errorMsg.send(message)
@@ -166,18 +179,9 @@ extension RoomViewModel {
 
 extension RoomViewModel {
     private func haveActorsJoinThisRoom() {
-        guard
-            let eugene = Account.manager.eugene,
-            let vincent = Account.manager.vincent,
-            let alfred = Account.manager.alfred,
-            let dennis = Account.manager.dennis
-        else {
-            return
-        }
-        
         isLoading.send(true)
         
-        [eugene, vincent, alfred, dennis].forEach {
+        Account.manager.systemActors.forEach {
             let request = ChatRequest.JoinRoom()
             request.roomid = activeRoom.id!
             request.userid = $0.userId

@@ -41,8 +41,8 @@ extension AddEditRoomViewModel {
     func createRoom(completion: @escaping (_ success: Bool) -> ()) {
         isLoading.send(true)
         
-        guard let name = name else {
-            isLoading.send(true)
+        guard let name = name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            isLoading.send(false)
             message.send("Room name is required.")
             return
         }
@@ -57,8 +57,12 @@ extension AddEditRoomViewModel {
         request.roomisopen = isOpen
         
         Session.manager.chatClient.createRoom(request) { [unowned self] (code, message, _, _) in
-            if let message = message {
-                self.message.send(message)
+            if code == 200 {
+                
+            } else {
+                if let message = message {
+                    self.message.send(message)
+                }
             }
             
             completion(code == 200)
@@ -74,21 +78,32 @@ extension AddEditRoomViewModel {
             return
         }
         
+        guard let name = name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            isLoading.send(false)
+            message.send("Room name is required.")
+            return
+        }
+        
         let request = ChatRequest.UpdateRoom()
         request.roomid = roomId
         request.name = name
         request.description = summary
+        request.customid = customId
         request.enableactions = enableRoomActions
         request.enableprofanityfilter = enableProfanityFilter
         request.enableenterandexit = enableEnterAndExit
         request.roomisopen = isOpen
         
-        Session.manager.chatClient.updateRoom(request) { [unowned self] (code, message, _, _) in
-            if let message = message {
-                self.message.send(message)
+        Session.manager.chatClient.updateRoom(request) { [unowned self] (code, message, _, room) in
+            guard code == 200 else {
+                if let message = message {
+                    self.message.send(message)
+                }
+                completion(false)
+                return
             }
             
-            completion(code == 200)
+            completion(true)
         }
     }
 }

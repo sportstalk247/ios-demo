@@ -1,16 +1,16 @@
 PODS:
-  - InputBarAccessoryView (4.3.2):
-    - InputBarAccessoryView/Core (= 4.3.2)
-  - InputBarAccessoryView/Core (4.3.2)
+  - InputBarAccessoryView (4.3.3):
+    - InputBarAccessoryView/Core (= 4.3.3)
+  - InputBarAccessoryView/Core (4.3.3)
   - MBProgressHUD (1.2.0)
   - MessageInputBar (0.4.1):
     - MessageInputBar/Core (= 0.4.1)
   - MessageInputBar/Core (0.4.1)
   - MessageKit (3.1.0):
     - InputBarAccessoryView (~> 4.3.0)
-  - SDWebImage (5.8.3):
-    - SDWebImage/Core (= 5.8.3)
-  - SDWebImage/Core (5.8.3)
+  - SDWebImage (5.8.4):
+    - SDWebImage/Core (= 5.8.4)
+  - SDWebImage/Core (5.8.4)
   - SportsTalk247 (0.0.1)
   - Toast-Swift (5.0.1)
 
@@ -37,15 +37,15 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   SportsTalk247:
-    :commit: 2ecb705f418589535b4f20dc5cc2b5b13a2db618
+    :commit: 466bcca14e3b6531d1bb375c16db78a507eb0afe
     :git: https://gitlab.com/sportstalk247/sdk-ios-swift.git
 
 SPEC CHECKSUMS:
-  InputBarAccessoryView: 7985d418040a05fe894bd4b8328dd43ab35517c3
+  InputBarAccessoryView: 8e7fc09e9cba75e0fee5da13450e15c194806f69
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   MessageInputBar: e81c7535347f1f7b923de7080409a535a004b6e4
   MessageKit: 3beb578737a5aa2bba25cc27c7b6d6faa09af5a7
-  SDWebImage: 112503ec94a5a2a41869503844a15e8d8f1ead5c
+  SDWebImage: cf6922231e95550934da2ada0f20f2becf2ceba9
   SportsTalk247: 8070cbc4ba34bf283da2999fd0560af27feab82b
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
 

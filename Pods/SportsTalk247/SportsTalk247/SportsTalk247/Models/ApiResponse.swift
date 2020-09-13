@@ -9,7 +9,7 @@ public struct ApiResponse<T: Codable>: Codable {
     
     private enum CodingKeys: String, CodingKey {
         case kind
-        case message = "errorMessage"
+        case message = "message"
         case code
         case data
     }
@@ -21,5 +21,4 @@ public struct ApiResponse<T: Codable>: Codable {
         self.code = try container.decodeIfPresent(Int.self, forKey: .code)
         self.data = try container.decodeIfPresent(T.self, forKey: .data)
     }
-    
 }

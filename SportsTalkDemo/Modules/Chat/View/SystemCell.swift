@@ -10,7 +10,6 @@ import UIKit
 import MessageKit
 
 open class SystemCell: UICollectionViewCell {
-    
     let label = UILabel()
     
     public override init(frame: CGRect) {
@@ -26,6 +25,7 @@ open class SystemCell: UICollectionViewCell {
     open func setupSubviews() {
         contentView.addSubview(label)
         label.textAlignment = .center
+        label.numberOfLines = 0
         label.font = UIFont.boldSystemFont(ofSize: 13)
         label.textColor = UIColor.darkGray
     }
@@ -37,9 +37,9 @@ open class SystemCell: UICollectionViewCell {
     
     open func configure(with message: MessageType, at indexPath: IndexPath, and messagesCollectionView: MessagesCollectionView) {
         switch message.kind {
-        case .custom(let data):
-            guard let systemMessage = data as? String else { return }
-            label.text = systemMessage
+        case .custom(let data as [String: Any]):
+            let body = data["body"] as? String
+            label.text = body
         default:
             break
         }

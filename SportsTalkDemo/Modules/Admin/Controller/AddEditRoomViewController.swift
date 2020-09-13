@@ -13,6 +13,7 @@ import Toast_Swift
 import MBProgressHUD
 
 class AddEditRoomViewController: UIViewController {
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var toolBarTitle: UIBarButtonItem!
     @IBOutlet weak var nameField: UITextField!
     @IBOutlet weak var descriptionField: UITextField!
@@ -49,10 +50,11 @@ extension AddEditRoomViewController {
             profanityFilterSwitch.isOn = viewModel.enableProfanityFilter
             enableEnterAndExitSwitch.isOn = viewModel.enableEnterAndExit
             openRoomSwitch.isOn = viewModel.isOpen
-            
-            // Disable customId changes
-            customIdField.isEnabled = false
         }
+        
+        nameField.delegate = self
+        descriptionField.delegate = self
+        customIdField.delegate = self
     }
     
     private func setupReactive() {
@@ -85,7 +87,12 @@ extension AddEditRoomViewController {
     }
     
     @IBAction private func submitButtonTapped() {
-        viewModel.name = nameField.text
+        guard let name = nameField.text, !name.isEmpty else {
+            viewModel.message.send("Please enter a valid room name")
+            return
+        }
+        
+        viewModel.name = name
         viewModel.summary = descriptionField.text
         viewModel.customId = customIdField.text
         
@@ -126,5 +133,16 @@ extension AddEditRoomViewController {
 }
 
 // MARK: - Delegate Methods
-extension AddEditRoomViewController {}
+// MARK: UITextField
+extension AddEditRoomViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        scrollView.scrollRectToVisible(textField.bounds, animated: true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+
+}
 

@@ -12,6 +12,7 @@
 import Foundation
 import SportsTalk247
 import MessageKit
+import Combine  
 
 class Account {
     static let manager: Account = {
@@ -19,113 +20,72 @@ class Account {
         return instance
     }()
 
-    var me: Actor?
-    var eugene: Actor!
-    var vincent: Actor!
-    var dennis: Actor!
-    var alfred: Actor!
-    
-    var admin: Actor!
+    @Published var me: Actor?
+    var actors = [Actor]()          /*{ didSet { print("Actors++\n \(actors.map { $0.handle } )") } }*/
+    var systemActors = [Actor]()    /*{ didSet { print("SystemActors++\n\(systemActors.map { $0.handle })" ) } }*/
 }
 
 // MARK: - Convenience
 extension Account {
     func fetchUser(_ completion: ((_ success: Bool) -> Void)? = nil) {
-        Session.manager.userClient.getUserDetails(Actors.Request.Me) { (code, _, _, user) in
-            guard let user = user else {
-                return
+        Session.manager.userClient.getUserDetails(Actors.Create.Request.Me) { (code, _, _, user) in
+            if let user = user {
+                let me  = Actor(from: user)
+                Account.manager.me = me
+                if !self.actors.contains(me) {
+                    self.actors.append(me)
+                }
             }
             
-            Account.manager.me = Actor(from: user)
             completion?(code == 200)
         }
     }
     
-    func createAdmin() {
-        let request = Actors.Request.Admin
-        Session.manager.userClient.createOrUpdateUser(request) { [weak self] (code, _, _, user) in
-            guard
-                let self = self,
-                let user = user
-            else {
-                return
-            }
-            
-            self.admin = Actor(from: user)
-        }
-    }
-    
-    func createActors() {
-        // Actor 1: Eugene
-        let eugene = Actors.Request.Eugene
-        Session.manager.userClient.createOrUpdateUser(eugene) { [weak self] (code, message, kind, user) in
-            guard
-                let self = self,
-                let user = user
-            else {
-                return
-            }
-            
-            self.eugene = Actor(from: user)
-        }
-        
-        // Actor 2: Vincent
-        let vincent = Actors.Request.Vincent
-        Session.manager.userClient.createOrUpdateUser(vincent) { [weak self] (_, _, _, user) in
-            guard
-                let self = self,
-                let user = user
-            else {
-                return
-            }
-            
-            self.vincent = Actor(from: user)
-        }
-        
-        // Actor 3: Dennis
-        let dennis = Actors.Request.Dennis
-        Session.manager.userClient.createOrUpdateUser(dennis) { [weak self] (_, _, _, user) in
-            guard
-                let self = self,
-                let user = user
-            else {
-                return
-            }
-            
-            self.dennis = Actor(from: user)
-        }
-        
-        // Actor 4: Alfred
-        let alfred = Actors.Request.Alfred
-        Session.manager.userClient.createOrUpdateUser(alfred) { [weak self] (_, _, _, user) in
-            guard
-                let self = self,
-                let user = user
-            else {
-                return
-            }
-            
-            self.alfred = Actor(from: user)
-        }
-    }
-    
-    func locallyFetchActor(with userId: String) -> Actor? {
-        // All actors in this test environment must be available locally.
-        // In the event that you created an actor via website, you need to createUpdateUser
-        // on this demo app and put him on this list.
-        
-        let actors = [
-            Account.manager.me,
-            Account.manager.eugene,
-            Account.manager.vincent,
-            Account.manager.dennis,
-            Account.manager.alfred,
-            Account.manager.admin
+    func fetchUpdateSystemUsers() {
+        let searchRequests = [
+            Actors.Search.Request.Eugene,
+            Actors.Search.Request.Vincent,
+            Actors.Search.Request.Alfred,
+            Actors.Search.Request.Vincent,
+            Actors.Search.Request.Admin
         ]
         
-        return actors.filter{ $0?.userId == userId }.first ?? nil
+        searchRequests.forEach { request in
+            Session.manager.userClient.searchUser(request) { [weak self] (code, message, kind, list) in
+                guard let self = self else { return }
+                guard let users = list?.users else { return }
+                
+                for user in users {
+                    let actor = Actor(from: user)
+                    if !self.systemActors.contains(actor) {
+                        self.systemActors.append(actor)
+                    }
+                }
+            }
+        }
+        
+        if systemActors.isEmpty {
+            let createRequests = [
+                Actors.Create.Request.Eugene,
+                Actors.Create.Request.Vincent,
+                Actors.Create.Request.Alfred,
+                Actors.Create.Request.Vincent,
+                Actors.Create.Request.Admin
+            ]
+            
+            createRequests.forEach { request in
+                Session.manager.userClient.createOrUpdateUser(request) { [weak self] (code, message, kind, user) in
+                    guard let self = self else { return }
+                    guard let user = user else { return }
+                    let actor = Actor(from: user)
+                    if !self.systemActors.contains(actor) {
+                        self.systemActors.append(actor)
+                    }
+                }
+            }
+        }
     }
-    
+        
     func avatarForActor(_ sender: SenderType) -> Avatar? {
         guard let actor = sender as? Actor else {
             return nil

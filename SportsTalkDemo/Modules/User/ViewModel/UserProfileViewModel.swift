@@ -14,6 +14,7 @@ class UserProfileViewModel {
     var cancellables = Set<AnyCancellable>()
     var submitEnabled = CurrentValueSubject<Bool, Never>(false)
     let isLoading  = PassthroughSubject<Bool, Never>()
+    let errorMsg = PassthroughSubject<String, Never>()
     var isEditting: Bool = false
     
     // Required field: name, handle
@@ -31,19 +32,53 @@ class UserProfileViewModel {
 
 extension UserProfileViewModel {
     private func shouldAllowSignup() {
-        if let name = name, let handle = handle {
-            submitEnabled.send(!name.isEmpty && !handle.isEmpty)
+        if let handle = handle, !handle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            submitEnabled.send(true)
+            return
         } else {
-            submitEnabled.send(false)
+            if let name = name, !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                submitEnabled.send(true)
+                return
+            }
         }
+                
+        submitEnabled.send(false)
     }
-        
+    
     func createUser(completion: @escaping (_ success: Bool) -> ()) {
         let request = UserRequest.CreateUpdateUser()
         // Setting userId is delegated to client so you can incorporate it to your own objects.
-        request.userid = "demoapp.v.0.0.1.me"
+        request.userid = "demoappv001me"
+        request.displayname = name?.trimmingCharacters(in: .whitespaces)
+        request.handle = handle?.trimmingCharacters(in: .whitespaces)
+        request.pictureurl = photoURL
+        request.profileurl = profileURL
+        
+        isLoading.send(true)
+        
+        Session.manager.userClient.createOrUpdateUser(request) { (code, message, kind, user) in
+            self.isLoading.send(false)
+            
+            if let message = message {
+                self.errorMsg.send(message)
+            }
+            
+            guard let user = user else {
+                completion(false)
+                return
+            }
+            
+            Account.manager.me = Actor(from: user)
+            completion(code == 200)
+        }
+    }
+    
+    func updateUser(completion: @escaping (_ success: Bool) -> ()) {
+        guard let actor = actor else { return }
+        
+        let request = UserRequest.CreateUpdateUser()
+        request.userid = actor.userId
         request.displayname = name
-        request.handle = handle
         request.pictureurl = photoURL
         request.profileurl = profileURL
         
@@ -56,18 +91,33 @@ extension UserProfileViewModel {
                 return
             }
             
-            Account.manager.me = Actor(from: user)
+            if actor.userId == Account.manager.me?.userId {
+                Account.manager.me = Actor(from: user)
+            }
+            
             completion(code == 200)
         }
     }
     
     func deleteUser(completion: @escaping (_ success: Bool) -> () ) {
-        guard let me = Account.manager.me else { return }
+        var currentActor: Actor
+        if let actor = actor {
+            currentActor = actor
+        } else {
+            guard let me = Account.manager.me else { return }
+            currentActor = me
+        }
+        
         let request = UserRequest.DeleteUser()
-        request.userid = me.userId
+        request.userid = currentActor.userId
 
         isLoading.send(true)
-        Session.manager.userClient.deleteUser(request) { (code, _, _, response) in
+        Session.manager.userClient.deleteUser(request) { (code, message, _, response) in
+            if let message = message {
+                self.errorMsg.send(message)
+            }
+            
+            currentActor.deleteLocally()
             self.isLoading.send(false)
             completion(code == 200)
         }

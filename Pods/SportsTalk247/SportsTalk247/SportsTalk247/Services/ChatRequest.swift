@@ -178,6 +178,7 @@ public class ChatRequest {
             case slug
             case name
             case description
+            case customid
             case moderation
             case enableactions
             case enableenterandexit
@@ -192,6 +193,7 @@ public class ChatRequest {
         public var slug: URL?
         public var name: String?
         public var description: String?
+        public var customid: String?
         public var moderation: String?
         public var enableactions: Bool?
         public var enableenterandexit: Bool?
@@ -209,6 +211,7 @@ public class ChatRequest {
             ret.slug = value(forKey: .slug)
             ret.name = value(forKey: .name)
             ret.description = value(forKey: .description)
+            ret.customid = value(forKey: .customid)
             ret.moderation = value(forKey: .moderation)
             ret.enableactions = value(forKey: .enableactions)
             ret.enableenterandexit = value(forKey: .enableenterandexit)
@@ -229,6 +232,7 @@ public class ChatRequest {
             add(key: .slug, value: slug?.absoluteString)
             add(key: .name, value: name)
             add(key: .description, value: description)
+            add(key: .customid, value: customid)
             add(key: .moderation, value: moderation)
             add(key: .enableactions, value: enableactions)
             add(key: .enableenterandexit, value: enableenterandexit)
@@ -693,6 +697,8 @@ public class ChatRequest {
             case roomid
             case command
             case userid
+            case moderation
+            case eventtype
             case customtype
             case customid
             case custompayload
@@ -701,6 +707,8 @@ public class ChatRequest {
         public var roomid: String?
         public var command: String?
         public var userid: String?
+        public var moderation: String?
+        public var eventtype: EventType?
         public var customtype: String?
         public var customid: String?
         public var custompayload: String?
@@ -712,6 +720,8 @@ public class ChatRequest {
             ret.roomid = value(forKey: .roomid)
             ret.command = value(forKey: .command)
             ret.userid = value(forKey: .userid)
+            ret.moderation = value(forKey: .moderation)
+            ret.eventtype = value(forKey: .eventtype)
             ret.customtype = value(forKey: .customtype)
             ret.customid = value(forKey: .customid)
             ret.custompayload = value(forKey: .custompayload)
@@ -725,6 +735,8 @@ public class ChatRequest {
             addRequired(key: .roomid, value: roomid)
             add(key: .command, value: command)
             add(key: .userid, value: userid)
+            add(key: .moderation, value: moderation)
+            add(key: .eventtype, value: eventtype?.rawValue)
             add(key: .customtype, value: customtype)
             add(key: .customid, value: customid)
             add(key: .custompayload, value: custompayload)

@@ -54,8 +54,8 @@ extension RoomParticipantsViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        viewModel.fetchInhabitants()
         viewModel.selectedActor = nil
+        viewModel.fetchParticipants()
     }
 }
 
@@ -93,7 +93,7 @@ extension RoomParticipantsViewController {
             }
             .store(in: &viewModel.cancellables)
         
-        viewModel.systemMessage
+        viewModel.message
             .receive(on: RunLoop.main)
             .sink { message in
                 self.view.makeToast(message, duration: 1.0, position: .top)
@@ -105,7 +105,7 @@ extension RoomParticipantsViewController {
 // MARK: Actions & Events
 extension RoomParticipantsViewController {
     @objc private func pulledToRefresh() {
-        viewModel.fetchInhabitants()
+        viewModel.fetchParticipants()
     }
     
     @IBAction private func makeAnnouncement() {
@@ -120,6 +120,7 @@ extension RoomParticipantsViewController {
             if let destination = segue.destination as? UserProfileTableViewController {
                 guard let actor = viewModel.selectedActor else { return }
                 destination.viewModel = UserProfileViewModel(actor: actor)
+                destination.delegate = self
             }
         }
     }
@@ -151,7 +152,13 @@ extension RoomParticipantsViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if let user = viewModel.participants.value[indexPath.row].user {
-            viewModel.selectedActor = Actor(from: user)
+            let selectedActor = Actor(from: user)
+            
+            if Account.manager.systemActors.map({ $0.userId }).contains(where: { $0 == selectedActor.userId }) {
+                viewModel.message.send("Error - You are attempting to edit a system protected user. Please edit a valid user")
+                return
+            }
+            viewModel.selectedActor = selectedActor
             performSegue(withIdentifier: Segue.Admin.presentUserProfile, sender: self)
         }
     }
@@ -181,5 +188,11 @@ extension RoomParticipantsViewController {
         }
 
         return UISwipeActionsConfiguration(actions: [ban, delete])
+    }
+}
+
+extension RoomParticipantsViewController: UserProfileDelegate {
+    func didDismiss() {
+        viewModel.fetchParticipants()
     }
 }

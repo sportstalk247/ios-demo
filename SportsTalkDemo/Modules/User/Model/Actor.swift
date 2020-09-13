@@ -26,7 +26,7 @@ class Actor: SenderType {
     }
     
     var displayName: String {
-        return handle
+        return name + " " + "@\(handle)"
     }
     
     init(from user: User) {
@@ -49,19 +49,38 @@ class Actor: SenderType {
             self.profileURL = URL(string: profileString)
         }
         
-        if user.handle == nil {
-            self.handle = ("@" + name.trimmingCharacters(in: .whitespaces)).lowercased()
-        } else {
-            self.handle = user.handle!
-        }
-        
+        self.handle = user.handle ?? ""
         self.banned = user.banned ?? false
         
         if let pictureURL = user.pictureurl {
             SDWebImageDownloader().downloadImage(with: URL(string: pictureURL)) { (image, _, _, _) in
-                guard let image = image else { return }
+                guard let image = image else {
+                    self.avatar = Avatar(image: UIImage(systemName: "person.fill"), initials: self.handle)
+                    return
+                }
+                
                 self.avatar = Avatar(image: image, initials: self.handle)
             }
+        }
+    }
+}
+
+extension Actor {
+    func saveLocally() {
+        if !Account.manager.actors.contains(where: { $0.userId == self.userId }) {
+            if self.userId == Account.manager.me?.userId {
+                Account.manager.me = self
+            }
+            
+            Account.manager.actors.append(self)
+        }
+    }
+    
+    func deleteLocally() {
+        Account.manager.actors.removeAll(where: { $0.userId == self.userId })
+        
+        if Account.manager.me?.userId == self.userId {
+            Account.manager.me = nil
         }
     }
 }
@@ -73,59 +92,95 @@ extension Actor: Equatable {
 }
 
 struct Actors {
-    struct Request {
-        static let Me: UserRequest.GetUserDetails = {
-            let request = UserRequest.GetUserDetails()
-            request.userid = "demoapp.v.0.0.1.me"
-            return request
-        }()
-        
-        static let Eugene: UserRequest.CreateUpdateUser = {
-           let request = UserRequest.CreateUpdateUser()
-            request.userid = "demoapp.v.0.0.1.eugene"
-            request.displayname = "Eugene"
-            request.handle = "youj"
-            request.pictureurl =
-                URL(string: "https://media.istockphoto.com/photos/portrait-of-chinese-young-mustached-man-looking-at-camera-with-gray-picture-id1158112527?k=6&m=1158112527&s=612x612&w=0&h=6tXjyyZ_rdS7s0D6gfcr840kPeR4aUkZuAQCXvlRRTs=")
-            return request
-        }()
-        
-        static let Vincent: UserRequest.CreateUpdateUser = {
-           let request = UserRequest.CreateUpdateUser()
-            request.userid = "demoapp.v.0.0.1.vincent"
-            request.displayname = "Vincent"
-            request.handle = "centine"
-            request.pictureurl =
-                URL(string: "https://media.istockphoto.com/photos/upper-body-of-young-men-picture-id1082006126?k=6&m=1082006126&s=612x612&w=0&h=cXUiPDBXt09VhKYNc4IU8jxSIOuzL7u70ZLfhmh3Uos=")
-            return request
-        }()
-        
-        static let Dennis: UserRequest.CreateUpdateUser = {
-            let request = UserRequest.CreateUpdateUser()
-            request.userid = "demoapp.v.0.0.1.dennis"
-            request.displayname = "Dennis"
-            request.handle = "yourhomeboydennis"
-            request.pictureurl =
-                URL(string: "https://st.depositphotos.com/1771835/1478/i/450/depositphotos_14781729-stock-photo-happy-asian-doctor-folded-arms.jpg")
-            return request
-        }()
-        
-        static let Alfred: UserRequest.CreateUpdateUser = {
-            let request = UserRequest.CreateUpdateUser()
-            request.userid = "demoapp.v.0.0.1.alfred"
-            request.displayname = "Alfred"
-            request.handle = "batmanhu"
-            request.pictureurl =
-                URL(string: "https://st2.depositphotos.com/1550494/7408/i/450/depositphotos_74089543-stock-photo-male-butler-wearing-formal-tuxedo.jpg")
-            return request
-        }()
-        
-        static let Admin: UserRequest.CreateUpdateUser = {
-           let request = UserRequest.CreateUpdateUser()
-            request.userid = "admin"
-            request.displayname = "Admin"
-            request.handle = "admin"
-            return request
-        }()
+    struct Create {
+        struct Request {
+            static let Me: UserRequest.GetUserDetails = {
+                let request = UserRequest.GetUserDetails()
+                request.userid = "demoappv001me"
+                return request
+            }()
+            
+            static let Eugene: UserRequest.CreateUpdateUser = {
+               let request = UserRequest.CreateUpdateUser()
+                request.userid = "demoappv001eugene"
+                request.displayname = "Eugene"
+                request.handle = "youj"
+                request.pictureurl =
+                    URL(string: "https://media.istockphoto.com/photos/portrait-of-chinese-young-mustached-man-looking-at-camera-with-gray-picture-id1158112527?k=6&m=1158112527&s=612x612&w=0&h=6tXjyyZ_rdS7s0D6gfcr840kPeR4aUkZuAQCXvlRRTs=")
+                return request
+            }()
+            
+            static let Vincent: UserRequest.CreateUpdateUser = {
+               let request = UserRequest.CreateUpdateUser()
+                request.userid = "demoappv001vincent"
+                request.displayname = "Vincent"
+                request.handle = "centine"
+                request.pictureurl =
+                    URL(string: "https://media.istockphoto.com/photos/upper-body-of-young-men-picture-id1082006126?k=6&m=1082006126&s=612x612&w=0&h=cXUiPDBXt09VhKYNc4IU8jxSIOuzL7u70ZLfhmh3Uos=")
+                return request
+            }()
+            
+            static let Dennis: UserRequest.CreateUpdateUser = {
+                let request = UserRequest.CreateUpdateUser()
+                request.userid = "demoappv001dennis"
+                request.displayname = "Dennis"
+                request.handle = "yourhomeboydennis"
+                request.pictureurl =
+                    URL(string: "https://st.depositphotos.com/1771835/1478/i/450/depositphotos_14781729-stock-photo-happy-asian-doctor-folded-arms.jpg")
+                return request
+            }()
+            
+            static let Alfred: UserRequest.CreateUpdateUser = {
+                let request = UserRequest.CreateUpdateUser()
+                request.userid = "demoappv001alfred"
+                request.displayname = "Alfred"
+                request.handle = "batmanhu"
+                request.pictureurl =
+                    URL(string: "https://st2.depositphotos.com/1550494/7408/i/450/depositphotos_74089543-stock-photo-male-butler-wearing-formal-tuxedo.jpg")
+                return request
+            }()
+            
+            static let Admin: UserRequest.CreateUpdateUser = {
+               let request = UserRequest.CreateUpdateUser()
+                request.userid = "admin"
+                request.displayname = "Admin"
+                request.handle = "admin"
+                return request
+            }()
+        }
+    }
+    
+    struct Search {
+        struct Request {
+            static let Admin: UserRequest.SearchUser = {
+                let request = UserRequest.SearchUser()
+                request.userid = "admin"
+                return request
+            }()
+            
+            static let Eugene: UserRequest.SearchUser = {
+                let request = UserRequest.SearchUser()
+                request.userid = "demoappv001eugene"
+                return request
+            }()
+            
+            static let Vincent: UserRequest.SearchUser = {
+                let request = UserRequest.SearchUser()
+                request.userid = "demoappv001vincent"
+                return request
+            }()
+            
+            static let Dennis: UserRequest.SearchUser = {
+                let request = UserRequest.SearchUser()
+                request.userid = "demoappv001dennis"
+                return request
+            }()
+            
+            static let Alfred: UserRequest.SearchUser = {
+                let request = UserRequest.SearchUser()
+                request.userid = "demoappv001alfred"
+                return request
+            }()
+        }
     }
 }

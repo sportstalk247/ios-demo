@@ -14,8 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Session.manager.fetchConfig()
-        Account.manager.createActors()
-        Account.manager.createAdmin()
+        Account.manager.fetchUpdateSystemUsers()
         SportsTalkSDK.shared.debugMode = false
         return true
     }

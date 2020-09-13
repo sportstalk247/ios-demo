@@ -8,10 +8,11 @@
 
 import Foundation
 import MessageKit
+import SportsTalk247
 
 open class SystemMessagesFlowLayout: MessagesCollectionViewFlowLayout {
     
-    open lazy var customMessageSizeCalculator = SystemMessageSizeCalculator(layout: self)
+    open lazy var customMessageSizeCalculator = CustomMessageSizeCalculator(layout: self)
     
     open override func cellSizeCalculatorForItem(at indexPath: IndexPath) -> CellSizeCalculator {
         if isSectionReservedForTypingIndicator(indexPath.section) {
@@ -33,19 +34,52 @@ open class SystemMessagesFlowLayout: MessagesCollectionViewFlowLayout {
     }
 }
 
-open class SystemMessageSizeCalculator: MessageSizeCalculator {
+open class CustomMessageSizeCalculator: MessageSizeCalculator {
     
     public override init(layout: MessagesCollectionViewFlowLayout? = nil) {
         super.init()
         self.layout = layout
     }
     
-    open override func sizeForItem(at indexPath: IndexPath) -> CGSize {
-        guard let layout = layout else { return .zero }
-        let collectionViewWidth = layout.collectionView?.bounds.width ?? 0
-        let contentInset = layout.collectionView?.contentInset ?? .zero
-        let inset = layout.sectionInset.left + layout.sectionInset.right + contentInset.left + contentInset.right
-        return CGSize(width: collectionViewWidth - inset, height: 44)
+    open override func messageContainerSize(for message: MessageType) -> CGSize {
+        let maxWidth = messageContainerMaxWidth(for: message)
+        switch message.kind {
+        case .custom(let data as [String: Any]):
+            guard let type = data["type"] as? EventType else { break }
+            guard let body = data["body"] as? String else { break }
+            
+            switch type {
+            case .announcement:
+                let font = UIFont.systemFont(ofSize: 13)
+                let attributes = [NSAttributedString.Key.font: font]
+                
+                let body = body as NSString
+                let rect = body.boundingRect(with: CGSize(width: maxWidth, height: 2000), options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+                return CGSize(width: rect.width, height: rect.height)
+            case .reply:
+                let font = UIFont.systemFont(ofSize: 16)
+                let attributes = [NSAttributedString.Key.font: font]
+                
+                let body = body as NSString
+                let bodyRect = body.boundingRect(with: CGSize(width: maxWidth, height: 2000), options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+                let bodyHeight = bodyRect.height <= 44 ? 44 : bodyRect.height
+                
+                guard let original = data["original"] as? String else {
+                    return CGSize(width: bodyRect.width + messageContainerPadding(for: message).left + messageContainerPadding(for: message).right, height: bodyHeight)
+                }
+                
+                let originalRect = original.boundingRect(with: CGSize(width: maxWidth, height: 2000), options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
+                
+                let width = (bodyRect.width > originalRect.width ? bodyRect.width : originalRect.width) + messageContainerPadding(for: message).left + messageContainerPadding(for: message).right
+                
+                return CGSize(width: width, height: bodyHeight + 44)
+            default:
+                break
+            }
+        default:
+            break
+        }
+
+        return CGSize(width: maxWidth, height: 44)
     }
-  
 }

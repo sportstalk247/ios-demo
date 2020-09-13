@@ -18,7 +18,7 @@ class RoomParticipantsViewModel {
     var cancellables = Set<AnyCancellable>()
     var participants = CurrentValueSubject<[ChatRoomParticipant], Never>([ChatRoomParticipant]())
     let isLoading = PassthroughSubject<Bool, Never>()
-    let systemMessage = PassthroughSubject<String, Never>()
+    let message = PassthroughSubject<String, Never>()
     
     init(room: ChatRoom) {
         self.room = room
@@ -28,7 +28,7 @@ class RoomParticipantsViewModel {
 
 // MARK: - Convenience
 extension RoomParticipantsViewModel {
-    func fetchInhabitants() {
+    func fetchParticipants() {
         guard let roomId = room.id else {
             return
         }
@@ -47,27 +47,31 @@ extension RoomParticipantsViewModel {
     
     func makeAnnouncement(_ text: String) {
         let request = ChatRequest.ExecuteChatCommand()
-        request.customtype = "announcement"
+        request.eventtype = .announcement
         request.command = text
         request.userid = "admin"
         request.roomid = room.id
         
         self.isLoading.send(true)
         
-        Session.manager.chatClient.executeChatCommand(request) { [unowned self] (code, _, _, _) in
+        Session.manager.chatClient.executeChatCommand(request) { [unowned self] (code, message, _, _) in
             self.isLoading.send(false)
             
             if code == 200 {
-                self.systemMessage.send("Successfully posted an announcement.")
+                self.message.send("Successfully posted an announcement.")
             } else {
-                self.systemMessage.send("Failed to post an announcement.")
+                if let message = message {
+                    self.message.send(message)
+                } else {
+                    self.message.send("Failed to post an announcement.")
+                }
             }
         }
     }
     
     private func makeBanChatStatus(for actor: Actor, banned: Bool) {
         let request = ChatRequest.ExecuteChatCommand()
-        request.customtype = "announcement"
+        request.eventtype = .announcement
         request.command = "\(actor.displayName) has been \(banned ? "banned" : "unbanned") by admin"
         request.userid = "admin"
         request.roomid = room.id
@@ -89,7 +93,7 @@ extension RoomParticipantsViewModel {
         Session.manager.userClient.setBanStatus(request) { (_, _, _, _) in
             // Chaining api calls might cause reponse to be outdated. add 2 seconds delay to be safe
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                self.fetchInhabitants()
+                self.fetchParticipants()
                 self.makeBanChatStatus(for: actor, banned: true)
                 self.isLoading.send(false)
             }
@@ -106,7 +110,7 @@ extension RoomParticipantsViewModel {
         Session.manager.userClient.setBanStatus(request) { (_, _, _, _) in
             // Chaining api calls might cause reponse to be outdated. add 2 seconds delay to be safe
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                self.fetchInhabitants()
+                self.fetchParticipants()
                 self.makeBanChatStatus(for: actor, banned: false)
                 self.isLoading.send(false)
             }
@@ -114,18 +118,21 @@ extension RoomParticipantsViewModel {
     }
     
     func delete(actor: Actor) {
-        // Note: When deleting test accounts, some test actors may try to come back to life.
-        // Reset the simulation when this happens
+        if Account.manager.systemActors.map({ $0.userId }).contains(where: { $0 == actor.userId }) {
+            message.send("Error - You are removing a system generated actor. Please remove a valid user")
+            return
+        }
+        
+        isLoading.send(true)
         
         let request = UserRequest.DeleteUser()
         request.userid = actor.userId
         
-        isLoading.send(true)
-        
         Session.manager.userClient.deleteUser(request) { (_, _, _, _) in
             // Chaining api calls might cause reponse to be outdated. add 2 seconds delay to be safe
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-                self.fetchInhabitants()
+                actor.deleteLocally()
+                self.fetchParticipants()
                 self.isLoading.send(false)
             }
         }

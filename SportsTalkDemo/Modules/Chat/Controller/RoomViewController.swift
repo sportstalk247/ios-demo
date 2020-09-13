@@ -25,28 +25,22 @@ class RoomViewController: MessagesViewController {
     override var inputAccessoryView: UIView? {
         return messageInputBar
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.newEvents.send([])
+        messagesCollectionView.reloadData()
+        viewModel.fetchParticipants()
+    }
 
     override func viewDidLoad() {
         messagesCollectionView = MessagesCollectionView(frame: .zero, collectionViewLayout: SystemMessagesFlowLayout())
         messagesCollectionView.register(SystemCell.self)
+        messagesCollectionView.register(ReplyCell.self)
         
         super.viewDidLoad()
         setupView()
         setupReactive()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        if Account.manager.me != nil {
-            viewModel.startListening()
-            self.startActing()
-        } else {
-            // Force exit without leaving room
-            self.stopActing()
-            Session.manager.chatClient.stopListeningToChatUpdates()
-            self.navigationController?.popToRootViewController(animated: true)
-        }
     }
     
     public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -59,14 +53,26 @@ class RoomViewController: MessagesViewController {
         }
 
         let message = messagesDataSource.messageForItem(at: indexPath, in: messagesCollectionView)
-        if case .custom = message.kind {
-            let cell = messagesCollectionView.dequeueReusableCell(SystemCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+        if case .custom(let data as [String: Any]) = message.kind {
+            guard let type = data["type"] as? EventType else {
+                return super.collectionView(collectionView, cellForItemAt: indexPath)
+            }
+            
+            switch type {
+            case .announcement, .action:
+                let cell = messagesCollectionView.dequeueReusableCell(SystemCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            case .reply:
+                let cell = messagesCollectionView.dequeueReusableCell(ReplyCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            default:
+                break
+            }
         }
         return super.collectionView(collectionView, cellForItemAt: indexPath)
     }
-
 }
 
 // MARK: - Convenience
@@ -102,14 +108,74 @@ extension RoomViewController {
     }
     
     private func setupReactive() {
+        Publishers
+            .CombineLatest(Account.manager.$me, viewModel.participants)
+            .receive(on: RunLoop.main)
+            .sink { [unowned self] (me, participants) in
+                for participant in participants {
+                    guard let user = participant.user else { return }
+                    let actor = Actor(from: user)
+                    actor.saveLocally()
+                }
+                
+                if me != nil && !participants.isEmpty {
+                    // Modify message for name changes
+                    let myMessages = self.messages.filter({ $0.sender.senderId == me!.userId })
+                    
+                    myMessages.forEach { message in
+                        message.sender = me!
+                    }
+                    
+                    self.viewModel.startListening()
+                    self.startActing()
+                } else {
+                    self.stopActing()
+                    self.messages = []
+                    self.messagesCollectionView.reloadData()
+                    Session.manager.chatClient.stopListeningToChatUpdates()
+                    self.navigationController?.popToRootViewController(animated: true)
+                }
+            }
+            .store(in: &viewModel.cancellables)
+        
         viewModel
             .newEvents
             .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [unowned self] newEvents in
-                self.messages.append( contentsOf: newEvents.map { Message(from: $0) } )
+                newEvents.forEach { event in
+                    if event.user != nil {
+                        guard event.eventtype != nil else { return }
+                        guard let body = event.body, !body.isEmpty else { return }
+                        self.messages.append(Message(from: event))
+                    } else {
+                        guard let eventId = event.parentid else { return }
+                        let changables = self.messages.filter({ $0.messageId == eventId })
+                        
+                        changables.forEach { message in
+                            message.body = "(deleted)"
+                        }
+                    }
+                }
                 self.messagesCollectionView.reloadData()
                 self.messagesCollectionView.scrollToBottom()
+            }
+            .store(in: &viewModel.cancellables)
+        
+        viewModel
+            .reactedEvent
+            .receive(on: RunLoop.main)
+            .sink { [unowned self] event in
+                
+                if let event = event.replyto, let eventId = event.id {
+                    let reactedMessages = self.messages.filter { $0.messageId == eventId }
+                    
+                    for message in reactedMessages {
+                        message.reactions = event.reactions
+                    }
+                }
+                
+                self.messagesCollectionView.reloadData()
             }
             .store(in: &viewModel.cancellables)
         
@@ -123,19 +189,6 @@ extension RoomViewController {
                 } else {
                     MBProgressHUD.hide(for: self.view, animated: true)
                 }
-            }
-            .store(in: &viewModel.cancellables)
-        
-        viewModel
-            .shouldReload
-            .receive(on: RunLoop.main)
-            .sink { [unowned self] indexPath in
-                // Manually edit local message
-                let message = self.messages[indexPath.section]
-                let me = Account.manager.me!.original
-                message.reactions?.append(ChatEventReaction(type: "like", count: 1, users: [me]))
-                
-                self.messagesCollectionView.reloadItems(at: [indexPath])
             }
             .store(in: &viewModel.cancellables)
         
@@ -179,24 +232,27 @@ extension RoomViewController {
     }
     
     @objc private func startActing() {
-        let eugene = Account.manager.eugene
-        let vincent = Account.manager.vincent
-        let dennis = Account.manager.dennis
-        let alfred = Account.manager.alfred
+        // Exclude admin from acting
+        let actors = Account.manager.systemActors.filter { $0.userId != "admin" }
         
-        let actors = [eugene, vincent, dennis, alfred]
+        guard actors.count > 0 else { return }
         
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true, block: { [weak self] timer in
             guard let self = self else { return }
-            if let randomActor = actors[Int.random(in: 0 ..< actors.count)] {
-                let speak = randomActor.speakWithRandomIntent()
-                randomActor.sendMessage(to: self.viewModel.activeRoom, with: speak)
-            }
+            let randomActor = actors[Int.random(in: 0 ..< actors.count)]
+            let speak = randomActor.speakWithRandomIntent()
+            randomActor.sendMessage(to: self.viewModel.activeRoom, with: speak)
         })
     }
     
     @objc private func stopActing() {
         timer?.invalidate()
+    }
+    
+    @objc private func cancelReply() {
+        isReplyingTo = nil
+        messageInputBar.topStackView.subviews.forEach { $0.removeFromSuperview() }
+        messageInputBar.inputTextView.text = String()
     }
 }
 
@@ -268,16 +324,9 @@ extension RoomViewController: MessagesDataSource, MessagesDisplayDelegate {
         accessoryView.subviews.forEach { $0.removeFromSuperview() }
         accessoryView.backgroundColor = .clear
         
-        // Can send like to everyone's message except mine
-        guard !isFromCurrentSender(message: message) else { return }
-        
-        // Can like, but cannot unliked
-        guard let message = message as? Message else { return }
-        guard let reactions = message.reactions else { return }
-
-        let liked = reactions.contains { $0.type == "like" }
-        
-        guard liked == false else { return }
+        if let m = messageForItem(at: indexPath, in: messagesCollectionView) as? Message {
+            guard m.deleted == false else { return }
+        }
         
         let button = UIButton()
         button.setImage(UIImage(systemName: "ellipsis.circle"), for: .normal)
@@ -292,7 +341,14 @@ extension RoomViewController: MessagesDataSource, MessagesDisplayDelegate {
     
     func messageTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         if !isPreviousMessageSameSender(at: indexPath) {
-            let name = message.sender.displayName
+            var name = message.sender.displayName
+            
+            if let m = messageForItem(at: indexPath, in: messagesCollectionView) as? Message {
+                if m.type == .custom {
+                    name += " (unknown message type)"
+                }
+            }
+            
             let attributes = [
                 NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10),
                 NSAttributedString.Key.foregroundColor: UIColor.darkGray
@@ -303,7 +359,6 @@ extension RoomViewController: MessagesDataSource, MessagesDisplayDelegate {
     }
     
     func cellBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
-        guard !isFromCurrentSender(message: message) else { return nil }
         let attributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10),
             NSAttributedString.Key.foregroundColor: UIColor.darkGray
@@ -315,14 +370,17 @@ extension RoomViewController: MessagesDataSource, MessagesDisplayDelegate {
         guard let message = message as? Message else { return nil }
         guard let reactions = message.reactions else { return nil }
         
-
-        let liked = reactions.contains { $0.type == "like" }
+        guard let reaction = reactions.filter({ $0.type == "like" }).first else { return nil }
+        guard let count = reaction.count else { return nil }
         
         let attributes = [
             NSAttributedString.Key.font: UIFont.systemFont(ofSize: 10),
             NSAttributedString.Key.foregroundColor: UIColor.darkGray
         ]
-        return liked ? NSAttributedString(string: "👍", attributes: attributes) : nil
+        
+        let liked = reactions.contains { $0.type == "like" }
+        
+        return liked ? NSAttributedString(string: "👍 x\(count)", attributes: attributes) : nil
     }
 }
 
@@ -336,11 +394,20 @@ extension RoomViewController: MessagesLayoutDelegate {
         guard let reactions = message.reactions else { return 0 }
         
         let liked = reactions.contains { $0.type == "like" }
-        return liked ? 20 : 0
+        let deleted = message.deleted
+        
+        if deleted {
+            return 0
+        } else {
+            return liked ? 20 : 0
+        }
     }
     
     func cellBottomLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
-        return !isFromCurrentSender(message: message) ? 20 : 0
+        if let m = messageForItem(at: indexPath, in: messagesCollectionView) as? Message {
+            return m.deleted ? 0 : 20
+        }
+        return 20
     }
 }
 
@@ -355,31 +422,30 @@ extension RoomViewController: MessageCellDelegate {
             return
         }
         
+        guard message.deleted == false else { return }
+        
         let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
+        
         let like = UIAlertAction(title: "Like", style: .default) { [weak self] _ in
             guard let self = self else { return }
             self.viewModel.sendLike(to: message.messageId, at: indexPath)
         }
-
-        let report = UIAlertAction(title: "Report", style: .default) { [weak self] _ in
-            guard let self = self else { return }
-            self.viewModel.report(message, at: indexPath)
-        }
-
-//        let delete = UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
-//            guard let self = self else { return }
-//            self.viewModel.sendLike(to: message.messageId, at: indexPath)
-//        }
-
-        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-
         sheet.addAction(like)
-        sheet.addAction(report)
-//        sheet.addAction(delete)
-        sheet.addAction(cancel)
-
-        present(sheet, animated: true, completion: nil)
+        
+        if message.type != .custom {
+            let report = UIAlertAction(title: "Report", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel.report(message, at: indexPath)
+            }
+            sheet.addAction(report)
+        }
+        
+        if sheet.actions.count > 0 {
+            let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            sheet.addAction(cancel)
+            
+            present(sheet, animated: true, completion: nil)
+        }
     }
     
     func didTapCellBottomLabel(in cell: MessageCollectionViewCell) {
@@ -389,13 +455,22 @@ extension RoomViewController: MessageCellDelegate {
         
         if let message = messageForItem(at: indexPath, in: messagesCollectionView) as? Message {
             messageInputBar.topStackView.subviews.forEach { $0.removeFromSuperview() }
-
-            let label = UILabel()
-            label.font = UIFont.systemFont(ofSize: 10)
-            label.textColor = .darkGray
-            label.text = message.body == nil ? "Replying to \(message.actor.displayName)'s message." : "\(message.body!) \(message.actor.displayName)"
             
+            let text = "Replying to \(message.actor.displayName)'s message. cancel"
+            let label = UILabel()
+            label.textColor = .darkGray
+            label.font = UIFont.systemFont(ofSize: 10)
+            label.text = text
+            let underlineAttriString = NSMutableAttributedString(string: text)
+            let range1 = (text as NSString).range(of: "cancel")
+            underlineAttriString.addAttribute(NSAttributedString.Key.font, value: UIFont.boldSystemFont(ofSize: 10), range: range1)
+            underlineAttriString.addAttribute(NSAttributedString.Key.foregroundColor, value: UIColor.blue, range: range1)
+            label.attributedText = underlineAttriString
+            label.isUserInteractionEnabled = true
+            label.addGestureRecognizer(UITapGestureRecognizer(target:self, action: #selector(self.cancelReply)))
+
             messageInputBar.topStackView.addArrangedSubview(label)
+            
             isReplyingTo = message
         }
         messageInputBar.inputTextView.becomeFirstResponder()
