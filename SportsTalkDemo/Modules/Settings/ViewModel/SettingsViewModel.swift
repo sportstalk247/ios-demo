@@ -14,20 +14,14 @@ class SettingsViewModel {
     let title = "Settings"
     
     var cancellables = Set<AnyCancellable>()
-    
-    var datasource = [
-        SettingsCellData(title: "Endpoint", value: Session.manager.endpoint),
-        SettingsCellData(title: "App Id", value: Session.manager.appId),
-        SettingsCellData(title: "AuthToken", value: Session.manager.authToken),
-    ]
+    var message = PassthroughSubject<String, Never>()
 }
 
 extension SettingsViewModel {
-    func save() {
-        print(datasource)
-        let endpoint = datasource[0].value
-        let appId = datasource[1].value
-        let authToken = datasource[2].value
+    func save(endpoint: String, id: String, token: String) {
+        let endpoint = endpoint
+        let appId = id
+        let authToken = token
         Session.manager.configure(endpoint: endpoint, identifier: appId, token: authToken)
         Session.manager.check()
     }

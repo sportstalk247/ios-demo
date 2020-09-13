@@ -62,7 +62,6 @@ extension AdminRoomsViewController {
                 }
             }
             .store(in: &viewModel.cancellables)
-        
     }
 }
 

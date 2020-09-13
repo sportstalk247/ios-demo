@@ -131,6 +131,7 @@ open class Event: Codable, Equatable {
         if let type = try container.decodeIfPresent(String.self, forKey: .eventtypestring) {
             self.eventtype = EventType(rawValue: type)
         }
+        
         self.userid = try container.decodeIfPresent(String.self, forKey: .userid)
         self.user = try container.decodeIfPresent(User.self, forKey: .user)
         self.customtype = try container.decodeIfPresent(String.self, forKey: .customtype)
@@ -210,9 +211,11 @@ public enum EventType: String {
     case roomOpen = "roomopen"
     case action
     case reply
+    case quoted = "quote"
     case goal
     case advertisement
     case announcement
+    case custom
 }
 
 internal func ISODateFormat(_ string: String) -> Date? {

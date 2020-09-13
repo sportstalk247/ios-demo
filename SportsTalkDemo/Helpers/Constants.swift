@@ -19,7 +19,6 @@ struct Storyboard {
 struct Segue {
     struct User {
         static let showRoom = "showRoom"
-        static let showUserProfile = "showUserProfile"
         static let presentUserProfile = "presentUserProfile"
     }
     

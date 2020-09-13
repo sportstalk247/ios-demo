@@ -83,6 +83,17 @@ open class ParametersBase<T,S> {
         guard let urlString = (dictionary[toString(key: key)] as? String) else { return nil }
         return URL(string: urlString)
     }
+    
+    func value(forKey key: T) -> EventType? {
+        guard
+            let id = dictionary[toString(key: key)] as? String,
+            let event = EventType.init(rawValue: id)
+        else {
+            return nil
+        }
+        
+        return event
+    }
  
     func toString(key: T) -> String {
         return "\(key)"

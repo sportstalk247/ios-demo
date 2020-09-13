@@ -11,8 +11,8 @@
         <scene sceneID="pPN-Ny-THg">
             <objects>
                 <tableViewController storyboardIdentifier="UserProfileTableViewController" id="Rth-VR-BLQ" customClass="UserProfileTableViewController" customModule="SportsTalkDemo" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="0mp-al-eII">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="static" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="0mp-al-eII">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <view key="tableHeaderView" contentMode="scaleToFill" id="knb-fD-eNA">
@@ -49,25 +49,47 @@
                             <rect key="frame" x="0.0" y="582" width="414" height="64"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kxA-BS-0i8">
-                                    <rect key="frame" x="107" y="10" width="200" height="44"/>
-                                    <color key="backgroundColor" red="0.26051741839999998" green="0.2605243921" blue="0.260520637" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="200" id="AKd-1b-FUx"/>
-                                        <constraint firstAttribute="height" constant="44" id="OWX-3N-ZCH"/>
-                                    </constraints>
-                                    <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="17"/>
-                                    <inset key="contentEdgeInsets" minX="15" minY="10" maxX="15" maxY="10"/>
-                                    <state key="normal" title="Submit"/>
-                                    <connections>
-                                        <action selector="submitButtonTapped" destination="Rth-VR-BLQ" eventType="touchUpInside" id="RNg-P3-qP3"/>
-                                    </connections>
-                                </button>
+                                <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="tuG-ae-VFa">
+                                    <rect key="frame" x="47" y="10" width="320" height="44"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eQ3-5A-Pzy">
+                                            <rect key="frame" x="0.0" y="0.0" width="150" height="44"/>
+                                            <color key="backgroundColor" red="0.26051741839999998" green="0.2605243921" blue="0.260520637" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="150" id="6UI-zu-lTp"/>
+                                                <constraint firstAttribute="height" constant="44" id="RxA-4Y-3NW"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="14"/>
+                                            <inset key="contentEdgeInsets" minX="15" minY="10" maxX="15" maxY="10"/>
+                                            <state key="normal" title="Submit"/>
+                                            <state key="disabled">
+                                                <color key="titleColor" systemColor="systemGray2Color" red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="submitButtonTapped" destination="Rth-VR-BLQ" eventType="touchUpInside" id="poL-P7-I7H"/>
+                                            </connections>
+                                        </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NpX-X7-OlH">
+                                            <rect key="frame" x="170" y="0.0" width="150" height="44"/>
+                                            <color key="backgroundColor" red="0.26051741839999998" green="0.2605243921" blue="0.260520637" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="150" id="Eu2-G0-NFX"/>
+                                                <constraint firstAttribute="height" constant="44" id="ZIP-2W-5oz"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="14"/>
+                                            <inset key="contentEdgeInsets" minX="15" minY="10" maxX="15" maxY="10"/>
+                                            <state key="normal" title="Cancel"/>
+                                            <connections>
+                                                <action selector="cancelButtonTapped" destination="Rth-VR-BLQ" eventType="touchUpInside" id="dtN-T3-cUJ"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                </stackView>
                             </subviews>
                             <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                             <constraints>
-                                <constraint firstItem="kxA-BS-0i8" firstAttribute="centerY" secondItem="QCn-G2-GfC" secondAttribute="centerY" id="1oN-6d-Cv9"/>
-                                <constraint firstItem="kxA-BS-0i8" firstAttribute="centerX" secondItem="QCn-G2-GfC" secondAttribute="centerX" id="goV-OY-jj0"/>
+                                <constraint firstItem="tuG-ae-VFa" firstAttribute="centerX" secondItem="QCn-G2-GfC" secondAttribute="centerX" id="DO7-s1-J6p"/>
+                                <constraint firstItem="tuG-ae-VFa" firstAttribute="centerY" secondItem="QCn-G2-GfC" secondAttribute="centerY" id="XN7-HA-5ll"/>
                             </constraints>
                         </view>
                         <sections>
@@ -305,9 +327,8 @@
                         <outlet property="photoField" destination="wLy-NR-qm9" id="a42-8f-CsK"/>
                         <outlet property="photoView" destination="ciq-KQ-alc" id="yeD-ej-hgz"/>
                         <outlet property="profileField" destination="qmT-Rw-OAb" id="X5Z-vm-UXA"/>
-                        <outlet property="submitButton" destination="kxA-BS-0i8" id="E93-sY-4Ts"/>
+                        <outlet property="submitButton" destination="eQ3-5A-Pzy" id="6h0-f5-W4j"/>
                         <outletCollection property="circularComponents" destination="uJA-9M-BzZ" collectionClass="NSMutableArray" id="dnD-GW-6Oq"/>
-                        <outletCollection property="circularComponents" destination="kxA-BS-0i8" collectionClass="NSMutableArray" id="3rB-vb-j35"/>
                         <outletCollection property="borderedComponents" destination="CSQ-ST-Z1r" collectionClass="NSMutableArray" id="tae-Iv-JdT"/>
                         <outletCollection property="borderedComponents" destination="lYD-vd-mwK" collectionClass="NSMutableArray" id="YEf-0I-iic"/>
                         <outletCollection property="borderedComponents" destination="AEs-jZ-7vb" collectionClass="NSMutableArray" id="qCH-C9-WKo"/>
@@ -323,7 +344,7 @@
         <scene sceneID="9Xz-zb-hyB">
             <objects>
                 <tableViewController storyboardIdentifier="RoomListTableViewController" id="5gT-oU-Mxa" customClass="RoomListViewController" customModule="SportsTalkDemo" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VA2-lD-fxI">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VA2-lD-fxI">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -336,7 +357,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <segue destination="xK4-hm-YEL" kind="show" identifier="showRoom" id="tN0-XT-j6n"/>
-                        <segue destination="Rth-VR-BLQ" kind="show" identifier="showUserProfile" id="BBm-G0-bpH"/>
+                        <segue destination="Rth-VR-BLQ" kind="presentation" identifier="presentUserProfile" modalPresentationStyle="fullScreen" id="BBm-G0-bpH"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wAd-Zm-vuq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -388,7 +409,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="182-jj-3go"/>
+        <segue reference="BBm-G0-bpH"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="person" catalog="system" width="128" height="117"/>

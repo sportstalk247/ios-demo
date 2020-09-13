@@ -22,5 +22,13 @@ extension SettingsCell {
         data = model
         title.text = model.title
         textField.text = model.value
+        textField.delegate = self
+    }
+}
+
+extension SettingsCell: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

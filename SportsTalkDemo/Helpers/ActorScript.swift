@@ -115,7 +115,7 @@ extension Actor {
         request.userid = self.userId
         request.command = message.message
         
-        Session.manager.chatClient.executeChatCommand(request) { (code, _, _, response) in
+        Session.manager.chatClient.executeChatCommand(request) { (code, message, _, response) in
             if code == 200 {
                 // Success
             }

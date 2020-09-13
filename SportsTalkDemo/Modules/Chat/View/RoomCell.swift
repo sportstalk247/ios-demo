@@ -9,9 +9,15 @@
 import UIKit
 import SportsTalk247
 
+protocol RoomCellDelegate: class {
+    func didTapJoin(cell: RoomCell)
+}
+
 class RoomCell: UITableViewCell {
     static let identifier = "RoomCell"
     static let nib = UINib(nibName: RoomCell.identifier, bundle: nil)
+    
+    weak var delegate: RoomCellDelegate?
     
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var roomName: UILabel!
@@ -19,6 +25,8 @@ class RoomCell: UITableViewCell {
     @IBOutlet weak var population: UILabel!
     @IBOutlet weak var joinButton: UIButton!
     @IBOutlet var circularComponents: [UIView]!
+    
+    var room: ChatRoom!
 }
 
 extension RoomCell {
@@ -28,10 +36,19 @@ extension RoomCell {
     }
 }
 
+// MARK: - Convenience
 extension RoomCell {
     func configure(room: ChatRoom) {
+        self.room = room
         self.roomName.text = room.name ?? ""
         self.roomSummary.text = room.description
         self.population.text = "\(room.inroom ?? 0) fans inside"
+    }
+}
+
+// MARK: Actions & Events
+extension RoomCell {
+    @IBAction private func didTapJoin() {
+        delegate?.didTapJoin(cell: self)
     }
 }
