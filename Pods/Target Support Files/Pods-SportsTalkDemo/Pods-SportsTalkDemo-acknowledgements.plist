@@ -107,7 +107,7 @@ SOFTWARE.
 			<key>FooterText</key>
 			<string>MIT License
 
-Copyright (c) 2017-2019 MessageKit
+Copyright (c) 2017-2020 MessageKit
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -136,7 +136,7 @@ SOFTWARE.
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>Copyright (c) 2009-2018 Olivier Poitrey rs@dailymotion.com
+			<string>Copyright (c) 2009-2020 Olivier Poitrey rs@dailymotion.com
  
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

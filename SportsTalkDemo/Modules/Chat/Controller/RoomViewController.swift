@@ -22,6 +22,13 @@ class RoomViewController: MessagesViewController {
     var timer: Timer?
     var isReplyingTo: Message?
     
+    lazy var refreshControl: UIRefreshControl = {
+        let control = UIRefreshControl()
+        control.attributedTitle = NSAttributedString(string: "Fetching previous messages ...")
+        control.addTarget(self, action: #selector(fetchPreviousMessages), for: .valueChanged)
+        return control
+    }()
+    
     override var inputAccessoryView: UIView? {
         return messageInputBar
     }
@@ -91,6 +98,8 @@ extension RoomViewController {
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.messageCellDelegate = self
         
+        messagesCollectionView.refreshControl = refreshControl
+        
         // We will be using MessageInputBar's topStack as reply indicator
         messageInputBar.topStackView.alignment = .center
         messageInputBar.topStackView.distribution = .fill
@@ -127,7 +136,7 @@ extension RoomViewController {
                     }
                     
                     self.viewModel.startListening()
-                    self.startActing()
+//                    self.startActing()
                 } else {
                     self.stopActing()
                     self.messages = []
@@ -140,33 +149,67 @@ extension RoomViewController {
         
         viewModel
             .newEvents
-            .removeDuplicates()
             .receive(on: RunLoop.main)
             .sink { [unowned self] newEvents in
                 newEvents.forEach { event in
                     if event.user != nil {
                         guard event.eventtype != nil else { return }
                         guard let body = event.body, !body.isEmpty else { return }
-                        self.messages.append(Message(from: event))
+
+                        if !self.messages.contains(Message(from: event)) {
+                            self.messages.append(Message(from: event))
+                        }
                     } else {
                         guard let eventId = event.parentid else { return }
                         let changables = self.messages.filter({ $0.messageId == eventId })
-                        
+
                         changables.forEach { message in
                             message.body = "(deleted)"
                         }
                     }
                 }
-                self.messagesCollectionView.reloadData()
-                self.messagesCollectionView.scrollToBottom()
+
+                if self.messagesCollectionView.scrolledToBottom {
+                    self.messagesCollectionView.reloadData()
+                    self.messagesCollectionView.scrollToBottom()
+                } else {
+                    self.messagesCollectionView.reloadDataAndKeepOffset()
+                }
             }
             .store(in: &viewModel.cancellables)
+
+        viewModel
+            .previousEvents
+            .dropFirst()
+            .receive(on: RunLoop.main)
+            .sink { [unowned self] oldEvents in
+                oldEvents.forEach { event in
+                    if event.user != nil {
+                        guard event.eventtype != nil else { return }
+                        guard let body = event.body, !body.isEmpty else { return }
+
+                        if !self.messages.contains(Message(from: event)) {
+                            self.messages.insert(Message(from: event), at: 0)
+                        }
+                    } else {
+                        guard let eventId = event.parentid else { return }
+                        let changables = self.messages.filter({ $0.messageId == eventId })
+
+                        changables.forEach { message in
+                            message.body = "(deleted)"
+                        }
+                    }
+                }
+
+                self.messagesCollectionView.reloadData()
+            }
+            .store(in: &viewModel.cancellables)
+
         
         viewModel
             .reactedEvent
             .receive(on: RunLoop.main)
             .sink { [unowned self] event in
-                
                 if let event = event.replyto, let eventId = event.id {
                     let reactedMessages = self.messages.filter { $0.messageId == eventId }
                     
@@ -174,8 +217,25 @@ extension RoomViewController {
                         message.reactions = event.reactions
                     }
                 }
-                
                 self.messagesCollectionView.reloadData()
+            }
+            .store(in: &viewModel.cancellables)
+        
+        viewModel
+            .deletedEvent
+            .receive(on: RunLoop.main)
+            .sink { [unowned self] event in
+                if event.user != nil {
+                    self.messages.removeAll(where: { $0.messageId == event.id })
+                    self.messagesCollectionView.reloadData()
+                } else {
+                    guard let eventId = event.parentid else { return }
+                    let changables = self.messages.filter({ $0.messageId == eventId })
+                    
+                    changables.forEach { message in
+                        message.body = "(deleted)"
+                    }
+                }
             }
             .store(in: &viewModel.cancellables)
         
@@ -185,8 +245,10 @@ extension RoomViewController {
             .removeDuplicates()
             .sink { [unowned self] loading in
                 if loading {
+                    refreshControl.beginRefreshing()
                     MBProgressHUD.showAdded(to: self.view, animated: true)
                 } else {
+                    refreshControl.endRefreshing()
                     MBProgressHUD.hide(for: self.view, animated: true)
                 }
             }
@@ -195,9 +257,7 @@ extension RoomViewController {
         viewModel
             .errorMsg
             .receive(on: RunLoop.main)
-            .sink { message in
-                self.view.makeToast(message, duration: 1.0, position: .center)
-            }
+            .sink { self.view.makeToast($0, duration: 1.0, position: .center) }
             .store(in: &viewModel.cancellables)
     }
     
@@ -214,6 +274,10 @@ extension RoomViewController {
 
 // MARK: Actions & Events
 extension RoomViewController {
+    @objc private func fetchPreviousMessages() {
+        viewModel.fetchPreviousEvents()
+    }
+    
     @objc private func exitButtonPressed() {
         viewModel.exitRoom { success in
             DispatchQueue.main.async {
@@ -438,6 +502,22 @@ extension RoomViewController: MessageCellDelegate {
                 self.viewModel.report(message, at: indexPath)
             }
             sheet.addAction(report)
+        }
+        
+        if message.actor == Account.manager.me {
+            let delete = UIAlertAction(title: "Delete", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel.delete(message)
+            }
+            sheet.addAction(delete)
+        }
+        
+        if message.actor == Account.manager.me {
+            let flag = UIAlertAction(title: "Flag as Deleted", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel.flagAsLogicallyDeleted(message)
+            }
+            sheet.addAction(flag)
         }
         
         if sheet.actions.count > 0 {

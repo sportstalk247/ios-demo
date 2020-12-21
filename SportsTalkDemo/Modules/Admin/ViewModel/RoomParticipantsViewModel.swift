@@ -28,6 +28,29 @@ class RoomParticipantsViewModel {
 
 // MARK: - Convenience
 extension RoomParticipantsViewModel {
+    func getRoomDetails() {
+        guard let roomId = room.id else { return }
+        
+        isLoading.send(true)
+        
+        let request = ChatRequest.GetRoomDetails()
+        request.roomid = roomId
+
+        Session.manager.chatClient.getRoomDetails(request) { (code, message, _, response) in
+            self.isLoading.send(false)
+            
+            if code == 200, let newRoom = response {
+                self.room = newRoom
+            } else {
+                if let message = message {
+                    self.message.send(message)
+                } else {
+                    self.message.send("Failed to get room details.")
+                }
+            }
+        }
+    }
+    
     func fetchParticipants() {
         guard let roomId = room.id else {
             return
@@ -42,6 +65,7 @@ extension RoomParticipantsViewModel {
             self.isLoading.send(false)
             guard let response = response else { return }
             self.participants.send(response.participants)
+            self.getRoomDetails()
         }
     }
     
@@ -134,6 +158,65 @@ extension RoomParticipantsViewModel {
                 actor.deleteLocally()
                 self.fetchParticipants()
                 self.isLoading.send(false)
+            }
+        }
+    }
+    
+    func purge(actor: Actor) {
+        let request = ChatRequest.PurgeUserMessages()
+        request.roomid = room.id
+        request.handle = actor.handle
+        request.userid = actor.userId
+        request.password = systemPassword
+        
+        Session.manager.chatClient.purgeMessage(request) { (code, serverMesssage, _, response) in
+            if code == 200 {
+                self.message.send("\(actor.handle)'s messages has been purged.")
+            } else {
+                guard let message = serverMesssage else { return }
+                self.message.send(message)
+            }
+        }
+    }
+    
+    func deleteAll(actor: Actor) {
+        let request = ChatRequest.DeleteAllEvents()
+        request.password = systemPassword
+        request.roomid = room.id
+        request.userid = actor.userId
+        
+        Session.manager.chatClient.deleteAllEvents(request) { (code, serverMessage, _, response) in
+            if code == 200 {
+                self.message.send("All of \(actor.handle)'s messages has been deleted.")
+            } else {
+                guard let message = serverMessage else { return }
+                self.message.send(message)
+            }
+        }
+    }
+    
+    func bounce(_ flag: Bool, actor: Actor) {
+        let request = ChatRequest.BounceUser()
+        request.bounce = flag
+        request.userid = actor.userId
+        request.roomid = room.id
+    
+        if flag {
+            request.announcement = "\(actor.handle) has been bounced from this room."
+        } else {
+            request.announcement = "\(actor.handle) is no longer bounced from this room."
+        }
+        
+        
+        Session.manager.chatClient.bounceUser(request) { (code, serverMessage, _, response) in
+            if code == 200 {
+                guard let announcement = request.announcement else { return }
+                self.makeAnnouncement(announcement)
+                self.message.send("Success")
+                self.getRoomDetails()
+            } else {
+                guard let message = serverMessage else { return }
+                self.message.send(message)
             }
         }
     }

@@ -1,7 +1,7 @@
 import Foundation
 
 public class ChatRequest {
-    /// Creates a new chat room (Postmoderated)
+    /// Creates a new chat room
     ///
     /// name: (required) The name of the room
     ///
@@ -90,7 +90,7 @@ public class ChatRequest {
     /// - Warning: This method requires authentication.
     public class GetRoomDetails: ParametersBase<GetRoomDetails.Fields, GetRoomDetails> {
         public enum Fields {
-            case roomIdOrSlug
+            case roomid
         }
         
         public var roomid: String?
@@ -99,7 +99,7 @@ public class ChatRequest {
             set(dictionary: dictionary)
             let ret = GetRoomDetails()
             
-            ret.roomid = value(forKey: .roomIdOrSlug)
+            ret.roomid = value(forKey: .roomid)
             
             return ret
         }
@@ -107,7 +107,7 @@ public class ChatRequest {
         public func toDictionary() -> [AnyHashable: Any] {
             toDictionary = [AnyHashable: Any]()
             
-            addRequired(key: .roomIdOrSlug, value: roomid)
+            addRequired(key: .roomid, value: roomid)
             
             return toDictionary
         }
@@ -550,6 +550,100 @@ public class ChatRequest {
             return toDictionary
         }
     }
+
+    /// List Event History
+    ///
+    /// - This method enables you to download all of the events from a room in large batches. It should only be used if doing a data export.
+    ///
+    /// - This method returns a list of events sorted from oldest to newest.
+    ///
+    /// - This method returns all events, even those in the inactive state
+    ///
+    ///  Arguments:
+    ///
+    ///  cursor: (Optional) If not provided, the most recent events will be returned. To get older events, call this method again using the cursor string returned from the previous call.
+    ///
+    ///  limit: (Optional) default is 100, maximum 2000
+    public class ListEventHistory: ParametersBase<ListEventHistory.Fields, ListEventHistory> {
+        public enum Fields {
+            case roomid
+            case cursor
+            case limit
+        }
+        
+        public var roomid: String?
+        public var cursor: String? = ""
+        public var limit: Int? = 100
+        
+        override public func from(dictionary: [AnyHashable: Any]) -> ListEventHistory {
+            set(dictionary: dictionary)
+            let ret = ListEventHistory()
+            ret.roomid = value(forKey: .roomid)
+            ret.cursor = value(forKey: .cursor)
+            ret.limit = value(forKey: .limit)
+            
+            return ret
+        }
+        
+        public func toDictionary() -> [AnyHashable: Any] {
+            toDictionary = [AnyHashable: Any]()
+            
+            add(key: .cursor, value: cursor)
+            add(key: .limit, value: limit)
+            
+            return toDictionary
+        }
+    }
+
+    /// List Previous Events
+    ///
+    /// - This method allows you to go back in time to "scroll" in reverse through past messages. The typical use case for this method is to power the scroll-back feature of a chat window allowing the user to look at recent messages that have scrolled out of view. It's intended use is to retrieve small batches of historical events as the user is scrolling up.
+    ///
+    /// - This method returns a list of events sorted from newest to oldest.
+    ///
+    /// - This method excludes events that are not in the active state (for example if they are removed by a moderator)
+    ///
+    /// - This method excludes non-displayable events (reaction, replace, remove, purge)
+    ///
+    /// - This method will not return events that were emitted and then deleted before this method was called
+    ///
+    ///  Arguments:
+    ///
+    ///  cursor: (Optional) If not provided, the most recent events will be returned. To get older events, call this method again using the cursor string returned from the previous call.
+    ///
+    ///  limit: (Optional) default is 100, maximum 500
+    
+    public class ListPreviousEvents: ParametersBase<ListPreviousEvents.Fields, ListPreviousEvents> {
+        public enum Fields {
+            case roomid
+            case cursor
+            case limit
+        }
+        
+        public var roomid: String?
+        public var cursor: String? = ""
+        public var limit: Int? = 100
+        
+        override public func from(dictionary: [AnyHashable: Any]) -> ListPreviousEvents {
+            set(dictionary: dictionary)
+            let ret = ListPreviousEvents()
+            ret.roomid = value(forKey: .roomid)
+            ret.cursor = value(forKey: .cursor)
+            ret.limit = value(forKey: .limit)
+            
+            return ret
+        }
+        
+        public func toDictionary() -> [AnyHashable: Any] {
+            toDictionary = [AnyHashable: Any]()
+            
+            add(key: .cursor, value: cursor)
+            add(key: .limit, value: limit)
+            
+            return toDictionary
+        }
+    }
+
     
     /// Exit a Room
     ///
@@ -1073,18 +1167,85 @@ public class ChatRequest {
         }
     }
     
+    /// Set deleted (LOGICAL DELETE)
+    ///
+    /// Everything in a chat room is an event. Each event has a type. Events of type "speech, reply, quote" are considered "messages".
+    ///
+    /// Use logical delete if you want to flag something as deleted without actually deleting the message so you still have the data. When you use this method:
+    ///
+    /// The message is not actually deleted. The comment is flagged as deleted, and can no longer be read, but replies are not deleted.
+    /// If flag "permanentifnoreplies" is true, then it will be a permanent delete instead of logical delete for this comment if it has no children.
+    /// If you use "permanentifnoreplies" = true, and this comment has a parent that has been logically deleted, and this is the only child, then the parent will also be permanently deleted (and so on up the hierarchy of events).
+    ///
+    /// Arguments:
+    ///
+    /// roomid: (required) The ID of the room containing the event
+    ///
+    /// eventid: (required) The unique ID of the chat event to delete. The user posting the delete request must be the owner of the event or have moderator permission
+    ///
+    /// userId: (required) This is the application specific user ID of the user deleting the comment. Must be the owner of the message event or authorized moderator.
+    ///
+    /// deleted: (required) Set to true or false to flag the comment as deleted. If a comment is deleted, then it will have the deleted field set to true, in which case the contents of the event message should not be shown and the body of the message will not be returned by the API by default. If a previously deleted message is undeleted, the flag for deleted is set to false and the original comment body is returned
+    ///
+    /// permanentifnoreplies: (optional) If this optional parameter is set to "true", then if this event has no replies it will be permanently deleted instead of logically deleted. If a permanent delete is performed, the result will include the field "permanentdelete=true"
+    ///
+    /// If you want to mark a comment as deleted, and replies are still visible, use "true" for the logical delete value. If you want to permanently delete the message and all of its replies, pass false
+    public class FlagEventLogicallyDeleted: ParametersBase<FlagEventLogicallyDeleted.Fields, FlagEventLogicallyDeleted> {
+        public enum Fields {
+            case roomid
+            case eventid
+            case userid
+            case deleted
+            case permanentifnoreplies
+        }
+        
+        public var roomid: String!
+        public var eventid: String!
+        public var userid: String!
+        public var deleted: Bool!
+        public var permanentifnoreplies: Bool?
+        
+        override public func from(dictionary: [AnyHashable: Any]) -> FlagEventLogicallyDeleted {
+            set(dictionary: dictionary)
+            let ret = FlagEventLogicallyDeleted()
+            
+            ret.roomid = value(forKey: .roomid)
+            ret.eventid = value(forKey: .eventid)
+            ret.userid = value(forKey: .userid)
+            ret.deleted = value(forKey: .deleted)
+            ret.permanentifnoreplies = value(forKey: .permanentifnoreplies)
+            
+            return ret
+        }
+        
+        public func toDictionary() -> [AnyHashable: Any] {
+            toDictionary = [AnyHashable: Any]()
+            
+            addRequired(key: .userid, value: userid)
+            addRequired(key: .deleted, value: deleted)
+            add(key: .permanentifnoreplies, value: permanentifnoreplies)
+            
+            return toDictionary
+        }
+    }
+    
     /// Removes a message from a room.
     ///
     /// This does not DELETE the message. It flags the message as moderator removed.
     ///
-    ///  Arguments:
+    /// Arguments:
     ///
-    ///  chatRoomId:  Room id, in which you want to remove the message
+    /// roomId:  the room id in which you want to remove the message
     ///
-    ///  chatMessageId:  the message you want to remove
+    /// eventId:  the message you want to remove
+    ///
+    /// userId: (Optional)  the id to whom the message belongs to
+    /// If provided, a check will be made to enforce this userid (the one deleting the event) is the owner of the event or has elevated permissions. If null, it assumes your business service made the determination to delete the event.
+    ///
+    /// permanent: (Optional) remove permanently if no reply. Defaults to true
     ///
     /// - Warning: This method requires authentication.
-    public class PermanentlyDeleteEvent: ParametersBase<PermanentlyDeleteEvent.Fields, PermanentlyDeleteEvent> {
+    public class DeleteEvent: ParametersBase<DeleteEvent.Fields, DeleteEvent> {
         public enum Fields {
             case roomid
             case eventid
@@ -1093,19 +1254,15 @@ public class ChatRequest {
         
         public var roomid: String!
         public var eventid: String!
-        public var userid: String!
-        public var deleted: Bool = true
-        public var permanent: Bool = true
+        public var userid: String?
         
-        override public func from(dictionary: [AnyHashable: Any]) -> PermanentlyDeleteEvent {
+        override public func from(dictionary: [AnyHashable: Any]) -> DeleteEvent {
             set(dictionary: dictionary)
-            let ret = PermanentlyDeleteEvent()
+            let ret = DeleteEvent()
             
             ret.roomid = value(forKey: .roomid)
             ret.eventid = value(forKey: .eventid)
             ret.userid = value(forKey: .userid)
-            ret.deleted = true
-            ret.permanent = true
             
             return ret
         }
@@ -1113,14 +1270,52 @@ public class ChatRequest {
         public func toDictionary() -> [AnyHashable: Any] {
             toDictionary = [AnyHashable: Any]()
             
-            addRequired(key: .roomid, value: roomid)
-            addRequired(key: .eventid, value: eventid)
-            addRequired(key: .userid, value: userid)
+            add(key: .userid, value: userid)
             
             return toDictionary
         }
     }
     
+    /// Removes all messages in a room.
+    ///
+    ///  Arguments:
+    ///
+    ///  password: a valid admin password
+    ///
+    public class DeleteAllEvents: ParametersBase<DeleteAllEvents.Fields, DeleteAllEvents> {
+        public enum Fields {
+            case roomid
+            case command
+            case userid
+            case password
+        }
+        
+        public var roomid: String!
+        private var command: String!
+        public var password: String!
+        public var userid: String!
+        
+        override public func from(dictionary: [AnyHashable: Any]) -> DeleteAllEvents {
+            set(dictionary: dictionary)
+            let ret = DeleteAllEvents()
+            
+            ret.roomid = value(forKey: .roomid)
+            ret.command = value(forKey: .command)
+            ret.password = value(forKey: .password)
+            ret.userid = value(forKey: .userid)
+            
+            return ret
+        }
+        
+        public func toDictionary() -> [AnyHashable: Any] {
+            toDictionary = [AnyHashable: Any]()
+            
+            addRequired(key: .command, value: "*deleteallevents" + " " + password)
+            addRequired(key: .userid, value: userid)
+            
+            return toDictionary
+        }
+    }
     
     /// Executes a command in a chat room to purge all messages for a user
     ///
@@ -1128,30 +1323,34 @@ public class ChatRequest {
     ///
     ///  Arguments:
     ///
-    ///  command: The command to execute. In this case, "*purge "
+    ///  handle: the handle of the owner of the messages
     ///
-    ///  userid:  user id specific to app
-    ///
-    ///  chatroomid: room id, against which you want to purge the messages
+    ///  password: a valid admin password
     ///
     /// - Warning: This method requires authentication.
     public class PurgeUserMessages: ParametersBase<PurgeUserMessages.Fields, PurgeUserMessages> {
         public enum Fields {
-            case command
-            case chatroomid
+            case roomid
             case userid
+            case command
+            case password
+            case handle
         }
         
-        public var userid: String?
-        public var chatroomid: String?
-        public var command: String?
+        public var roomid: String!
+        public var userid: String!
+        public var handle: String!
+        public var password: String!
+        private var command: String!
         
         override public func from(dictionary: [AnyHashable: Any]) -> PurgeUserMessages {
             set(dictionary: dictionary)
             let ret = PurgeUserMessages()
             
+            ret.roomid = value(forKey: .roomid)
             ret.userid = value(forKey: .userid)
-            ret.chatroomid = value(forKey: .chatroomid)
+            ret.handle = value(forKey: .handle)
+            ret.password = value(forKey: .password)
             ret.command = value(forKey: .command)
             
             return ret
@@ -1160,9 +1359,8 @@ public class ChatRequest {
         public func toDictionary() -> [AnyHashable: Any] {
             toDictionary = [AnyHashable: Any]()
             
-            addRequired(key: .chatroomid, value: chatroomid)
-            add(key: .userid, value: userid)
-            add(key: .command, value: command)
+            addRequired(key: .userid, value: userid)
+            addRequired(key: .command, value: String("*purge \(password!) \(handle!)"))
             
             return toDictionary
         }
@@ -1283,6 +1481,61 @@ public class ChatRequest {
         }
     }
     
+    /// Bounce User
+    ///
+    /// Remove the user from the room and prevent the user from reentering.
+    ///
+    /// Optionally display a message to people in the room indicating this person was bounced.
+    /// When you bounce a user from the room, the user is removed from the room and blocked from reentering.
+    /// Past events generated by that user are not modified (past messages from the user are not removed)
+    ///
+    ///  Arguments:
+    ///
+    ///  userid: (required)  user id specific to app
+    ///
+    ///  bounce: (required) True if the user is being bounced from the room. False if user is debounced, allowing the user to reenter the room.
+    ///
+    ///  roomid: (required) The ID of the chat room from which to bounce this user
+    ///
+    ///  announcement: (optional) If provided, this announcement is displayed to the people who are in the room, as the body of a BOUNCE event.
+    ///
+    public class BounceUser: ParametersBase<BounceUser.Fields, BounceUser> {
+        public enum Fields {
+            case userid
+            case bounce
+            case roomid
+            case announcement
+        }
+        
+        public var userid: String?
+        public var bounce: Bool?
+        public var roomid: String?
+        public var announcement: String?
+        
+        override public func from(dictionary: [AnyHashable: Any]) -> BounceUser {
+            set(dictionary: dictionary)
+            let ret = BounceUser()
+            
+            ret.userid = value(forKey: .userid)
+            ret.bounce = value(forKey: .bounce)
+            ret.roomid = value(forKey: .roomid)
+            ret.announcement = value(forKey: .announcement)
+            
+            return ret
+        }
+        
+        public func toDictionary() -> [AnyHashable: Any] {
+            toDictionary = [AnyHashable: Any]()
+            
+            addRequired(key: .userid, value: userid)
+            addRequired(key: .bounce, value: bounce)
+            addRequired(key: .roomid, value: roomid)
+            add(key: .announcement, value: announcement)
+
+            return toDictionary
+        }
+    }
+    
     ///  Execute Admin Command (*help)
     ///
     /// SENDING A MESSAGE:
@@ -1371,91 +1624,6 @@ public class ChatRequest {
             add(key: .customtype, value: customtype)
             add(key: .customid, value: customid)
             add(key: .custompayload, value: custompayload)
-            
-            return toDictionary
-        }
-    }
-    
-    /// Executes a command in a chat room
-    ///
-    /// SENDING A MESSAGE:
-    ///
-    ///  * Send any text that doesn't start with a reserved symbol to perform a SAY command.
-    ///  * Use this API call to REPLY to existing messages
-    ///
-    ///  example:
-    ///  These commands both do the same thing, which is send the message "Hello World" to the room. SAY Hello, World Hello, World
-    ///
-    ///  ACTION COMMANDS:
-    ///
-    ///  * Action commands start with the / character
-    ///
-    /// example:
-    ///
-    /// /dance nicole User sees:
-    /// You dance with Nicole
-    /// Nicole sees: (user's handle) dances with you
-    /// Everyone else sees: (user's handle) dances with Nicoel
-    ///
-    /// This requires that the action command dance is on the approved list of commands and Nicole is the handle of a participant in the room, and that actions are allowed in the room.
-    ///
-    /// ADMIN COMMANDS:
-    ///
-    ///  * These commands start with the * character
-    /// Each event in the stream has a KIND property. Inspect the property to determine if it is a... enter event: A user has joined the room.
-    ///
-    /// example:
-    ///
-    ///  * ban : This bans the user from the entire chat experience (all rooms).
-    ///  * restore : This restores the user to the chat experience (all rooms).
-    ///  * purge : This deletes all messages from the specified user.
-    ///  * deleteallevents : This deletes all messages in this room.
-    ///
-    ///  SENDING A REPLY::
-    ///
-    ///   * replyto:  Use this field to provide the EventID of an event you want to reply to. Replies have a different event type and contain a copy of the original event.
-    ///
-    ///  Arguments:
-    ///
-    ///  command:  command that you want to pass
-    ///
-    ///  userid: user id specific to App
-    ///
-    ///  customtype: any type you want to save
-    ///
-    ///  customid: any custom id you want to pass
-    ///
-    ///  custompayload: any payload.
-    ///
-    /// - Warning: This method requires authentication.
-    public class DeleteAllEventsInRoom: ParametersBase<DeleteAllEventsInRoom.Fields, DeleteAllEventsInRoom> {
-        public enum Fields {
-            case command
-            case chatroomid
-            case userid
-        }
-        
-        public var userid: String?
-        public var chatroomid: String?
-        public var command: String?
-        
-        override public func from(dictionary: [AnyHashable: Any]) -> DeleteAllEventsInRoom {
-            set(dictionary: dictionary)
-            let ret = DeleteAllEventsInRoom()
-            
-            ret.userid = value(forKey: .userid)
-            ret.chatroomid = value(forKey: .chatroomid)
-            ret.command = value(forKey: .command)
-            
-            return ret
-        }
-        
-        public func toDictionary() -> [AnyHashable: Any] {
-            toDictionary = [AnyHashable: Any]()
-            
-            addRequired(key: .chatroomid, value: chatroomid)
-            add(key: .userid, value: userid)
-            add(key: .command, value: command)
             
             return toDictionary
         }

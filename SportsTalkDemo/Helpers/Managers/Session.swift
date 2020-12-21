@@ -30,8 +30,8 @@ class Session {
     // To gain full control over this demo app, please create an account on https://qa-dashboard.sportstalk247.com
     // and replace these values
     var endpoint = "https://qa-talkapi.sportstalk247.com/api/v3/"
-    var appId: String = "5f2406775617e0238cdbb882"
-    var authToken: String = "ZfVuKrL-yEK3tXMkJWpnAQN9LLMb-_qEm885JCPGr_kg"
+    var appId: String = "5ec0dc805617e00918446168"
+    var authToken: String = "R-GcA7YsG0Gu3DjEVMWcJA60RkU9uyH0Wmn2pnEbzJzA"
     
     private var clientConfig: ClientConfig! {
         didSet { updateClients() }

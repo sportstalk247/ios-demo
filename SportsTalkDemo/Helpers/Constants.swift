@@ -28,3 +28,5 @@ struct Segue {
         static let presentUserProfile = "presentUserProfile"
     }
 }
+
+let systemPassword = "zola"

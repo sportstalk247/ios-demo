@@ -151,43 +151,67 @@ extension RoomParticipantsViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if let user = viewModel.participants.value[indexPath.row].user {
-            let selectedActor = Actor(from: user)
-            
-            if Account.manager.systemActors.map({ $0.userId }).contains(where: { $0 == selectedActor.userId }) {
-                viewModel.message.send("Error - You are attempting to edit a system protected user. Please edit a valid user")
-                return
-            }
-            viewModel.selectedActor = selectedActor
-            performSegue(withIdentifier: Segue.Admin.presentUserProfile, sender: self)
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        guard let user = viewModel.participants.value[indexPath.row].user else { return nil }
-        let actor = Actor(from: user)
         
-        let banned = actor.banned
-        let ban = UIContextualAction(style: .destructive, title: banned ? "Unban" : "Ban") { _, _, handler in
-            DispatchQueue.main.async {
-                if banned {
+        if let user = viewModel.participants.value[indexPath.row].user {
+            let actor = Actor(from: user)
+            viewModel.selectedActor = actor
+            
+            let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            
+            let purge = UIAlertAction(title: "Purge", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel.purge(actor: actor)
+            }
+            sheet.addAction(purge)
+            
+            let deleteAllMsgs = UIAlertAction(title: "Delete All Messages", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                self.viewModel.deleteAll(actor: actor)
+            }
+            sheet.addAction(deleteAllMsgs)
+            
+            let ban = UIAlertAction(title: "Ban / Unban", style: .default) { [weak self] _ in
+                guard let self = self else { return }
+                if actor.banned {
                     self.viewModel.unban(actor: actor)
                 } else {
                     self.viewModel.ban(actor: actor)
                 }
-                handler(true)
             }
-            handler(true)
-        }
-        
-        let delete = UIContextualAction(style: .normal, title: "Delete") { _, _, handler in
-            DispatchQueue.main.async {
-                self.viewModel.delete(actor: actor)
-                handler(true)
+            sheet.addAction(ban)
+            
+            if viewModel.room.bouncedusers.contains(actor.handle) {
+                let unbounce = UIAlertAction(title: "Unbounce", style: .default) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.viewModel.bounce(false, actor: actor)
+                }
+                sheet.addAction(unbounce)
+            } else {
+                let bounce = UIAlertAction(title: "Bounce", style: .default) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.viewModel.bounce(true, actor: actor)
+                }
+                sheet.addAction(bounce)
             }
+            
+            if !Account.manager.systemActors.map({ $0.userId }).contains(where: { $0 == actor.userId }) {
+                let edit = UIAlertAction(title: "Edit", style: .default) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.performSegue(withIdentifier: Segue.Admin.presentUserProfile, sender: self)
+                }
+                sheet.addAction(edit)
+                
+                let deleteAcct = UIAlertAction(title: "Delete Account", style: .destructive) { [weak self] _ in
+                    guard let self = self else { return }
+                    self.viewModel.delete(actor: actor)
+                }
+                sheet.addAction(deleteAcct)
+            }
+            
+            let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            sheet.addAction(cancel)
+            present(sheet, animated: true, completion: nil)
         }
-
-        return UISwipeActionsConfiguration(actions: [ban, delete])
     }
 }
 
