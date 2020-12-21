@@ -1,7 +1,7 @@
 /*
  MIT License
  
- Copyright (c) 2017-2018 MessageKit
+ Copyright (c) 2017-2020 MessageKit
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,17 @@
  SOFTWARE.
  */
 
+import UIKit
+
 public enum ImageType: String {
     case play
     case pause
-    case disclouser
+    case disclosure
 }
 
-import UIKit
-
 /// This extension provide a way to access image resources with in framework
-public extension UIImage {
-    
-    class func messageKitImageWith(type: ImageType) -> UIImage? {
-        let assetBundle = Bundle.messageKitAssetBundle()
-        let imagePath = assetBundle.path(forResource: type.rawValue, ofType: "png", inDirectory: "Images")
-        let image = UIImage(contentsOfFile: imagePath ?? "")
-        return image
+internal extension UIImage {
+    static func messageKitImageWith(type: ImageType) -> UIImage? {
+        UIImage(named: type.rawValue, in: Bundle.messageKitAssetBundle, compatibleWith: nil)
     }
-    
 }

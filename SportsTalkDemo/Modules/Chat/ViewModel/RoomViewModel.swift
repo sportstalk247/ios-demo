@@ -14,10 +14,12 @@ import MessageKit
 class RoomViewModel {
     var cancellables = Set<AnyCancellable>()
     let newEvents = PassthroughSubject<[Event], Never>()
+    let previousEvents = PassthroughSubject<[Event], Never>()
     let isLoading = PassthroughSubject<Bool, Never>()
     let shouldReload = PassthroughSubject<IndexPath, Never>()
     let participants = PassthroughSubject<[ChatRoomParticipant], Never>()
     let reactedEvent = PassthroughSubject<Event, Never>()
+    let deletedEvent = PassthroughSubject<Event, Never>()
     let errorMsg = PassthroughSubject<String, Never>()
     
     var activeRoom: ChatRoom
@@ -169,6 +171,72 @@ extension RoomViewModel {
         Session.manager.chatClient.reportMessage(request) { (code, serverMessage, _, reponse) in
             if code == 200 {
                 self.errorMsg.send("\(message.actor.handle)'s message has been reported.")
+            } else {
+                guard let message = serverMessage else { return }
+                self.errorMsg.send(message)
+            }
+        }
+    }
+    
+    func delete(_ message: Message) {
+        guard let roomId = activeRoom.id else { return }
+
+        let request = ChatRequest.DeleteEvent()
+        request.roomid = roomId
+        request.eventid = message.messageId
+        
+        Session.manager.chatClient.deleteEvent(request) { (code, serverMessage, _, response) in
+            if code == 200 {
+                guard let event = response?.event else { return }
+                self.errorMsg.send("Your message has been deleted.")
+                self.deletedEvent.send(event)
+            } else {
+                guard let message = serverMessage else { return }
+                self.errorMsg.send(message)
+            }
+        }
+    }
+    
+    func flagAsLogicallyDeleted(_ message: Message) {
+        guard
+            let roomId = activeRoom.id,
+            let userId = Account.manager.me?.userId
+        else { return }
+
+        let request = ChatRequest.FlagEventLogicallyDeleted()
+        request.roomid = roomId
+        request.userid = userId
+        request.eventid = message.messageId
+        request.deleted = false
+        request.permanentifnoreplies = true
+
+        Session.manager.chatClient.flagEventLogicallyDeleted(request) { (code, serverMessage, _, response) in
+            if code == 200 {
+                guard let event = response?.event else { return }
+                self.errorMsg.send("Your message has been deleted.")
+                self.deletedEvent.send(event)
+            } else {
+                guard let message = serverMessage else { return }
+                self.errorMsg.send(message)
+            }
+        }
+    }
+    
+    func fetchPreviousEvents() {
+        guard let roomId = activeRoom.id else { return }
+        
+        isLoading.send(true)
+        
+        let request = ChatRequest.ListPreviousEvents()
+        request.roomid = roomId
+        request.limit = 10
+        
+        Session.manager.chatClient.listPreviousEvents(request) { (code, serverMessage, _, response) in
+            self.isLoading.send(false)
+            if code == 200 {
+                guard let events = response?.events, events.count > 0 else { return }
+                print(events.count)
+                self.previousEvents.send(events)
             } else {
                 guard let message = serverMessage else { return }
                 self.errorMsg.send(message)

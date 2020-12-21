@@ -82,7 +82,7 @@ open class NetworkService {
         var request = URLRequest(url: requestUrl, timeoutInterval: Double.infinity)
         request.httpMethod = requestType.rawValue
         
-        if (requestType == .POST && appendData) || requestType == .PUT {
+        if (requestType == .POST && appendData) || requestType == .PUT || requestType == .DELETE {
             let httpData = try? JSONSerialization.data(withJSONObject: parameters, options: [])
             request.httpBody = httpData
             

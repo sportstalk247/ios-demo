@@ -10,6 +10,7 @@
 		A8020D4424B1D32200BD3E1D /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8020D4324B1D32200BD3E1D /* SettingsCell.swift */; };
 		A805684D248FEB0C007FCD71 /* Admin.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A805684C248FEB0C007FCD71 /* Admin.storyboard */; };
 		A8056850248FEBAC007FCD71 /* UIApplication+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A805684F248FEBAC007FCD71 /* UIApplication+Extension.swift */; };
+		A8166EF025905E3100476835 /* UIScrollView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8166EEF25905E0E00476835 /* UIScrollView+Extension.swift */; };
 		A818750C24936296005768E3 /* AdminRoomsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A818750B24936296005768E3 /* AdminRoomsViewController.swift */; };
 		A818750F24936377005768E3 /* AdminRoomsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A818750E24936377005768E3 /* AdminRoomsViewModel.swift */; };
 		A848A9F62481760D00F0FA2B /* RoomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A848A9F42481760D00F0FA2B /* RoomCell.swift */; };
@@ -71,6 +72,7 @@
 		A8020D4324B1D32200BD3E1D /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		A805684C248FEB0C007FCD71 /* Admin.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Admin.storyboard; sourceTree = "<group>"; };
 		A805684F248FEBAC007FCD71 /* UIApplication+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+Extension.swift"; sourceTree = "<group>"; };
+		A8166EEF25905E0E00476835 /* UIScrollView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Extension.swift"; sourceTree = "<group>"; };
 		A818750B24936296005768E3 /* AdminRoomsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminRoomsViewController.swift; sourceTree = "<group>"; };
 		A818750E24936377005768E3 /* AdminRoomsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminRoomsViewModel.swift; sourceTree = "<group>"; };
 		A848A9F42481760D00F0FA2B /* RoomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomCell.swift; sourceTree = "<group>"; };
@@ -293,6 +295,7 @@
 				A85FD3F72482770B00FF8A89 /* Date+Extension.swift */,
 				A892093724899403003D0C0E /* UITextField+Extension.swift */,
 				A805684F248FEBAC007FCD71 /* UIApplication+Extension.swift */,
+				A8166EEF25905E0E00476835 /* UIScrollView+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -605,6 +608,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A86DB5712493A068009BA14C /* AddEditRoomViewController.swift in Sources */,
+				A8166EF025905E3100476835 /* UIScrollView+Extension.swift in Sources */,
 				A86E0B1D247D376D00ADE0EB /* RoomListViewController.swift in Sources */,
 				A86E0B1F247D37E800ADE0EB /* RoomListViewModel.swift in Sources */,
 				A86DB5732493A18D009BA14C /* AddEditRoomViewModel.swift in Sources */,

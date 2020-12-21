@@ -10,7 +10,7 @@ import Foundation
 import SportsTalk247
 import MessageKit
 
-class Message: MessageType {
+class Message: MessageType, Equatable {
     var messageId: String
     var actor: Actor
     var sentDate: Date
@@ -72,4 +72,7 @@ class Message: MessageType {
             kind = .text(body)
         }
     }
+    
+    public static func == (lhs: Message, rhs: Message) -> Bool {
+        return lhs.messageId == rhs.messageId    }
 }
