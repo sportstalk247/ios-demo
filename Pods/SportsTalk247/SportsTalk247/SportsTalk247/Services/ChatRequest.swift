@@ -85,7 +85,7 @@ public class ChatRequest {
     
     /// Get the details for a room
     ///
-    /// roomIdOrSlug: Room Id or Slug of a specific room againts which you want to fetch the details
+    /// roomid: Room Id of a specific room againts which you want to fetch the details
     ///
     /// - Warning: This method requires authentication.
     public class GetRoomDetails: ParametersBase<GetRoomDetails.Fields, GetRoomDetails> {
@@ -108,6 +108,36 @@ public class ChatRequest {
             toDictionary = [AnyHashable: Any]()
             
             addRequired(key: .roomid, value: roomid)
+            
+            return toDictionary
+        }
+    }
+    
+    /// Get the details for a room
+    ///
+    /// customid: Custom Id or Slug of a specific room againts which you want to fetch the details
+    ///
+    /// - Warning: This method requires authentication.
+    public class GetRoomDetailsByCustomId: ParametersBase<GetRoomDetailsByCustomId.Fields, GetRoomDetailsByCustomId> {
+        public enum Fields {
+            case customid
+        }
+        
+        public var customid: String?
+        
+        override public func from(dictionary: [AnyHashable: Any]) -> GetRoomDetailsByCustomId {
+            set(dictionary: dictionary)
+            let ret = GetRoomDetailsByCustomId()
+            
+            ret.customid = value(forKey: .customid)
+            
+            return ret
+        }
+        
+        public func toDictionary() -> [AnyHashable: Any] {
+            toDictionary = [AnyHashable: Any]()
+            
+            addRequired(key: .customid, value: customid)
             
             return toDictionary
         }
@@ -175,7 +205,6 @@ public class ChatRequest {
     public class UpdateRoom: ParametersBase<UpdateRoom.Fields, UpdateRoom> {
         public enum Fields {
             case roomid
-            case slug
             case name
             case description
             case customid
@@ -208,7 +237,6 @@ public class ChatRequest {
             let ret = UpdateRoom()
             
             ret.roomid = value(forKey: .roomid)
-            ret.slug = value(forKey: .slug)
             ret.name = value(forKey: .name)
             ret.description = value(forKey: .description)
             ret.customid = value(forKey: .customid)
@@ -229,7 +257,6 @@ public class ChatRequest {
             
             addRequired(key: .roomid, value: roomid)
             add(key: .roomid, value: roomid)
-            add(key: .slug, value: slug?.absoluteString)
             add(key: .name, value: name)
             add(key: .description, value: description)
             add(key: .customid, value: customid)
@@ -418,7 +445,7 @@ public class ChatRequest {
             toDictionary = [AnyHashable: Any]()
             
             addRequired(key: .roomid, value: roomid)
-            add(key: .userid, value: userid)
+            addRequired(key: .userid, value: userid)
             add(key: .handle, value: handle)
             add(key: .displayname, value: displayname)
             add(key: .pictureurl, value: pictureurl?.absoluteString)
@@ -1384,16 +1411,15 @@ public class ChatRequest {
     /// - Warning: This method requires authentication.
     public class ReportMessage: ParametersBase<ReportMessage.Fields, ReportMessage> {
         public enum Fields {
-            case chatRoomId
-            case chatMessageId
-            case chat_room_newest_speech_id
+            case roomid
+            case eventid
             case userid
             case reporttype
         }
         
-        public var chatRoomId: String?
-        public var chatMessageId: String?
-        public var chat_room_newest_speech_id: String?
+        public var roomid: String?
+        public var messageid: String?
+        public var eventid: String?
         public var userid: String?
         public var reporttype = "abuse"
         
@@ -1401,9 +1427,8 @@ public class ChatRequest {
             set(dictionary: dictionary)
             let ret = ReportMessage()
             
-            ret.chatRoomId = value(forKey: .chatRoomId)
-            ret.chatMessageId = value(forKey: .chatMessageId)
-            ret.chat_room_newest_speech_id = value(forKey: .chat_room_newest_speech_id)
+            ret.roomid = value(forKey: .roomid)
+            ret.eventid = value(forKey: .eventid)
             ret.userid = value(forKey: .userid)
             ret.reporttype = value(forKey: .reporttype) ?? "abuse"
             
@@ -1414,7 +1439,8 @@ public class ChatRequest {
             toDictionary = [AnyHashable: Any]()
             
             addRequired(key: .userid, value: userid)
-            addRequired(key: .reporttype, value: reporttype)
+            addRequired(key: .eventid, value: eventid)
+            add(key: .reporttype, value: reporttype)
             
             return toDictionary
         }
@@ -1634,21 +1660,21 @@ public class ChatRequest {
 extension ChatRequest {
     public class StartEventUpdates: ParametersBase<StartEventUpdates.Fields, StartEventUpdates> {
         public enum Fields {
-            case roomId
+            case roomid
         }
         
-        public var roomId: String?
+        public var roomid: String?
 
         override public func from(dictionary: [AnyHashable: Any]) -> StartEventUpdates {
             set(dictionary: dictionary)
             let ret = StartEventUpdates()
-            ret.roomId = value(forKey: .roomId)
+            ret.roomid = value(forKey: .roomid)
             return ret
         }
         
         public func toDictionary() -> [AnyHashable: Any] {
             toDictionary = [AnyHashable: Any]()
-            addRequired(key: .roomId, value: roomId)
+            addRequired(key: .roomid, value: roomid)
             return toDictionary
         }
     }

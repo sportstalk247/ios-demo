@@ -42,7 +42,7 @@ class Message: MessageType, Equatable {
                 return
             }
             kind = .custom(["type": EventType.action, "body": body])
-        case .reply, .quoted:
+        case .reply, .quote:
             if let body = body, !body.isEmpty {
                 if let original = event.replyto?.body, !original.isEmpty {
                     kind = .custom(["type": EventType.reply, "body": body, "original": original])

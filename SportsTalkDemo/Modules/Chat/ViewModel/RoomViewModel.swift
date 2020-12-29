@@ -164,8 +164,8 @@ extension RoomViewModel {
         }
         
         let request = ChatRequest.ReportMessage()
-        request.chat_room_newest_speech_id = message.messageId
-        request.chatRoomId = roomId
+        request.eventid = message.messageId
+        request.roomid = roomId
         request.userid = userId
         
         Session.manager.chatClient.reportMessage(request) { (code, serverMessage, _, reponse) in

@@ -3,6 +3,7 @@ import Foundation
 public protocol ChatClientProtocol {
     func createRoom(_ request: ChatRequest.CreateRoom, completionHandler: @escaping Completion<ChatRoom>)
     func getRoomDetails(_ request: ChatRequest.GetRoomDetails, completionHandler: @escaping Completion<ChatRoom>)
+    func getRoomDetailsByCustomId(_ request: ChatRequest.GetRoomDetailsByCustomId, completionHandler: @escaping Completion<ChatRoom>)
     func deleteRoom(_ request: ChatRequest.DeleteRoom, completionHandler: @escaping Completion<DeleteChatRoomResponse>)
     func updateRoom(_ request: ChatRequest.UpdateRoom, completionHandler: @escaping Completion<ChatRoom>)
     func updateCloseRoom(_ request: ChatRequest.UpdateRoomCloseARoom, completionHandler: @escaping Completion<ChatRoom>)
@@ -35,8 +36,8 @@ public protocol ChatClientProtocol {
 
 public class ChatClient: NetworkService, ChatClientProtocol {
     var timer: Timer?
-    var firstCursor: String = "" { didSet { print("first: \(firstCursor)") } }
-    var lastCursor: String = "" { didSet { print("last: \(lastCursor)") } }
+    var firstCursor: String = ""
+    var lastCursor: String = ""
     var lastRoomId: String?
     
     public override init(config: ClientConfig) {
@@ -57,6 +58,12 @@ extension ChatClient {
     
     public func getRoomDetails(_ request: ChatRequest.GetRoomDetails, completionHandler: @escaping Completion<ChatRoom>) {
         makeRequest(URLPath.Room.Details(roomid: request.roomid), withData: request.toDictionary(), requestType: .GET, expectation: ChatRoom.self) { (response) in
+            completionHandler(response?.code, response?.message, response?.kind, response?.data)
+        }
+    }
+    
+    public func getRoomDetailsByCustomId(_ request: ChatRequest.GetRoomDetailsByCustomId, completionHandler: @escaping Completion<ChatRoom>) {
+        makeRequest(URLPath.Room.DetailsByCustomId(customid: request.customid), withData: request.toDictionary(), requestType: .GET, expectation: ChatRoom.self) { (response) in
             completionHandler(response?.code, response?.message, response?.kind, response?.data)
         }
     }
@@ -109,17 +116,17 @@ extension ChatClient {
         makeRequest(URLPath.Room.Join(roomid: request.roomid), withData: request.toDictionary(), requestType: .POST, expectation: JoinChatRoomResponse.self) { (response) in
             self.lastRoomId = request.roomid
             self.lastCursor = ""
-            completionHandler(response?.code, response?.message, response?.kind, response?.data)
             self.firstCursor = response?.data?.eventscursor?.cursor ?? ""
+            completionHandler(response?.code, response?.message, response?.kind, response?.data)
         }
     }
     
     public func joinRoomByCustomId(_ request: ChatRequest.JoinRoomByCustomId, completionHandler: @escaping Completion<JoinChatRoomResponse>) {
         makeRequest(URLPath.Room.Join(customid: request.customid), withData: request.toDictionary(), requestType: .POST, expectation: JoinChatRoomResponse.self) { (response) in
-            self.lastRoomId = request.customid
             self.lastCursor = ""
-            completionHandler(response?.code, response?.message, response?.kind, response?.data)
             self.firstCursor = response?.data?.eventscursor?.cursor ?? ""
+            self.lastRoomId = response?.data?.room?.id ?? ""
+            completionHandler(response?.code, response?.message, response?.kind, response?.data)
         }
     }
 
@@ -188,7 +195,7 @@ extension ChatClient {
     }
 
     public func reportMessage(_ request: ChatRequest.ReportMessage, completionHandler: @escaping Completion<Event>) {
-        makeRequest(URLPath.Event.Report(roomid: request.chatRoomId, eventid: request.chat_room_newest_speech_id), withData: request.toDictionary(), requestType: .POST, expectation: Event.self) { (response) in
+        makeRequest(URLPath.Event.Report(roomid: request.roomid, eventid: request.eventid), withData: request.toDictionary(), requestType: .POST, expectation: Event.self) { (response) in
             completionHandler(response?.code, response?.message, response?.kind, response?.data)
         }
     }

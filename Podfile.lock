@@ -19,7 +19,7 @@ DEPENDENCIES:
   - MessageInputBar
   - MessageKit
   - SDWebImage (~> 5.0)
-  - SportsTalk247 (from `https://gitlab.com/sportstalk247/sdk-ios-swift.git`, branch `fix-reply-apis`)
+  - SportsTalk247 (from `https://gitlab.com/sportstalk247/sdk-ios-swift.git`)
   - Toast-Swift (~> 5.0.1)
 
 SPEC REPOS:
@@ -33,12 +33,11 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   SportsTalk247:
-    :branch: fix-reply-apis
     :git: https://gitlab.com/sportstalk247/sdk-ios-swift.git
 
 CHECKOUT OPTIONS:
   SportsTalk247:
-    :commit: 14f81dec8b22b5d11c93714f96adfbda1ef8b565
+    :commit: ee56713c33b5a781188de2c50b7aa63208791372
     :git: https://gitlab.com/sportstalk247/sdk-ios-swift.git
 
 SPEC CHECKSUMS:
@@ -50,6 +49,6 @@ SPEC CHECKSUMS:
   SportsTalk247: 8070cbc4ba34bf283da2999fd0560af27feab82b
   Toast-Swift: 9b6a70f28b3bf0b96c40d46c0c4b9d6639846711
 
-PODFILE CHECKSUM: 7d21c8167c6855e8ae6ce8a86264e9e055a50138
+PODFILE CHECKSUM: 6c67f876394b4e97a61b3140a07e5721db92484d
 
 COCOAPODS: 1.8.4

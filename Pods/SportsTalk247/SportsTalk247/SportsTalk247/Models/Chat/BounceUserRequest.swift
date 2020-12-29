@@ -1,11 +1,3 @@
-//
-//  BounceUserRequest.swift
-//  SportsTalk247
-//
-//  Created by Angelo Lesano on 9/29/20.
-//  Copyright © 2020 krishna41. All rights reserved.
-//
-
 import Foundation
 
 public struct BounceUserRequest: Codable {

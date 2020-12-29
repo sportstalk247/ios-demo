@@ -188,8 +188,8 @@ public struct ChatEventReaction: Codable {
 }
 
 public struct ChatEventReport: Codable {
-    var userid: String?
-    var reason: String?
+    public var userid: String?
+    public var reason: String?
     
     private enum CodingKeys: String, CodingKey {
         case userid
@@ -206,14 +206,17 @@ public struct ChatEventReport: Codable {
 public enum EventType: String {
     case speech
     case purge
+    case bounce
     case reaction
-    case roomClosed = "roomClosed"
-    case roomOpen = "roomopen"
+    case replace
+    case remove
+    case roomclosed
+    case roomopen
     case action
     case reply
-    case quoted = "quote"
+    case quote
     case goal
-    case advertisement
+    case ad
     case announcement
     case custom
 }
