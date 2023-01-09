@@ -23,7 +23,6 @@
  */
 
 import Foundation
-import UIKit
 
 /// A varient of `UIEdgeInsets` that only has horizontal inset properties
 public struct HorizontalEdgeInsets: Equatable {
@@ -41,8 +40,6 @@ public struct HorizontalEdgeInsets: Equatable {
     }
 }
 
-// MARK: Equatable Conformance
-
 public extension HorizontalEdgeInsets {
 
     static func == (lhs: HorizontalEdgeInsets, rhs: HorizontalEdgeInsets) -> Bool {
@@ -52,7 +49,7 @@ public extension HorizontalEdgeInsets {
 
 internal extension HorizontalEdgeInsets {
 
-    var horizontal: CGFloat {
+    internal var horizontal: CGFloat {
         return left + right
     }
 }

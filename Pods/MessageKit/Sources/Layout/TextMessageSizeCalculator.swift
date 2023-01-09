@@ -23,7 +23,6 @@
  */
 
 import Foundation
-import UIKit
 
 open class TextMessageSizeCalculator: MessageSizeCalculator {
 
@@ -50,8 +49,7 @@ open class TextMessageSizeCalculator: MessageSizeCalculator {
         var messageContainerSize: CGSize
         let attributedText: NSAttributedString
 
-        let textMessageKind = message.kind.textMessageKind
-        switch textMessageKind {
+        switch message.kind {
         case .attributedText(let text):
             attributedText = text
         case .text(let text), .emoji(let text):

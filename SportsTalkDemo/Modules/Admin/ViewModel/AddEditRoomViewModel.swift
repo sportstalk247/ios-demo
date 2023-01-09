@@ -84,15 +84,16 @@ extension AddEditRoomViewModel {
             return
         }
         
-        let request = ChatRequest.UpdateRoom()
-        request.roomid = roomId
-        request.name = name
-        request.description = summary
-        request.customid = customId
-        request.enableactions = enableRoomActions
-        request.enableprofanityfilter = enableProfanityFilter
-        request.enableenterandexit = enableEnterAndExit
-        request.roomisopen = isOpen
+        let request = ChatRequest.UpdateRoom(
+            roomid: roomId,
+            name: name,
+            description: summary,
+            customid: customId,
+            enableactions: enableRoomActions,
+            enableenterandexit: enableEnterAndExit,
+            enableprofanityfilter: enableProfanityFilter,
+            roomisopen: isOpen
+        )
         
         Session.manager.chatClient.updateRoom(request) { [unowned self] (code, message, _, room) in
             guard code == 200 else {

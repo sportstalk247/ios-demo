@@ -33,8 +33,9 @@ extension RoomParticipantsViewModel {
         
         isLoading.send(true)
         
-        let request = ChatRequest.GetRoomDetails()
-        request.roomid = roomId
+        let request = ChatRequest.GetRoomDetails(
+            roomid: roomId
+        )
 
         Session.manager.chatClient.getRoomDetails(request) { (code, message, _, response) in
             self.isLoading.send(false)
@@ -58,8 +59,9 @@ extension RoomParticipantsViewModel {
         
         isLoading.send(true)
         
-        let request = ChatRequest.ListRoomParticipants()
-        request.roomid = roomId
+        let request = ChatRequest.ListRoomParticipants(
+            roomid: roomId
+        )
         
         Session.manager.chatClient.listRoomParticipants(request) { (code, message, _, response) in
             self.isLoading.send(false)
@@ -70,47 +72,58 @@ extension RoomParticipantsViewModel {
     }
     
     func makeAnnouncement(_ text: String) {
-        let request = ChatRequest.ExecuteChatCommand()
-        request.eventtype = .announcement
-        request.command = text
-        request.userid = "admin"
-        request.roomid = room.id
+        let request = ChatRequest.ExecuteChatCommand(
+            roomid: room.id!,
+            command: text,
+            userid: "admin",
+            eventtype: .announcement
+        )
         
         self.isLoading.send(true)
         
-        Session.manager.chatClient.executeChatCommand(request) { [unowned self] (code, message, _, _) in
-            self.isLoading.send(false)
-            
-            if code == 200 {
-                self.message.send("Successfully posted an announcement.")
-            } else {
-                if let message = message {
-                    self.message.send(message)
+        do {
+            try Session.manager.chatClient.executeChatCommand(request) { [unowned self] (code, message, _, _) in
+                self.isLoading.send(false)
+                
+                if code == 200 {
+                    self.message.send("Successfully posted an announcement.")
                 } else {
-                    self.message.send("Failed to post an announcement.")
+                    if let message = message {
+                        self.message.send(message)
+                    } else {
+                        self.message.send("Failed to post an announcement.")
+                    }
                 }
             }
+        } catch {
+            print("RoomParticipantsViewModel::makeAnnouncement() -> error = \(error.localizedDescription)")
         }
     }
     
     private func makeBanChatStatus(for actor: Actor, banned: Bool) {
-        let request = ChatRequest.ExecuteChatCommand()
-        request.eventtype = .announcement
-        request.command = "\(actor.displayName) has been \(banned ? "banned" : "unbanned") by admin"
-        request.userid = "admin"
-        request.roomid = room.id
+        let request = ChatRequest.ExecuteChatCommand(
+            roomid: room.id!,
+            command: "\(actor.displayName) has been \(banned ? "banned" : "unbanned") by admin",
+            userid: "admin",
+            eventtype: .announcement
+        )
         
-        Session.manager.chatClient.executeChatCommand(request) { (code, _, _, _) in
-            if code == 200 {
-                // success
+        do {
+            try Session.manager.chatClient.executeChatCommand(request) { (code, _, _, _) in
+                if code == 200 {
+                    // success
+                }
             }
+        } catch {
+            print("RoomParticipantsViewModel::makeBanChatStatus() -> error = \(error.localizedDescription)")
         }
     }
     
     func ban(actor: Actor) {
-        let request = UserRequest.setBanStatus()
-        request.userid = actor.userId
-        request.banned = true
+        let request = UserRequest.SetBanStatus(
+            userid: actor.userId,
+            applyeffect: true
+        )
         
         isLoading.send(true)
         
@@ -125,9 +138,10 @@ extension RoomParticipantsViewModel {
     }
     
     func unban(actor: Actor) {
-        let request = UserRequest.setBanStatus()
-        request.userid = actor.userId
-        request.banned = false
+        let request = UserRequest.SetBanStatus(
+            userid: actor.userId,
+            applyeffect: false
+        )
         
         isLoading.send(true)
         
@@ -149,8 +163,9 @@ extension RoomParticipantsViewModel {
         
         isLoading.send(true)
         
-        let request = UserRequest.DeleteUser()
-        request.userid = actor.userId
+        let request = UserRequest.DeleteUser(
+            userid: actor.userId
+        )
         
         Session.manager.userClient.deleteUser(request) { (_, _, _, _) in
             // Chaining api calls might cause reponse to be outdated. add 2 seconds delay to be safe
@@ -163,11 +178,12 @@ extension RoomParticipantsViewModel {
     }
     
     func purge(actor: Actor) {
-        let request = ChatRequest.PurgeUserMessages()
-        request.roomid = room.id
-        request.handle = actor.handle
-        request.userid = actor.userId
-        request.password = systemPassword
+        let request = ChatRequest.PurgeUserMessages(
+            roomid: room.id!,
+            userid: actor.userId,
+            handle: actor.handle,
+            password: systemPassword
+        )
         
         Session.manager.chatClient.purgeMessage(request) { (code, serverMesssage, _, response) in
             if code == 200 {
@@ -180,10 +196,11 @@ extension RoomParticipantsViewModel {
     }
     
     func deleteAll(actor: Actor) {
-        let request = ChatRequest.DeleteAllEvents()
-        request.password = systemPassword
-        request.roomid = room.id
-        request.userid = actor.userId
+        let request = ChatRequest.DeleteAllEvents(
+            roomid: room.id!,
+            userid: actor.userId,
+            password: systemPassword
+        )
         
         Session.manager.chatClient.deleteAllEvents(request) { (code, serverMessage, _, response) in
             if code == 200 {
@@ -196,10 +213,11 @@ extension RoomParticipantsViewModel {
     }
     
     func bounce(_ flag: Bool, actor: Actor) {
-        let request = ChatRequest.BounceUser()
-        request.bounce = flag
-        request.userid = actor.userId
-        request.roomid = room.id
+        let request = ChatRequest.BounceUser(
+            roomid: room.id!,
+            userid: actor.userId,
+            bounce: flag
+        )
     
         if flag {
             request.announcement = "\(actor.handle) has been bounced from this room."

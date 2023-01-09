@@ -23,7 +23,6 @@
  */
 
 import Foundation
-import UIKit
 
 /// A protocol used to represent the data for a media message.
 public protocol MediaItem {

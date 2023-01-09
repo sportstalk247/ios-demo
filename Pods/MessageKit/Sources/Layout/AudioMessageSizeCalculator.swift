@@ -23,7 +23,6 @@
  */
 
 import Foundation
-import UIKit
 
 open class AudioMessageSizeCalculator: MessageSizeCalculator {
 

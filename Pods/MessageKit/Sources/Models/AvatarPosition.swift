@@ -23,7 +23,6 @@
  */
 
 import Foundation
-import UIKit
 
 /// Used to determine the `Horizontal` and `Vertical` position of
 // an `AvatarView` in a `MessageCollectionViewCell`.
@@ -95,5 +94,5 @@ public extension AvatarPosition {
     static func == (lhs: AvatarPosition, rhs: AvatarPosition) -> Bool {
         return lhs.vertical == rhs.vertical && lhs.horizontal == rhs.horizontal
     }
-    
+
 }

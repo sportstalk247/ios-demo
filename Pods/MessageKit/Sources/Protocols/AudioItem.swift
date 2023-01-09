@@ -22,8 +22,6 @@
  SOFTWARE.
  */
 
-import Foundation
-import UIKit
 import class AVFoundation.AVAudioPlayer
 
 /// A protocol used to represent the data for an audio message.

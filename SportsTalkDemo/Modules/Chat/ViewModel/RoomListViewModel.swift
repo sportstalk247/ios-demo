@@ -41,9 +41,10 @@ extension RoomListViewModel {
     }
     
     func joinRoom(roomId: String) {
-        let request = ChatRequest.JoinRoom()
-        request.roomid = roomId
-        request.userid = Account.manager.me!.userId
+        let request = ChatRequest.JoinRoom(
+            roomid: roomId,
+            userid: Account.manager.me!.userId
+        )
         
         isLoading.send(true)
         

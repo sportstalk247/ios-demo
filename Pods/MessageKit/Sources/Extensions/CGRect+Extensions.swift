@@ -1,7 +1,7 @@
 /*
  MIT License
  
- Copyright (c) 2017-2020 MessageKit
+ Copyright (c) 2017-2019 MessageKit
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -23,10 +23,11 @@
  */
 
 import Foundation
-import UIKit
 
 internal extension CGRect {
-    init(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat) {
+    
+    init(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat) { // swiftlint:disable:this explicit_acl
         self.init(x: x, y: y, width: w, height: h)
     }
+
 }

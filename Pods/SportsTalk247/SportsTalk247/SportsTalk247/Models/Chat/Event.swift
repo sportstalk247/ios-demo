@@ -124,8 +124,9 @@ open class Event: Codable, Equatable {
         if let modified = try container.decodeIfPresent(String.self, forKey: .modifiedstring) {
             self.modified = ISODateFormat(modified)
         }
-        if let ts = try container.decodeIfPresent(Double.self, forKey: .tsdouble) {
-            self.ts = Date(timeIntervalSince1970: ts)
+        
+        if let ts = try container.decodeIfPresent(UInt64.self, forKey: .tsdouble) {
+            self.ts = Date(ticks: ts)
         }
         
         if let type = try container.decodeIfPresent(String.self, forKey: .eventtypestring) {
@@ -201,28 +202,15 @@ public struct ChatEventReport: Codable {
         self.userid = try container.decodeIfPresent(String.self, forKey: .userid)
         self.reason = try container.decodeIfPresent(String.self, forKey: .reason)
     }
-}
-
-public enum EventType: String {
-    case speech
-    case purge
-    case bounce
-    case reaction
-    case replace
-    case remove
-    case roomclosed
-    case roomopen
-    case action
-    case reply
-    case quote
-    case goal
-    case ad
-    case announcement
-    case custom
+    
+    public init(userId: String?, reason: String?) {
+        self.userid = userId
+        self.reason = reason
+    }
 }
 
 internal func ISODateFormat(_ string: String) -> Date? {
-    if #available(iOS 11.0, *) {
+    if #available(iOS 11.3, *) {
         let formatter = ISO8601DateFormatter()
         formatter.timeZone = TimeZone(secondsFromGMT: 0)
         formatter.formatOptions = [.withFullDate,

@@ -46,13 +46,14 @@ extension UserProfileViewModel {
     }
     
     func createUser(completion: @escaping (_ success: Bool) -> ()) {
-        let request = UserRequest.CreateUpdateUser()
-        // Setting userId is delegated to client so you can incorporate it to your own objects.
-        request.userid = "demoappv001me"
-        request.displayname = name?.trimmingCharacters(in: .whitespaces)
-        request.handle = handle?.trimmingCharacters(in: .whitespaces)
-        request.pictureurl = photoURL
-        request.profileurl = profileURL
+        let request = UserRequest.CreateUpdateUser(
+            // Setting userId is delegated to client so you can incorporate it to your own objects.
+            userid: "demoappv001me",
+            handle: handle?.trimmingCharacters(in: .whitespaces),
+            displayname: name?.trimmingCharacters(in: .whitespaces),
+            pictureurl: photoURL,
+            profileurl: profileURL
+        )
         
         isLoading.send(true)
         
@@ -76,11 +77,12 @@ extension UserProfileViewModel {
     func updateUser(completion: @escaping (_ success: Bool) -> ()) {
         guard let actor = actor else { return }
         
-        let request = UserRequest.CreateUpdateUser()
-        request.userid = actor.userId
-        request.displayname = name
-        request.pictureurl = photoURL
-        request.profileurl = profileURL
+        let request = UserRequest.CreateUpdateUser(
+            userid: actor.userId,
+            displayname: name,
+            pictureurl: photoURL,
+            profileurl: profileURL
+        )
         
         isLoading.send(true)
         
@@ -108,8 +110,9 @@ extension UserProfileViewModel {
             currentActor = me
         }
         
-        let request = UserRequest.DeleteUser()
-        request.userid = currentActor.userId
+        let request = UserRequest.DeleteUser(
+            userid: currentActor.userId
+        )
 
         isLoading.send(true)
         Session.manager.userClient.deleteUser(request) { (code, message, _, response) in

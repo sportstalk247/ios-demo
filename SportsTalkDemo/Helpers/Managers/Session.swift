@@ -29,9 +29,12 @@ class Session {
     // You are using a demo SportsTalk App that you cannot access from Dashboard.
     // To gain full control over this demo app, please create an account on https://qa-dashboard.sportstalk247.com
     // and replace these values
-    var endpoint = "https://qa-talkapi.sportstalk247.com/api/v3/"
-    var appId: String = "5ec0dc805617e00918446168"
-    var authToken: String = "R-GcA7YsG0Gu3DjEVMWcJA60RkU9uyH0Wmn2pnEbzJzA"
+//    var endpoint = "https://qa-talkapi.sportstalk247.com/api/v3/"
+//    var appId: String = "5ec0dc805617e00918446168"
+//    var authToken: String = "R-GcA7YsG0Gu3DjEVMWcJA60RkU9uyH0Wmn2pnEbzJzA"
+    var endpoint = "https://api.sportstalk247.com/api/v3/"
+    var appId: String = "602e6fc50c916c171cb9a4e8"
+    var authToken: String = "P1slSgD5l0yYBTWixyZ3_gGt69p5SOu0KEuGYLBXY8sw"
     
     private var clientConfig: ClientConfig! {
         didSet { updateClients() }
@@ -78,7 +81,7 @@ extension Session {
         self.appId = appId
         self.authToken = authToken
         
-        let url = URL(string: endpoint)
+        let url = URL(string: endpoint)!
         self.clientConfig = ClientConfig(appId: self.appId, authToken: self.authToken, endpoint: url)
     }
     

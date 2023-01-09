@@ -23,7 +23,6 @@
  */
 
 import Foundation
-import UIKit
 
 /// An object used to group the information to be used by an `AvatarView`.
 public struct Avatar {

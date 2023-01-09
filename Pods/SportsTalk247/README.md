@@ -63,12 +63,13 @@ let client = UserClient(config: config)
 
 func createUser() {
     // To create a request, make use of the Services convenience class
-    let request = UserRequest.CreateUpdateUser()
-    request.userid =  "SomeUserId"
-    request.handle = "Sam"
-    request.displayname = "Sam"
-    request.pictureurl = URL(string: dummyUser?.pictureurl ?? "")
-    request.profileurl = URL(string: dummyUser?.profileurl ?? "")
+    let request = UserRequest.CreateUpdateUser(
+        userid: "SomeUserId",
+        handle: "Sam",
+        displayname: "Sam",
+        pictureurl: URL(string: dummyUser?.pictureurl ?? ""),
+        profileurl: URL(string: dummyUser?.profileurl ?? "")
+    )
 
     client.createOrUpdateUser(request) { (code, message, kind, user) in
         // where; code: Int?, message: String?, kind: String?, user: User?
@@ -82,11 +83,12 @@ func createUser() {
 let client = ChatClient(config: config)
 
 func JoinRoom(_ room: ChatRoom, as user: User) {
-    let request = ChatRequest.JoinRoom()
-    request.roomid = room.id
-    // To join as Authenticated user, include the user to your request
-    request.userid = user.userid
-    request.displayname = user.displayname
+    let request = ChatRequest.JoinRoom(
+        roomid: room.id!,
+        // To join as Authenticated user, include the user to your request
+        userid: user.userid!,
+        displayname: user.displayname  
+    )
 
     client.joinRoomAuthenticated(request) { (code, message, _, response) in
         // where response is model called JoinChatRoomResponse
@@ -99,10 +101,11 @@ func JoinRoom(_ room: ChatRoom, as user: User) {
 let client = ChatClient(config: config)
 
 func JoinRoom(_ room: ChatRoom, as user: User) {
-    let request = ChatRequest.JoinRoomByCustomId()
-    request.userid = user.userid
-    request.displayname = user.displayname
-    request.customid = room.customid
+    let request = ChatRequest.JoinRoomByCustomId(
+        customid: room.customid!,
+        userid: user.userid!,
+        displayname: user.displayname
+    )
 
     client.joinRoomByCustomId(request) { (code, message, _, response) in
         // where response is model called JoinChatRoomResponse
@@ -117,8 +120,9 @@ To manually get room updates, use `ChatClient().getUpdates(request:completionHan
 let client = ChatClient(config: config)
 
 func getUpdates(_ room: ChatRoom) {
-    let request = ChatRequest.GetUpdates()
-    request.roomid = room.id
+    let request = ChatRequest.GetUpdates(
+        roomid: room.id!
+    )
 
     client.getUpdates(request) { (code, message, _, response) in
         // where response is model called GetUpdatesResponse
@@ -183,10 +187,11 @@ let client = ChatClient(config: config)
 
 func send(message: String, to room: ChatRoom, as user: User) {
     // See for list of commands
-    let request = ChatRequest.ExecuteChatCommand()
-    request.roomId = room.id
-    request.command = "SAY \(message)" 
-    request.userid = dummyUser?.userid
+    let request = ChatRequest.ExecuteChatCommand(
+        roomId: room.id!,
+        command: "SAY \(message)",
+        userid: dummyUser!.userid!
+    )
 
     client.executeChatCommand(request) { (code, message, _, response) in
         // where response is model called ExecuteChatCommandResponse

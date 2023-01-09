@@ -36,8 +36,9 @@ extension RoomViewModel {
         
         isLoading.send(true)
         
-        let request = ChatRequest.ListRoomParticipants()
-        request.roomid = roomId
+        let request = ChatRequest.ListRoomParticipants(
+            roomid: roomId
+        )
         
         Session.manager.chatClient.listRoomParticipants(request) { (code, message, _, response) in
             self.isLoading.send(false)
@@ -54,9 +55,10 @@ extension RoomViewModel {
             return
         }
         
-        let request = ChatRequest.ExitRoom()
-        request.roomid = roomId
-        request.userid = userId
+        let request = ChatRequest.ExitRoom(
+            roomid: roomId,
+            userid: userId
+        )
         
         isLoading.send(true)
         
@@ -95,18 +97,23 @@ extension RoomViewModel {
             return
         }
         
-        let request = ChatRequest.ExecuteChatCommand()
-        request.roomid = roomId
-        request.userid = userId
-        request.command = message
+        let request = ChatRequest.ExecuteChatCommand(
+            roomid: roomId,
+            command: message,
+            userid: userId
+        )
         
-        Session.manager.chatClient.executeChatCommand(request) { (code, message, _, response) in
-            if code == 200 {
-                // Success
-            } else {
-                guard let message = message else { return }
-                self.errorMsg.send(message)
+        do {
+            try Session.manager.chatClient.executeChatCommand(request) { (code, message, _, response) in
+                if code == 200 {
+                    // Success
+                } else {
+                    guard let message = message else { return }
+                    self.errorMsg.send(message)
+                }
             }
+        } catch {
+            print("RoomViewModel::sendMessage() -> error = \(error.localizedDescription)")
         }
     }
     
@@ -118,16 +125,21 @@ extension RoomViewModel {
             return
         }
         
-        let request = ChatRequest.SendQuotedReply()
-        request.roomid = roomId
-        request.userid = userId
-        request.replyto = message.messageId
-        request.command = reply
+        let request = ChatRequest.SendQuotedReply(
+            roomid: roomId,
+            eventid: message.messageId,
+            userid: userId,
+            body: reply
+        )
         
-        Session.manager.chatClient.sendQuotedReply(request) { (code, _, kind, response) in
-            if code == 200 {
-                // Success
+        do {
+            try Session.manager.chatClient.sendQuotedReply(request) { (code, _, kind, response) in
+                if code == 200 {
+                    // Success
+                }
             }
+        } catch {
+            print("RoomViewModel::sendReply() -> error = \(error.localizedDescription)")
         }
     }
     
@@ -139,12 +151,13 @@ extension RoomViewModel {
             return
         }
         
-        let request = ChatRequest.ReactToEvent()
-        request.userid = userId
-        request.eventid = messageId
-        request.roomid = roomId
-        request.reaction = "like"
-        request.reacted = "true"
+        let request = ChatRequest.ReactToEvent(
+            roomid: roomId,
+            eventid: messageId,
+            userid: userId,
+            reaction: "like",
+            reacted: true
+        )
         
         Session.manager.chatClient.reactToEvent(request) { (code, message, _, response) in
             if code == 200 {
@@ -163,10 +176,12 @@ extension RoomViewModel {
             return
         }
         
-        let request = ChatRequest.ReportMessage()
-        request.eventid = message.messageId
-        request.roomid = roomId
-        request.userid = userId
+        let request = ChatRequest.ReportMessage(
+            roomid: roomId,
+            eventid: message.messageId,
+            userid: userId,
+            reporttype: .abuse
+        )
         
         Session.manager.chatClient.reportMessage(request) { (code, serverMessage, _, reponse) in
             if code == 200 {
@@ -179,13 +194,20 @@ extension RoomViewModel {
     }
     
     func delete(_ message: Message) {
-        guard let roomId = activeRoom.id else { return }
+        guard
+            let roomId = activeRoom.id,
+            let userId = Account.manager.me?.userId
+        else {
+            return
+        }
 
-        let request = ChatRequest.DeleteEvent()
-        request.roomid = roomId
-        request.eventid = message.messageId
+        let request = ChatRequest.PermanentlyDeleteEvent(
+            roomid: roomId,
+            eventid: message.messageId,
+            userid: userId
+        )
         
-        Session.manager.chatClient.deleteEvent(request) { (code, serverMessage, _, response) in
+        Session.manager.chatClient.permanentlyDeleteEvent(request) { (code, serverMessage, _, response) in
             if code == 200 {
                 guard let event = response?.event else { return }
                 self.errorMsg.send("Your message has been deleted.")
@@ -203,12 +225,13 @@ extension RoomViewModel {
             let userId = Account.manager.me?.userId
         else { return }
 
-        let request = ChatRequest.FlagEventLogicallyDeleted()
-        request.roomid = roomId
-        request.userid = userId
-        request.eventid = message.messageId
-        request.deleted = false
-        request.permanentifnoreplies = true
+        let request = ChatRequest.FlagEventLogicallyDeleted(
+            roomid: roomId,
+            eventid: message.messageId,
+            userid: userId,
+            deleted: false,
+            permanentifnoreplies: true
+        )
 
         Session.manager.chatClient.flagEventLogicallyDeleted(request) { (code, serverMessage, _, response) in
             if code == 200 {
@@ -227,9 +250,10 @@ extension RoomViewModel {
         
         isLoading.send(true)
         
-        let request = ChatRequest.ListPreviousEvents()
-        request.roomid = roomId
-        request.limit = 10
+        let request = ChatRequest.ListPreviousEvents(
+            roomid: roomId,
+            limit: 10
+        )
         
         Session.manager.chatClient.listPreviousEvents(request) { (code, serverMessage, _, response) in
             self.isLoading.send(false)
@@ -250,9 +274,10 @@ extension RoomViewModel {
         isLoading.send(true)
         
         Account.manager.systemActors.forEach {
-            let request = ChatRequest.JoinRoom()
-            request.roomid = activeRoom.id!
-            request.userid = $0.userId
+            let request = ChatRequest.JoinRoom(
+                roomid: activeRoom.id!,
+                userid: $0.userId
+            )
             
             Session.manager.chatClient.joinRoom(request) { (_, _, _, _) in
                 self.isLoading.send(false)

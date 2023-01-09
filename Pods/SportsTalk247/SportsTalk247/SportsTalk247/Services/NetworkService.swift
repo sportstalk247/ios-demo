@@ -30,27 +30,60 @@ open class NetworkService {
         // Create the request
         if let request = makeURLRequest(serviceName, useDefaultUrl: useDefaultUrl, withData: data, requestType: requestType, appendData: append) {
             URLSession.shared.dataTask(with: request, completionHandler: {data, response, error -> Void in
+                // Deal with your error
+                let httpResponse = response as? HTTPURLResponse
+                let statusCode = Int(httpResponse?.statusCode ?? 0)
+                print("statusCode: \(statusCode)")
+                
                 if let error = error {
-                    // Deal with your error
-                    if (response is HTTPURLResponse) {
-                        let httpResponse = response as? HTTPURLResponse
-                        print(String(format: "\(httpError) %ld", Int(httpResponse?.statusCode ?? 0)))
-                    }
-                    
+                    print(String(format: "\(httpError) %ld", statusCode))
                     print(error)
                     completionHandler(nil)
                 } else {
-                    if let data = data {
-                        if SportsTalkSDK.shared.debugMode {
-                            print("Response(\(serviceName ?? "non service")): \(data.string ?? "")")
+                    switch statusCode {
+                    case 200...299:
+                        if let data = data {
+                            if SportsTalkSDK.shared.debugMode {
+                                print("Response(\(serviceName ?? "non service")): \(data.string ?? "")")
+                            }
+                            
+                            if let json = try? JSONDecoder().decode(ApiResponse<T>.self, from: data) {
+                                completionHandler(json)
+                                return
+                            } else {
+                                print("\(jsonParsingError) \(serviceName ?? emptyString)")
+                            }
                         }
                         
-                        if let json = try? JSONDecoder().decode(ApiResponse<T>.self, from: data) {
-                            completionHandler(json)
-                        } else {
-                            print("\(jsonParsingError) \(serviceName ?? emptyString)")
-                            completionHandler(nil)
-                        }
+                        completionHandler(nil)
+                        return
+                    case 401:
+                        completionHandler(
+                            ApiResponse(
+                                code: statusCode,
+                                message: "Unauthorized - Invalid auth token"
+                            )
+                        )
+                        return
+                        // TODO:: Handle statusCode 403
+                    case 500...599:
+                        completionHandler(
+                            ApiResponse(
+                                code: statusCode,
+                                message: "Server Error"
+                            )
+                        )
+                        
+                        return
+                    default:
+                        completionHandler(
+                            ApiResponse(
+                                code: statusCode,
+                                message: "Unknown Error"
+                            )
+                        )
+                        
+                        return
                     }
                 }
             }).resume()
@@ -68,7 +101,13 @@ open class NetworkService {
         var url:URL?
         
         if useDefaultUrl {
-            url = URL(string: "\(self.config.endpoint.absoluteString)/\(config.appId)/\(serviceName ?? "")")
+            let urlString = "\(self.config.endpoint.absoluteString)/\(config.appId)/\(serviceName ?? "")"
+            if let encodedURL = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+                url = URL(string: encodedURL)
+            } else {
+                // Present error regardless if on debugMode or not.
+                print("Could not create URL using \(urlString)")
+            }
         } else {
             url = URL(string: "\(serviceName ?? emptyString)")!
         }
@@ -76,26 +115,29 @@ open class NetworkService {
         guard let requestUrl = url else { return nil}
         
         // Create the request
-        var request = URLRequest(url: requestUrl, timeoutInterval: Double.infinity)
+        var request = URLRequest(url: requestUrl, timeoutInterval: 10)
         request.httpMethod = requestType.rawValue
         
-        if (requestType == .POST && appendData) || requestType == .PUT || requestType == .DELETE {
+        if (requestType == .POST && appendData) || (requestType == .PUT && appendData == false) || requestType == .DELETE {
             let httpData = try? JSONSerialization.data(withJSONObject: parameters, options: [])
             request.httpBody = httpData
-            
-        } else if requestType == .GET && appendData {
+        } else if (requestType == .GET && appendData) || (requestType == .PUT && appendData) {
             var components = URLComponents(string: requestUrl.absoluteString)!
             components.queryItems = [URLQueryItem]()
 
             for (key, value) in (data ?? [AnyHashable : Any]()) {
-                let item: URLQueryItem
                 if let v = value as? Bool {
-                    item = URLQueryItem(name: "\(key)", value: "\(v ? "true" : "false")")
+                    let item = URLQueryItem(name: "\(key)", value: "\(v ? "true" : "false")")
+                    components.queryItems?.append(item)
+                } else if let values = value as? [String] {
+                    for v in values {
+                        let item = URLQueryItem(name: "\(key)", value: "\(v)")
+                        components.queryItems?.append(item)
+                    }
                 } else {
-                    item = URLQueryItem(name: "\(key)", value: "\(value)")
+                    let item = URLQueryItem(name: "\(key)", value: "\(value)")
+                    components.queryItems?.append(item)
                 }
-                
-                components.queryItems?.append(item)
             }
 
             if let componentUrl = components.url {
@@ -106,6 +148,11 @@ open class NetworkService {
         request.addValue(acceptHeaderValue, forHTTPHeaderField: acceptHeaderTitle)
         request.addValue(contentTypeValue, forHTTPHeaderField: contentTypeTitle)
         request.addValue(config.authToken, forHTTPHeaderField: tokenTitle)
+        
+        if let jwtProvider = SportsTalkSDK.getJWTProvider(config: config),
+           let jwt = jwtProvider.getToken() {
+            request.addValue("Bearer \(jwt)", forHTTPHeaderField: authorization)
+        }
         
         if SportsTalkSDK.shared.debugMode {
             request.log()

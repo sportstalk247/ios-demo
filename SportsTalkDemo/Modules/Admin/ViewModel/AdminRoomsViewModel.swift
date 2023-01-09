@@ -36,8 +36,9 @@ extension AdminRoomsViewModel {
     func deleteRoom(room: ChatRoom, completion: @escaping (_ success: Bool) -> () ) {
         selectedRoom = room
         
-        let request = ChatRequest.DeleteRoom()
-        request.roomid = room.id
+        let request = ChatRequest.DeleteRoom(
+            roomid: room.id!
+        )
 
         isLoading.send(true)
         

@@ -110,15 +110,20 @@ extension Actor {
     func sendMessage(to room: ChatRoom, with message: Speak) {
         guard let roomId = room.id else { return }
         
-        let request = ChatRequest.ExecuteChatCommand()
-        request.roomid = roomId
-        request.userid = self.userId
-        request.command = message.message
+        let request = ChatRequest.ExecuteChatCommand(
+            roomid: roomId,
+            command: message.message,
+            userid: self.userId
+        )
         
-        Session.manager.chatClient.executeChatCommand(request) { (code, message, _, response) in
-            if code == 200 {
-                // Success
+        do {
+            try Session.manager.chatClient.executeChatCommand(request) { (code, message, _, response) in
+                if code == 200 {
+                    // Success
+                }
             }
+        } catch {
+            print("Actor::sendMessage() -> error = \(error.localizedDescription)")
         }
     }
 }

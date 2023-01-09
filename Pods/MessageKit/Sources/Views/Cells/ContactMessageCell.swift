@@ -22,20 +22,19 @@
  SOFTWARE.
  */
 
-import Foundation
 import UIKit
 
 open class ContactMessageCell: MessageContentCell {
     
     public enum ConstraintsID: String {
         case initialsContainerLeftConstraint
-        case disclosureRightConstraint
+        case disclouserRigtConstraint
     }
     
     /// The view container that holds contact initials
     public lazy var initialsContainerView: UIView = {
         let initialsContainer = UIView(frame: CGRect.zero)
-        initialsContainer.backgroundColor = .collectionViewBackground
+        initialsContainer.backgroundColor = .white
         return initialsContainer
     }()
     
@@ -43,7 +42,7 @@ open class ContactMessageCell: MessageContentCell {
     public lazy var initialsLabel: UILabel = {
         let initialsLabel = UILabel(frame: CGRect.zero)
         initialsLabel.textAlignment = .center
-        initialsLabel.textColor = .label
+        initialsLabel.textColor = .darkText
         initialsLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
         return initialsLabel
     }()
@@ -55,11 +54,11 @@ open class ContactMessageCell: MessageContentCell {
         return nameLabel
     }()
     
-    /// The disclosure image view
+    /// The disclouser image view
     public lazy var disclosureImageView: UIImageView = {
-        let disclosureImage = UIImage.messageKitImageWith(type: .disclosure)?.withRenderingMode(.alwaysTemplate)
-        let disclosure = UIImageView(image: disclosureImage)
-        return disclosure
+        let disclouserImage = UIImage.messageKitImageWith(type: .disclouser)?.withRenderingMode(.alwaysTemplate)
+        let disclouser = UIImageView(image: disclouserImage)
+        return disclouser
     }()
     
     // MARK: - Methods
@@ -96,7 +95,7 @@ open class ContactMessageCell: MessageContentCell {
         disclosureImageView.constraint(equalTo: CGSize(width: 20, height: 20))
         let disclosureConstraints = disclosureImageView.addConstraints(right: messageContainerView.rightAnchor, centerY: messageContainerView.centerYAnchor,
                                            rightConstant: -10)
-        disclosureConstraints.first?.identifier = ConstraintsID.disclosureRightConstraint.rawValue
+        disclosureConstraints.first?.identifier = ConstraintsID.disclouserRigtConstraint.rawValue
         nameLabel.addConstraints(messageContainerView.topAnchor,
                                  left: initialsContainerView.rightAnchor,
                                  bottom: messageContainerView.bottomAnchor,
@@ -121,15 +120,15 @@ open class ContactMessageCell: MessageContentCell {
         let initialsContainerLeftConstraint = messageContainerView.constraints.filter { (constraint) -> Bool in
             return constraint.identifier == ConstraintsID.initialsContainerLeftConstraint.rawValue
         }.first
-        let disclosureRightConstraint = messageContainerView.constraints.filter { (constraint) -> Bool in
-            return constraint.identifier == ConstraintsID.disclosureRightConstraint.rawValue
+        let disclouserRightConstraint = messageContainerView.constraints.filter { (constraint) -> Bool in
+            return constraint.identifier == ConstraintsID.disclouserRigtConstraint.rawValue
         }.first
         if dataSource.isFromCurrentSender(message: message) { // outgoing message
             initialsContainerLeftConstraint?.constant = 5
-            disclosureRightConstraint?.constant = -10
+            disclouserRightConstraint?.constant = -10
         } else { // incoming message
             initialsContainerLeftConstraint?.constant = 10
-            disclosureRightConstraint?.constant = -5
+            disclouserRightConstraint?.constant = -5
         }
         // setup colors
         guard let displayDelegate = messagesCollectionView.messagesDisplayDelegate else {

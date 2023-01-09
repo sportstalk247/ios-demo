@@ -23,7 +23,6 @@
  */
 
 import Foundation
-import UIKit
 
 open class AvatarView: UIImageView {
 
@@ -97,7 +96,7 @@ open class AvatarView: UIImageView {
         if width == 0 || height == 0 {return UIImage()}
         var font = placeholderFont
 
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), false, UIScreen.main.scale)
+        _ = UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), false, UIScreen.main.scale)
         defer { UIGraphicsEndImageContext() }
         let context = UIGraphicsGetCurrentContext()!
 
@@ -162,7 +161,7 @@ open class AvatarView: UIImageView {
     // MARK: - Internal methods
 
     internal func prepareView() {
-        backgroundColor = .avatarViewBackground
+        backgroundColor = .gray
         contentMode = .scaleAspectFill
         layer.masksToBounds = true
         clipsToBounds = true

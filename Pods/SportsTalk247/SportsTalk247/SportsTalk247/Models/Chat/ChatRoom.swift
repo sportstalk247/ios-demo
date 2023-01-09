@@ -17,15 +17,15 @@ open class ChatRoom: Codable {
     public var enableenterandexit: Bool?
     public var open: Bool?
     public var inroom: Int?
-    var addedstring: String?
-    var whenmodifiedstring: String?
     public var moderation: String?
     public var maxreports: Int64?
+    public var enableautoexpiresessions: Bool?
     public var enableprofanityfilter: Bool?
     public var delaymessageseconds: Int64?
     public var added: Date?
     public var whenmodified: Date?
     public var bouncedusers: [String] = []
+    public var reportedusers: [ReportedUser] = []
     
     private enum CodingKeys: String, CodingKey {
         case kind
@@ -44,13 +44,15 @@ open class ChatRoom: Codable {
         case enableenterandexit
         case open
         case inroom
-        case addedstring = "added"
-        case whenmodifiedstring = "whenmodified"
+        case added
+        case whenmodified
         case moderation
         case maxreports
+        case enableautoexpiresessions
         case enableprofanityfilter
         case delaymessageseconds
         case bouncedusers
+        case reportedusers
     }
     
     public required convenience init(from decoder: Decoder) throws {
@@ -74,15 +76,17 @@ open class ChatRoom: Codable {
         self.inroom = try container.decodeIfPresent(Int.self, forKey: .inroom)
         self.moderation = try container.decodeIfPresent(String.self, forKey: .moderation)
         self.maxreports = try container.decodeIfPresent(Int64.self, forKey: .maxreports)
+        self.enableautoexpiresessions = try container.decodeIfPresent(Bool.self, forKey: .enableautoexpiresessions)
         self.enableprofanityfilter = try container.decodeIfPresent(Bool.self, forKey: .enableprofanityfilter)
         self.delaymessageseconds = try container.decodeIfPresent(Int64.self, forKey: .delaymessageseconds)
         self.bouncedusers = try container.decodeIfPresent([String].self, forKey: .bouncedusers) ?? []
+        self.reportedusers = try container.decodeIfPresent([ReportedUser].self, forKey: .reportedusers) ?? []
         
-        if let added = try container.decodeIfPresent(String.self, forKey: .addedstring) {
+        if let added = try container.decodeIfPresent(String.self, forKey: .added) {
             self.added = ISODateFormat(added)
         }
         
-        if let modified = try container.decodeIfPresent(String.self, forKey: .whenmodifiedstring) {
+        if let modified = try container.decodeIfPresent(String.self, forKey: .whenmodified) {
             self.whenmodified = ISODateFormat(modified)
         }
     }

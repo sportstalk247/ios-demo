@@ -63,12 +63,20 @@ open class ParametersBase<T,S> {
         return (dictionary[toString(key: key)] as? NSNumber)?.intValue
     }
     
+    func value(forKey key: T) -> Int64? {
+        return (dictionary[toString(key: key)] as? NSNumber)?.int64Value
+    }
+    
     func value(forKey key: T) -> Bool? {
         return (dictionary[toString(key: key)] as? NSNumber)?.boolValue
     }
     
     func value(forKey key: T) -> Int {
         return (dictionary[toString(key: key)] as? NSNumber)?.intValue ?? 0
+    }
+    
+    func value(forKey key: T) -> Double {
+        return (dictionary[toString(key: key)] as? NSNumber)?.doubleValue ?? 0
     }
 
     func value(forKey key: T) -> String? {
@@ -94,6 +102,73 @@ open class ParametersBase<T,S> {
         
         return event
     }
+    
+    func value(forKey key: T) -> [EventType]? {
+        guard let id = dictionary[toString(key: key)] as? [String] else { return nil }
+        
+        var events: [EventType]?
+        
+        id.forEach { item in
+            if let event = EventType.init(rawValue: item) {
+                if events == nil {
+                    events = [EventType]()
+                }
+                events!.append(event)
+            }
+        }
+        return events
+    }
+
+    
+    func value(forKey key: T) -> Ordering? {
+        guard
+            let id = dictionary[toString(key: key)] as? String,
+            let event = Ordering.init(rawValue: id)
+        else {
+            return nil
+        }
+        
+        return event
+    }
+    
+    func value(forKey key: T) -> ReportType? {
+        guard
+            let id = dictionary[toString(key: key)] as? String,
+            let event = ReportType.init(rawValue: id)
+        else {
+            return nil
+        }
+        
+        return event
+    }
+    
+    func value(forKey key: T) -> RoomEntityType? {
+        guard
+            let id = dictionary[toString(key: key)] as? String,
+            let event = RoomEntityType.init(rawValue: id)
+        else {
+            return nil
+        }
+        
+        return event
+    }
+    
+    func value(forKey key: T) -> [RoomEntityType]? {
+        guard let id = dictionary[toString(key: key)] as? [String] else { return nil }
+        
+        var entities: [RoomEntityType]?
+        
+        id.forEach { item in
+            if let event = RoomEntityType.init(rawValue: item) {
+                if entities == nil {
+                    entities = [RoomEntityType]()
+                }
+                entities!.append(event)
+            }
+        }
+        return entities
+    }
+
  
     func toString(key: T) -> String {
         return "\(key)"

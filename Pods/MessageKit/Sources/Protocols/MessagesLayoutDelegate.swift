@@ -23,7 +23,6 @@
  */
 
 import Foundation
-import UIKit
 
 /// A protocol used by the `MessagesCollectionViewFlowLayout` object to determine
 /// the size and layout of a `MessageCollectionViewCell` and its contents.

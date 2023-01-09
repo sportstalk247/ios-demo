@@ -1,12 +1,12 @@
 import Foundation
 
-public struct GetUpdatesResponse: Codable {
+public class GetUpdatesResponse: NSObject, Codable {
     public var kind: String?
     public var cursor: String?
     public var more: Bool?
     public var itemcount: Int64?
     public var room: ChatRoom?
-    public var events: [Event]
+    public var events: [Event] = []
     
     private enum CodingKeys: String, CodingKey {
         case kind
@@ -17,7 +17,8 @@ public struct GetUpdatesResponse: Codable {
         case events
     }
     
-    public init(from decoder: Decoder) throws {
+    required public convenience init(from decoder: Decoder) throws {
+        self.init()
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.kind = try container.decodeIfPresent(String.self, forKey: .kind)
         self.cursor = try container.decodeIfPresent(String.self, forKey: .cursor)
