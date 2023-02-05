@@ -6,6 +6,7 @@ public class JoinChatRoomResponse: NSObject, Codable {
     public var room: ChatRoom?
     public var eventscursor: GetUpdatesResponse?
     public var previouseventscursor: String?
+    public var subscription: ChatSubscription?
     
     private enum CodingKeys: String, CodingKey {
         case kind
@@ -13,6 +14,7 @@ public class JoinChatRoomResponse: NSObject, Codable {
         case room
         case eventscursor
         case previouseventscursor
+        case subscription
     }
     
     required public convenience init(from decoder: Decoder) throws {
@@ -23,5 +25,6 @@ public class JoinChatRoomResponse: NSObject, Codable {
         self.room = try container.decodeIfPresent(ChatRoom.self, forKey: .room)
         self.eventscursor = try container.decodeIfPresent(GetUpdatesResponse.self, forKey: .eventscursor)
         self.previouseventscursor = try container.decodeIfPresent(String.self, forKey: .previouseventscursor)
+        self.subscription = try container.decodeIfPresent(ChatSubscription.self, forKey: .subscription)
     }
 }

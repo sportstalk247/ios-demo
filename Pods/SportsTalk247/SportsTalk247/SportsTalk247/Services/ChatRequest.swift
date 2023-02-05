@@ -2802,6 +2802,8 @@ public class ChatRequest {
             case eventSpacingMs
         }
         
+        public var roomid: String
+        
         public var limit: Int = 100 {
             didSet {
                 let minAllowed = 100
@@ -2818,6 +2820,12 @@ public class ChatRequest {
                     eventSpacingMs = minAllowed
                 }
             }
+        }
+        
+        public init(roomid: String, limit: Int = 100, eventSpacingMs: Int = 200) {
+            self.roomid = roomid
+            self.limit = limit
+            self.eventSpacingMs = eventSpacingMs
         }
     }
     

@@ -138,10 +138,10 @@ extension RoomViewController {
                     self.viewModel.startListening()
 //                    self.startActing()
                 } else {
+                    self.viewModel.stopListening()
                     self.stopActing()
                     self.messages = []
                     self.messagesCollectionView.reloadData()
-                    Session.manager.chatClient.stopListeningToChatUpdates()
                     self.navigationController?.popToRootViewController(animated: true)
                 }
             }

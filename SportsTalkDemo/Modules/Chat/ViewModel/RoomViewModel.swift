@@ -69,7 +69,9 @@ extension RoomViewModel {
     }
     
     func startListening() {
-        Session.manager.chatClient.startListeningToChatUpdates { (_, _, _, events) in
+        var config = ChatRequest.StartListeningToChatUpdates(roomid: activeRoom.id!)
+        Session.manager.chatClient.startListeningToChatUpdates(config: config) { (_, _, _, events) in
+            print("'\(self.activeRoom.name)': chatEvents = \n\(events.map { $0.map { $0.body } })")
             guard var events = events else {
                 return
             }
@@ -87,6 +89,11 @@ extension RoomViewModel {
             
             self.newEvents.send(events)
         }
+        
+    }
+    
+    func stopListening() {
+        Session.manager.chatClient.stopListeningToChatUpdates(activeRoom.id!)
     }
     
     func sendMessage(_ message: String) {

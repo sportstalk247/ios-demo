@@ -1,6 +1,6 @@
 {
   "name": "SportsTalk247",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "summary": "The Sportstalk SDK is a helpful wrapper around the Sportstalk API",
   "description": "This Sportstalk SDK is meant to power custom chat applications.  Sportstalk does not enforce any restricitons on your UI design, but instead empowers your developers to focus on the user experience without worrying about the underlying chat behavior.",
   "homepage": "https://gitlab.com/sportstalk247/sdk-ios-swift",

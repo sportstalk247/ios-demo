@@ -24,8 +24,8 @@ open class ChatRoom: Codable {
     public var delaymessageseconds: Int64?
     public var added: Date?
     public var whenmodified: Date?
-    public var bouncedusers: [String] = []
-    public var reportedusers: [ReportedUser] = []
+    public var bouncedusers: [String]?
+    public var reportedusers: [ReportedUser]?
     
     private enum CodingKeys: String, CodingKey {
         case kind
@@ -79,8 +79,8 @@ open class ChatRoom: Codable {
         self.enableautoexpiresessions = try container.decodeIfPresent(Bool.self, forKey: .enableautoexpiresessions)
         self.enableprofanityfilter = try container.decodeIfPresent(Bool.self, forKey: .enableprofanityfilter)
         self.delaymessageseconds = try container.decodeIfPresent(Int64.self, forKey: .delaymessageseconds)
-        self.bouncedusers = try container.decodeIfPresent([String].self, forKey: .bouncedusers) ?? []
-        self.reportedusers = try container.decodeIfPresent([ReportedUser].self, forKey: .reportedusers) ?? []
+        self.bouncedusers = try container.decodeIfPresent([String].self, forKey: .bouncedusers)
+        self.reportedusers = try container.decodeIfPresent([ReportedUser].self, forKey: .reportedusers)
         
         if let added = try container.decodeIfPresent(String.self, forKey: .added) {
             self.added = ISODateFormat(added)

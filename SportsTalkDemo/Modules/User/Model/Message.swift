@@ -19,7 +19,7 @@ class Message: MessageType, Equatable {
     var sender: SenderType
     var body: String?
     var deleted: Bool = false
-    var reactions: [ChatEventReaction]?
+    var reactions: [Reaction]?
     
     init(from event: SportsTalk247.Event) {
         guard let user = event.user else {

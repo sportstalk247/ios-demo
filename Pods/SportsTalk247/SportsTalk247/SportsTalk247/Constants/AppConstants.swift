@@ -26,6 +26,9 @@ struct URLPath {
     private static let cu = "chat/user/"
     private static let m = "chat/moderation/queues/events/"
     private static let n = "notification/"
+    private static let o = "comment/conversations"
+    private static let oc = "comment/find/conversation"
+    private static let p = "comment/moderation"
     
     struct User {
         static func CreateUpdate(userid: String) -> String                     { return u + (userid) }
@@ -47,52 +50,110 @@ struct URLPath {
     }
     
     struct Room {
-        static func Create() -> String                                          { return r }
-        static func Details(roomid: String) -> String                          { return r + (roomid)     }
-        static func DetailsExtended() -> String                                 { return r + "/batch/details"   }
-        static func DetailsByCustomId(customid: String) -> String              { return c + (customid)   }
-        static func Delete(roomid: String) -> String                           { return r + (roomid)     }
-        static func Update(roomid: String) -> String                           { return r + (roomid)     }
-        static func Close(roomid: String) -> String                            { return r + (roomid)     }
-        static func List() -> String                                            { return r }
-        static func Participants(roomid: String) -> String                     { return r + (roomid) + "/participants" }
-        static func UserSubscribedRooms(userid: String) -> String              { return cu + (userid) + "/subscriptions" }
-        static func EventHistory(roomid: String) -> String                     { return r + (roomid) + "/listeventshistory" }
-        static func PreviousEvent(roomid: String) -> String                    { return r + (roomid) + "/listpreviousevents" }
-        static func EventByType(roomid: String) -> String                      { return r + (roomid) + "/listeventsbytype" }
-        static func EventByTime(roomid: String, time: Int) -> String          { return "\(r)\(roomid)/eventsbytimestamp/list/\(time)" }
-        static func Join(roomid: String) -> String                             { return r + (roomid) + "/join" }
-        static func Join(customid: String) -> String                           { return c + (customid) + "/join" }
-        static func Exit(roomid: String) -> String                             { return r + (roomid) + "/exit" }
-        static func GetUpdates(roomid: String) -> String                       { return r + (roomid) + "/updates" }
-        static func GetMoreUpdates(roomid: String) -> String                   { return r + (roomid) + "/updates" }
-        static func ExecuteCommand(roomid: String) -> String                   { return r + (roomid) + "/command" }
-        static func QuotedReply(roomid: String, eventid: String) -> String    { return "\(r)\(roomid)/events/\(eventid)/quote" }
-        static func ThreadedReply(roomid: String, eventid: String) -> String  { return "\(r)\(roomid)/events/\(eventid)/reply" }
-        static func Report(roomid: String, userid: String) -> String          { return "\(r)\(roomid)/users/\(userid)/report" }
-        static func Bounce(roomid: String) -> String                           { return r + (roomid) + "/bounce" }
-        static func Shadowban(roomid: String) -> String                        { return r + (roomid) + "/shadowban" }
-        static func Mute(roomid: String) -> String                             { return r + (roomid) + "/mute" }
-        static func SearchEvent() -> String                                     { return "chat/searchevents/" }
-        static func UpdateChatEvent(roomid: String, eventid: String) -> String{ return "\(r)\(roomid)/events/\(eventid)"}
-        static func KeepAlive(roomid: String, userid: String) -> String       { return "\(r)\(roomid)/sessions/\(userid)/touch" }
+        static func Create() -> String  { return r }
+        static func Details(roomid: String) -> String   { return r + (roomid)     }
+        static func DetailsExtended() -> String { return r + "/batch/details"   }
+        static func DetailsByCustomId(customid: String) -> String   { return c + (customid)   }
+        static func Delete(roomid: String) -> String    { return r + (roomid)     }
+        static func Update(roomid: String) -> String    { return r + (roomid)     }
+        static func Close(roomid: String) -> String { return r + (roomid)     }
+        static func List() -> String    { return r }
+        static func Participants(roomid: String) -> String  { return r + (roomid) + "/participants" }
+        static func UserSubscribedRooms(userid: String) -> String   { return cu + (userid) + "/subscriptions" }
+        static func EventHistory(roomid: String) -> String  { return r + (roomid) + "/listeventshistory" }
+        static func PreviousEvent(roomid: String) -> String { return r + (roomid) + "/listpreviousevents" }
+        static func EventByType(roomid: String) -> String   { return r + (roomid) + "/listeventsbytype" }
+        static func EventByTime(roomid: String, time: Int) -> String    { return "\(r)\(roomid)/eventsbytimestamp/list/\(time)" }
+        static func Join(roomid: String) -> String  { return r + (roomid) + "/join" }
+        static func Join(customid: String) -> String    { return c + (customid) + "/join" }
+        static func Exit(roomid: String) -> String  { return r + (roomid) + "/exit" }
+        static func GetUpdates(roomid: String) -> String    { return r + (roomid) + "/updates" }
+        static func GetMoreUpdates(roomid: String) -> String    { return r + (roomid) + "/updates" }
+        static func ExecuteCommand(roomid: String) -> String    { return r + (roomid) + "/command" }
+        static func QuotedReply(roomid: String, eventid: String) -> String  { return "\(r)\(roomid)/events/\(eventid)/quote" }
+        static func ThreadedReply(roomid: String, eventid: String) -> String    { return "\(r)\(roomid)/events/\(eventid)/reply" }
+        static func Report(roomid: String, userid: String) -> String    { return "\(r)\(roomid)/users/\(userid)/report" }
+        static func Bounce(roomid: String) -> String    { return r + (roomid) + "/bounce" }
+        static func Shadowban(roomid: String) -> String { return r + (roomid) + "/shadowban" }
+        static func Mute(roomid: String) -> String  { return r + (roomid) + "/mute" }
+        static func SearchEvent() -> String { return "chat/searchevents/" }
+        static func UpdateChatEvent(roomid: String, eventid: String) -> String  { return "\(r)\(roomid)/events/\(eventid)"}
+        static func KeepAlive(roomid: String, userid: String) -> String { return "\(r)\(roomid)/sessions/\(userid)/touch" }
     }
     
     struct Event {
-        static func Purge(roomid: String, userid: String) -> String                   { return r + (roomid) + "/commands/purge/" + (userid)}
-        static func FlagLogicallyDeleted(roomid: String, eventid: String) -> String   { return "\(r)\(roomid)/events/\(eventid)/setdeleted" }
-        static func Delete(roomid: String, eventid: String) -> String                 { return "\(r)\(roomid)/events/\(eventid)" }
-        static func DeleteAll(roomid: String) -> String                                { return r + (roomid) + "/command"}
-        static func ListByUser(roomid: String, userid: String) -> String              { return "\(r)\(roomid)/messagesbyuser/\(userid)" }
-        static func Report(roomid: String, eventid: String) -> String                 { return "\(r)\(roomid)/events/\(eventid)/report" }
-        static func React(roomid: String, eventid: String) -> String                  { return "\(r)\(roomid)/events/\(eventid)/react" }
+        static func Purge(roomid: String, userid: String) -> String { return r + (roomid) + "/commands/purge/" + (userid)}
+        static func FlagLogicallyDeleted(roomid: String, eventid: String) -> String { return "\(r)\(roomid)/events/\(eventid)/setdeleted" }
+        static func Delete(roomid: String, eventid: String) -> String   { return "\(r)\(roomid)/events/\(eventid)" }
+        static func DeleteAll(roomid: String) -> String { return r + (roomid) + "/command"}
+        static func ListByUser(roomid: String, userid: String) -> String    { return "\(r)\(roomid)/messagesbyuser/\(userid)" }
+        static func Report(roomid: String, eventid: String) -> String   { return "\(r)\(roomid)/events/\(eventid)/report" }
+        static func React(roomid: String, eventid: String) -> String    { return "\(r)\(roomid)/events/\(eventid)/react" }
     }
     
     struct Mod {
-        static func Approve(eventid: String) -> String { return m + (eventid) + "/applydecision" }
-        static func Reject(eventid: String) -> String  { return m + (eventid) + "/applydecision" }
-        static func List() -> String                    { return m }
+        static func Approve(eventid: String) -> String  { return m + (eventid) + "/applydecision" }
+        static func Reject(eventid: String) -> String   { return m + (eventid) + "/applydecision" }
+        static func List() -> String    { return m }
     }
+    
+    struct Conversation {
+        static func CreateUpdate() -> String    { return o }
+        static func Details(conversationid: String) -> String   { return "\(o)/\(conversationid)" }
+        static func DetailsByCustomId() -> String   { return "\(oc)/bycustomid" }
+        static func List() -> String  { return "\(o)" }
+        static func BatchConversationDetails() -> String    { return "\(o)/details/batch" }
+        static func React(conversationid: String) -> String { return "\(o)/\(conversationid)/react" }
+        static func Delete(conversationid: String) -> String { return "\(o)/\(conversationid)" }
+    }
+    
+    struct Comment {
+        static func Create(conversationid: String) -> String    { return "\(o)/\(conversationid)/comments" }
+        static func Reply(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)" }
+        static func ListReplies(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)/replies" }
+        static func Details(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)" }
+        static func List(conversationid: String) -> String  { return "\(o)/\(conversationid)/comments" }
+        static func BatchReplies(conversationid: String) -> String   { return "\(o)/\(conversationid)/repliesbyparentidbatch" }
+        static func React(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)/react" }
+        static func Vote(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)/vote" }
+        static func Report(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)/report" }
+        static func Update(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)" }
+        static func LogicallyDeleted(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)/setdeleted" }
+        static func PermanentlyDelete(conversationid: String, commentid: String) -> String  { return "\(o)/\(conversationid)/comments/\(commentid)" }
+        
+        struct Mod {
+            static func List() -> String { return "\(p)/queues/comments" }
+            static func ApproveReject(commentid: String) -> String  { return "\(p)/queues/comments/\(commentid)/applydecision" }
+        }
+    }
+    
+}
+
+public enum SortType: String {
+    case oldest
+    case newest
+    case likes
+    case votescore
+    case mostreplies
+}
+
+public enum BatchGetConversationEntity: String {
+    case reactions
+    case likecount
+    case commentcount
+}
+
+public enum CommentModerationState: String {
+    case approved
+    case rejected
+    case pending
+    case flagged
+}
+
+public enum VoteType: String {
+    case up
+    case down
+    case none = ""
 }
 
 public enum Ordering: String {

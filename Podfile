@@ -6,7 +6,7 @@ target 'SportsTalkDemo' do
   use_frameworks!
 
   # Pods for SportsTalkDemo
-  pod 'SportsTalk247', :git=> 'https://gitlab.com/sportstalk247/sdk-ios-swift.git', :tag => '1.7.1'
+  pod 'SportsTalk247', :git=> 'https://gitlab.com/sportstalk247/sdk-ios-swift.git', :tag => '1.7.3'
   pod 'SDWebImage', '~> 5.0'
   pod 'Toast-Swift', '~> 5.0.1'
   pod 'MBProgressHUD'

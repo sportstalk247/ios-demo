@@ -180,7 +180,8 @@ extension RoomParticipantsViewController {
             }
             sheet.addAction(ban)
             
-            if viewModel.room.bouncedusers.contains(actor.handle) {
+            if let bouncedusers = viewModel.room.bouncedusers,
+               bouncedusers.contains(actor.handle) {
                 let unbounce = UIAlertAction(title: "Unbounce", style: .default) { [weak self] _ in
                     guard let self = self else { return }
                     self.viewModel.bounce(false, actor: actor)

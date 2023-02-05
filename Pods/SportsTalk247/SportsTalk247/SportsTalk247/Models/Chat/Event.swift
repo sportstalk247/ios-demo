@@ -36,9 +36,9 @@ open class Event: Codable, Equatable {
 //    public var hashtags: [String]?
     public var likecount: Int64?
     public var replycount: Int64?
-    public var reactions: [ChatEventReaction]
+    public var reactions: [Reaction]
     public var moderation: String?
-    public var reports: [ChatEventReport]
+    public var reports: [Report]
     
     private enum CodingKeys: String, CodingKey {
         case kind
@@ -153,59 +153,13 @@ open class Event: Codable, Equatable {
 //        self.hashtags = try continer.decodeIfPresent([String].self, forKey: .hashtags)
         self.likecount = try container.decodeIfPresent(Int64.self, forKey: .likecount)
         self.replycount = try container.decodeIfPresent(Int64.self, forKey: .replycount)
-        self.reactions = try container.decodeIfPresent(Array<ChatEventReaction>.self, forKey: .reactions) ?? []
+        self.reactions = try container.decodeIfPresent(Array<Reaction>.self, forKey: .reactions) ?? []
         self.moderation = try container.decodeIfPresent(String.self, forKey: .moderation)
-        self.reports = try container.decodeIfPresent(Array<ChatEventReport>.self, forKey: .reports) ?? []
+        self.reports = try container.decodeIfPresent(Array<Report>.self, forKey: .reports) ?? []
     }
     
     public static func == (lhs: Event, rhs: Event) -> Bool {
         return lhs.id == rhs.id
-    }
-}
-
-public struct ChatEventReaction: Codable {
-    public var type: String?
-    public var count: Int64?
-    public var users: [User]
-    
-    private enum CodingKeys: String, CodingKey {
-        case type
-        case count
-        case users
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.type = try container.decodeIfPresent(String.self, forKey: .type)
-        self.count = try container.decodeIfPresent(Int64.self, forKey: .count)
-        self.users = try container.decodeIfPresent(Array<User>.self, forKey: .users) ?? []
-    }
-    
-    public init(type: String, count: Int64, users: [User]) {
-        self.type = type
-        self.count = count
-        self.users = users
-    }
-}
-
-public struct ChatEventReport: Codable {
-    public var userid: String?
-    public var reason: String?
-    
-    private enum CodingKeys: String, CodingKey {
-        case userid
-        case reason
-    }
-    
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.userid = try container.decodeIfPresent(String.self, forKey: .userid)
-        self.reason = try container.decodeIfPresent(String.self, forKey: .reason)
-    }
-    
-    public init(userId: String?, reason: String?) {
-        self.userid = userId
-        self.reason = reason
     }
 }
 
